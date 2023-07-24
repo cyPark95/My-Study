@@ -1,6 +1,7 @@
 package kr.fc.model;
 
 public class Book {
+    // private => 정보은닉
     private String title;
     private int price;
 
