@@ -24,7 +24,7 @@ public class MyWAS {
                 System.out.println("[Client Info] " + client);
 
                 // 요청 처리 스레드
-                new Thread(() -> new HttpRequestHandler().printRequestInfo(client)).start();
+                new Thread(() -> new HttpRequestHandler().mapping(client)).start();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

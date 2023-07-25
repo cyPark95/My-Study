@@ -1,56 +1,67 @@
 package was;
 
+import was.adapter.ControllerAdepter;
+import was.domain.HttpRequest;
+import was.domain.HttpStatus;
+import was.utils.HtmlTemplate;
+
 import java.io.*;
 import java.net.Socket;
-import was.utils.HtmlUtil;
 
 public class HttpRequestHandler {
 
-    public void printRequestInfo(Socket client) {
+    private final ControllerAdapterFactory factory;
+
+    public HttpRequestHandler() {
+        factory = new ControllerAdapterFactory();
+    }
+
+    public void mapping(Socket client) {
         try (InputStream in = client.getInputStream();
              OutputStream out = client.getOutputStream();
              client
         ) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            HttpRequest request = getHttpRequestInfo(br);
 
-            String line = br.readLine();
-            if (line == null) {
+            Object handler = factory.getHandler(request.getPath());
+            ControllerAdepter adepter = factory.getAdapter(handler);
+            if (adepter == null) {
+                out.write(HtmlTemplate.response(HttpStatus.NOT_FOUND, "[" + request.getPath() + "] 잘못된 URL 입니다.").getBytes());
+                out.flush();
                 return;
             }
-            HttpRequest request = getFirstHeaderLineInfo(line);
 
-            // 헤더 값 세팅
-            while ((line = br.readLine()) != null) {
-                if ("".equals(line)) {
-                    break;
-                }
-                getHeaderInfo(request, line);
-            }
-
-            // 메시지 바디 값 조회
-            if (request.getContentLength() > 0) {
-                int len = request.getContentLength();
-
-                char[] requestBody = new char[len];
-                int bytesRead = 0;
-                while (bytesRead < len) {
-                    int read = br.read(requestBody, bytesRead, len - bytesRead);
-                    if (read == -1) {
-                        break;
-                    }
-                    bytesRead += read;
-                }
-                request.setBody(requestBody);
-            }
-
-            System.out.println(request);
-
-            String httpResponse = HtmlUtil.responseTemplate(request);
-            out.write(httpResponse.getBytes());
+            String responseBody = adepter.handle(handler, request);
+            out.write(HtmlTemplate.response(HttpStatus.OK, responseBody).getBytes());
             out.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private HttpRequest getHttpRequestInfo(BufferedReader br) throws IOException {
+        HttpRequest request = getHeaderInfo(br);
+
+        if (request.isBody()) {
+            request.setBody(getBodyInfo(request.getContentLength(), br));
+        }
+        return request;
+    }
+
+    private HttpRequest getHeaderInfo(BufferedReader br) throws IOException {
+        String firstLine = br.readLine();
+        HttpRequest request = getFirstHeaderLineInfo(firstLine);
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            if ("".equals(line)) {
+                break;
+            }
+            getHeaderInfo(request, line);
+        }
+
+        return request;
     }
 
     private HttpRequest getFirstHeaderLineInfo(String firstLine) {
@@ -78,5 +89,18 @@ public class HttpRequestHandler {
         } else if (headerArgs[0].startsWith("Content-Type")) {
             request.setContentType(headerArgs[1].trim());
         }
+    }
+
+    private char[] getBodyInfo(int contentLength, BufferedReader br) throws IOException {
+        char[] requestBody = new char[contentLength];
+        int bytesRead = 0;
+        while (bytesRead < contentLength) {
+            int read = br.read(requestBody, bytesRead, contentLength - bytesRead);
+            if (read == -1) {
+                break;
+            }
+            bytesRead += read;
+        }
+        return requestBody;
     }
 }

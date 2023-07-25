@@ -1,6 +1,4 @@
-package was;
-
-import java.util.Arrays;
+package was.domain;
 
 public class HttpRequest {
 
@@ -16,8 +14,8 @@ public class HttpRequest {
         return queryString != null;
     }
 
-    public boolean isContentType() {
-        return contentType != null;
+    public boolean isBody() {
+        return contentType != null || contentLength > 0;
     }
 
     public HttpRequest(String method, String path) {
@@ -72,16 +70,5 @@ public class HttpRequest {
 
     public String getBody() {
         return new String(body);
-    }
-
-    @Override
-    public String toString() {
-        return "Method=" + method + '\n'
-                + "HOST=" + host + '\n'
-                + "PATH=" + path + '\n'
-                + "QueryString=" + queryString + '\n'
-                + "[contentLength] " + contentLength
-                + " / [contentType] " + contentType + '\n'
-                + "Body=" + getBody();
     }
 }
