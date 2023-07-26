@@ -3,7 +3,8 @@ package was;
 import was.adapter.ControllerAdepter;
 import was.domain.HttpRequest;
 import was.domain.HttpStatus;
-import was.utils.HtmlTemplate;
+import was.utils.CookieSessionUtil;
+import was.utils.TemplateUtil;
 
 import java.io.*;
 import java.net.Socket;
@@ -27,13 +28,13 @@ public class HttpRequestHandler {
             Object handler = factory.getHandler(request.getPath());
             ControllerAdepter adepter = factory.getAdapter(handler);
             if (adepter == null) {
-                out.write(HtmlTemplate.response(HttpStatus.NOT_FOUND, "[" + request.getPath() + "] 잘못된 URL 입니다.").getBytes());
+                String responseBody = TemplateUtil.getResponseBody("[" + request.getPath() + "] 잘못된 URL 입니다.");
+                out.write(TemplateUtil.httpResponse(HttpStatus.NOT_FOUND, responseBody).getBytes());
                 out.flush();
                 return;
             }
 
-            String responseBody = adepter.handle(handler, request);
-            out.write(HtmlTemplate.response(HttpStatus.OK, responseBody).getBytes());
+            out.write(adepter.handle(handler, request).getBytes());
             out.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -80,7 +81,7 @@ public class HttpRequestHandler {
     }
 
     private void getHeaderInfo(HttpRequest request, String headerLine) {
-        String[] headerArgs = headerLine.split(" ");
+        String[] headerArgs = headerLine.split(": ");
         if (headerArgs[0].startsWith("Host")) {
             request.setHost(headerArgs[1].trim());
         } else if (headerArgs[0].startsWith("Content-Length")) {
@@ -88,7 +89,24 @@ public class HttpRequestHandler {
             request.setContentLength(length);
         } else if (headerArgs[0].startsWith("Content-Type")) {
             request.setContentType(headerArgs[1].trim());
+        } else if (headerArgs[0].startsWith("Cookie")) {
+            String[] cookiePairs = headerArgs[1].split(";");
+            String cookie = getCookie(cookiePairs);
+            if (cookie != null) {
+                request.setCookie(CookieSessionUtil.COOKIE_SESSION_NAME, cookie);
+            }
         }
+    }
+
+    private String getCookie(String[] cookiePairs) {
+        for (String cookiePair : cookiePairs) {
+            String[] cookie = cookiePair.trim().split("=");
+            if (cookie[0].startsWith(CookieSessionUtil.COOKIE_SESSION_NAME)) {
+                return cookie[1].trim();
+            }
+        }
+
+        return null;
     }
 
     private char[] getBodyInfo(int contentLength, BufferedReader br) throws IOException {

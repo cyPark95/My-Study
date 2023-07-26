@@ -1,14 +1,19 @@
 package was.utils;
 
+import was.domain.Cookie;
 import was.domain.HttpRequest;
 import was.domain.HttpStatus;
 
-public class HtmlTemplate {
+public class TemplateUtil {
 
-    private HtmlTemplate() {
+    private TemplateUtil() {
     }
 
-    public static String response(HttpStatus status, String responseBody) {
+    public static String httpResponse(String responseBody) {
+        return httpResponse(HttpStatus.OK, responseBody);
+    }
+
+    public static String httpResponse(HttpStatus status, String responseBody) {
         return "HTTP/1.1 " + status.getValue() + "\r\n"
                 + "Content-Type: text/html\r\n"
                 + "Content-Length: " + responseBody.length() + "\r\n"
@@ -16,12 +21,26 @@ public class HtmlTemplate {
                 + responseBody;
     }
 
-    public static String getBasicResponse(HttpRequest request) {
+    public static String httpResponseWithCookie(Cookie cookie, String responseBody) {
+        return "HTTP/1.1 " + HttpStatus.OK.getValue() + "\r\n"
+                + "Content-Type: text/html\r\n"
+                + "Content-Length: " + responseBody.length() + "\r\n"
+                + "Set-Cookie: " + cookie.name() + "=" + cookie.value() + "\r\n"
+                + "\r\n"
+                + responseBody;
+    }
+
+    public static String getBasicResponseBody(HttpRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append("       <h5>REQUEST INFO</h5>").append('\n');
         sb.append("       <span>Method: ").append(request.getMethod()).append("</span></br>").append('\n');
         sb.append("       <span>HOST: ").append(request.getHost()).append("</span></br>").append('\n');
         sb.append("       <span>PATH: ").append(request.getPath()).append("</span></br>").append('\n');
+        if (request.isCookie()) {
+            Cookie cookie = request.getCookie();
+            sb.append("       <span>Cookie: ").append(cookie.name()).append("=").append(cookie.value()).append("</span></br>").append('\n');
+            sb.append("       <span>Session: ").append(CookieSessionUtil.getSession(cookie.value())).append("</span></br>").append('\n');
+        }
         if (request.isQueryString()) {
             sb.append("       <span>QueryString: ").append(request.getQueryString()).append("</span></br>").append('\n');
         }

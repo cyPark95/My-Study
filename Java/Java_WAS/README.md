@@ -43,3 +43,30 @@
 
 6. 클러스터링과 부하 분산
    - WAS는 여러 대의 서버를 클러스터로 구성하여 부하 분산을 지원하기 때문에 서버의 가용성과 확장성을 높일 수 있다.
+
+# MyWAS 동작
+
+| URL    | 설명                                                                                                   |
+|--------|------------------------------------------------------------------------------------------------------|
+| /join  | 회원가입 페이지 표시                                                                                          |
+| /login | 로그인 페이지 표시 + 쿠키 생성                                                                                   |
+| /      | 요청 정보 출력(Method, HOST, Path [, QueryString, Cookie, Session, ContentLength/ContentType, RequestBody] |
+| 그 외..  | 잘못된 URL 요청 표시                                                                                        |
+
+### `/join`
+
+![image](https://github.com/cyPark9510/Spring-Study/assets/50781066/26b62189-b60d-4539-963c-3c0e8fd89ba2)
+
+### `/login`
+
+![image](https://github.com/cyPark9510/Spring-Study/assets/50781066/3caf84a5-c782-4f98-ab6f-922a0b2dc0ca)
+
+![image](https://github.com/cyPark9510/Spring-Study/assets/50781066/b54385fd-2f75-4ea3-ada9-7a4e4343b6e7)
+
+### `/?name=cyPark`
+
+![image](https://github.com/cyPark9510/Spring-Study/assets/50781066/e1a0e5a2-74aa-421d-8397-bbed1c2c16d9)
+
+### 그 외(`/url`)
+
+![image](https://github.com/cyPark9510/Spring-Study/assets/50781066/4577cd87-c689-4d4e-ad5c-665dad46238b)

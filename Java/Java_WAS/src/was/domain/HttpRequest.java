@@ -8,10 +8,15 @@ public class HttpRequest {
     private String host;
     private int contentLength;
     private String contentType;
+    private Cookie cookie;
     private char[] body;
 
     public boolean isQueryString() {
         return queryString != null;
+    }
+
+    public boolean isCookie() {
+        return cookie != null;
     }
 
     public boolean isBody() {
@@ -40,6 +45,10 @@ public class HttpRequest {
         this.contentType = contentType;
     }
 
+    public void setCookie(String name, String value) {
+        cookie = new Cookie(name, value);
+    }
+
     public void setBody(char[] body) {
         this.body = body;
     }
@@ -66,6 +75,10 @@ public class HttpRequest {
 
     public String getContentType() {
         return contentType;
+    }
+
+    public Cookie getCookie() {
+        return cookie;
     }
 
     public String getBody() {
