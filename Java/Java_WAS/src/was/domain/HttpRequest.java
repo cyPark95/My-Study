@@ -82,6 +82,9 @@ public class HttpRequest {
     }
 
     public String getBody() {
+        if (body == null) {
+            return "";
+        }
         return new String(body);
     }
 }

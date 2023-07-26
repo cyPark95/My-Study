@@ -9,10 +9,6 @@ public class TemplateUtil {
     private TemplateUtil() {
     }
 
-    public static String httpResponse(String responseBody) {
-        return httpResponse(HttpStatus.OK, responseBody);
-    }
-
     public static String httpResponse(HttpStatus status, String responseBody) {
         return "HTTP/1.1 " + status.getValue() + "\r\n"
                 + "Content-Type: text/html\r\n"
@@ -21,8 +17,11 @@ public class TemplateUtil {
                 + responseBody;
     }
 
-    public static String httpResponseWithCookie(Cookie cookie, String responseBody) {
-        return "HTTP/1.1 " + HttpStatus.OK.getValue() + "\r\n"
+    public static String httpResponseWithCookie(HttpStatus status,
+                                                Cookie cookie,
+                                                String responseBody
+    ) {
+        return "HTTP/1.1 " + status.getValue() + "\r\n"
                 + "Content-Type: text/html\r\n"
                 + "Content-Length: " + responseBody.length() + "\r\n"
                 + "Set-Cookie: " + cookie.name() + "=" + cookie.value() + "\r\n"
