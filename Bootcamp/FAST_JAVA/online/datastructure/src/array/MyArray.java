@@ -15,6 +15,12 @@ public class MyArray<E> {
         arr = new Object[size];
     }
 
+    public MyArray(Object[] original, int newSize) {
+        arr = Arrays.copyOf(original, newSize);
+        size = newSize;
+        count = original.length;
+    }
+
     public void add(E element) {
         sizeCheck();
         arr[count++] = element;
@@ -88,6 +94,10 @@ public class MyArray<E> {
 
     public int size() {
         return count;
+    }
+
+    public MyArray<E> grow(int newSize) {
+        return new MyArray<>(arr, newSize);
     }
 
     private void sizeCheck() {
