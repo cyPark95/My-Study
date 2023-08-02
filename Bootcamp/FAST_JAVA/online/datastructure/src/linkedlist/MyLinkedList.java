@@ -1,6 +1,8 @@
 package linkedlist;
 
-public class MyLinkedList<E> {
+import queue.MyQueue;
+
+public class MyLinkedList<E> implements MyQueue<E> {
 
     private final MyNode<E> head;
     private int size;
@@ -17,6 +19,23 @@ public class MyLinkedList<E> {
 
         node.next = new MyNode<>(data);
         size++;
+    }
+
+    @Override
+    public void offer(E data) {
+        add(data);
+    }
+
+    @Override
+    public E poll() {
+        E element = get(0);
+        remove(0);
+        return element;
+    }
+
+    @Override
+    public E peek() {
+        return get(0);
     }
 
     public void insert(int index, E data) {
