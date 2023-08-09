@@ -1,6 +1,6 @@
 package kr.fc.poly;
 
-public class Cat implements Animal {  // eat() { ? }
+public class Cat implements Animal, Pet {  // eat() { ? }
 
     public void night() {
         System.out.println("밤에 눈에서 빛이난다.");

@@ -1,6 +1,6 @@
 package kr.fc.poly;
 
-public class Dog implements Animal {
+public class Dog implements Animal, Pet {
 
     // 먹다 동작
     @Override
