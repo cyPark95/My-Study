@@ -1,0 +1,20 @@
+<books>
+    <book>
+        <title>이펙티브 자바 Effective Java</title>
+        <company>인사이트(insight)</company>
+        <name>Joshua Bloch</name>
+        <price>36000</price>
+    </book>
+    <book>
+        <title>Real MySQL</title>
+        <company>위키북스</company>
+        <name>이성욱</name>
+        <price>45000</price>
+    </book>
+    <book>
+        <title>토비의 스프링 3.1</title>
+        <company>에이콘출판</company>
+        <name>이일민</name>
+        <price>56000</price>
+    </book>
+</books>
