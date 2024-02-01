@@ -7,7 +7,7 @@ import pcy.study.springframe.front.ModelView;
 
 import java.io.IOException;
 
-public interface MyHandler {
+public interface MyHandlerAdapter {
 
     boolean supports(Object handler);
 
