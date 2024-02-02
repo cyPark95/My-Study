@@ -1,4 +1,4 @@
-package pcy.study.springframe.controller;
+package pcy.study.springmvcframe.controller;
 
 import jakarta.servlet.ServletException;
 

@@ -1,27 +1,30 @@
-package pcy.study.springframe.adapter;
+package pcy.study.springmvcframe.adapter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import pcy.study.springframe.controller.Controller;
-import pcy.study.springframe.front.ModelView;
+import pcy.study.springmvcframe.controller.ModelController;
+import pcy.study.springmvcframe.mvc.view.ModelAndView;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ControllerHandlerAdapter implements MyHandlerAdapter {
+public class ModelControllerHandlerAdapter implements MyHandlerAdapter {
     @Override
     public boolean supports(Object handler) {
-        return (handler instanceof Controller);
+        return (handler instanceof ModelController);
     }
 
     @Override
-    public ModelView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws ServletException, IOException {
-        Controller controller = (Controller) handler;
+    public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws ServletException, IOException {
+        ModelController controller = (ModelController) handler;
 
         Map<String, String> paramMap = createParamMap(request);
-        return controller.process(paramMap);
+        Map<String, Object> model = new HashMap<>();
+
+        String viewName = controller.process(paramMap, model);
+        return new ModelAndView(viewName, model);
     }
 
     private Map<String, String> createParamMap(HttpServletRequest request) {

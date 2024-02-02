@@ -1,8 +1,8 @@
-package pcy.study.springframe.controller;
+package pcy.study.springmvcframe.controller;
 
 import jakarta.servlet.ServletException;
-import pcy.study.springframe.domain.Member;
-import pcy.study.springframe.repository.MemberRepository;
+import pcy.study.springmvcframe.domain.Member;
+import pcy.study.springmvcframe.repository.MemberRepository;
 
 import java.io.IOException;
 import java.util.List;

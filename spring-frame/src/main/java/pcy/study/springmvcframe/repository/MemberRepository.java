@@ -1,7 +1,7 @@
-package pcy.study.springframe.repository;
+package pcy.study.springmvcframe.repository;
 
 import lombok.Getter;
-import pcy.study.springframe.domain.Member;
+import pcy.study.springmvcframe.domain.Member;
 
 import java.util.ArrayList;
 import java.util.HashMap;

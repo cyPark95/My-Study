@@ -1,4 +1,4 @@
-package pcy.study.springframe.domain;
+package pcy.study.springmvcframe.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
