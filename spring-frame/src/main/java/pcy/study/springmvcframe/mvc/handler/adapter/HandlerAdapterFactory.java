@@ -1,4 +1,4 @@
-package pcy.study.springmvcframe.mvc.adapter;
+package pcy.study.springmvcframe.mvc.handler.adapter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +17,6 @@ public class HandlerAdapterFactory {
 
     public void addHandlerAdapter(HandlerAdapter handlerAdapter) {
         log.info("Add Handler Adapter = {}", handlerAdapter);
-
         handlerAdapters.add(handlerAdapter);
     }
 
@@ -27,6 +26,6 @@ public class HandlerAdapterFactory {
         return handlerAdapters.stream()
                 .filter(handlerAdapter -> handlerAdapter.supports(handler))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("일치하는 어댑터를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("일치하는 어댑터를 찾을 수 없습니다." + handler));
     }
 }

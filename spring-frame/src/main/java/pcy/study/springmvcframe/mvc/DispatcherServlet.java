@@ -1,25 +1,26 @@
 package pcy.study.springmvcframe.mvc;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import pcy.study.springmvcframe.mvc.adapter.HandlerAdapter;
-import pcy.study.springmvcframe.mvc.adapter.HandlerAdapterFactory;
-import pcy.study.springmvcframe.mvc.mapping.HandlerMapping;
-import pcy.study.springmvcframe.mvc.mapping.HandlerMappingFactory;
+import pcy.study.springmvcframe.mvc.handler.adapter.HandlerAdapter;
+import pcy.study.springmvcframe.mvc.handler.adapter.HandlerAdapterFactory;
+import pcy.study.springmvcframe.mvc.handler.mapping.HandlerMappingFactory;
 import pcy.study.springmvcframe.mvc.view.ModelAndView;
 
 @Slf4j
+@WebServlet(name = "frontController", urlPatterns = "/front/*")
 public class DispatcherServlet extends HttpServlet {
 
     private final HandlerMappingFactory handlerMappingFactory;
     private final HandlerAdapterFactory handlerAdapterFactory;
 
     public DispatcherServlet() {
-        this.handlerMappingFactory = new HandlerMappingFactory();
-        this.handlerAdapterFactory = new HandlerAdapterFactory();
+        this.handlerMappingFactory = AppConfig.handlerMappingFactory();
+        this.handlerAdapterFactory = AppConfig.handlerAdapterFactory();
     }
 
     @Override
@@ -27,18 +28,10 @@ public class DispatcherServlet extends HttpServlet {
         handlerMappingFactory.init();
     }
 
-    public void addHandlerMapping(HandlerMapping handlerMapping) {
-        handlerMappingFactory.addHandlerMapping(handlerMapping);
-    }
-
-    public void addHandlerAdapter(HandlerAdapter handlerAdapter) {
-        handlerAdapterFactory.addHandlerAdapter(handlerAdapter);
-    }
-
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         log.debug("Method : {}, Request URI : {}", request.getMethod(), request.getRequestURI());
+
         try {
             Object handler = handlerMappingFactory.findHandler(request);
             HandlerAdapter adapter = handlerAdapterFactory.findAdapter(handler);

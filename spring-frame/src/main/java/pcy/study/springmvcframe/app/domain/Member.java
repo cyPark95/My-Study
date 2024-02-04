@@ -1,4 +1,4 @@
-package pcy.study.springmvcframe.domain;
+package pcy.study.springmvcframe.app.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class Member {
     private Long id;
     private final String username;
+    private final String password;
     private final int age;
 
     public void setSequence(Long id) {

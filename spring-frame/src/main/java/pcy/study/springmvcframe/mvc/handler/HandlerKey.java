@@ -1,8 +1,8 @@
-package pcy.study.springmvcframe.mvc.controller;
+package pcy.study.springmvcframe.mvc.handler;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.springframework.web.bind.annotation.RequestMethod;
+import pcy.study.springmvcframe.mvc.annotation.RequestMethod;
 
 @ToString
 @EqualsAndHashCode

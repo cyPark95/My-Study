@@ -1,7 +1,6 @@
 package pcy.study.springmvcframe.mvc.annotation;
 
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

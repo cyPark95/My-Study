@@ -1,12 +1,9 @@
-package pcy.study.springmvcframe.repository;
+package pcy.study.springmvcframe.app.repository;
 
 import lombok.Getter;
-import pcy.study.springmvcframe.domain.Member;
+import pcy.study.springmvcframe.app.domain.Member;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MemberRepository {
 
@@ -26,6 +23,13 @@ public class MemberRepository {
 
     public Member findById(Long id) {
         return store.get(id);
+    }
+
+    public Member findByUsername(String username) {
+        return store.values().stream()
+                .filter(member -> member.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Member> findAll() {

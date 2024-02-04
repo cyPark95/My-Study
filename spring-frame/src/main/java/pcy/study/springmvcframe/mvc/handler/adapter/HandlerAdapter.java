@@ -1,4 +1,4 @@
-package pcy.study.springmvcframe.mvc.adapter;
+package pcy.study.springmvcframe.mvc.handler.adapter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

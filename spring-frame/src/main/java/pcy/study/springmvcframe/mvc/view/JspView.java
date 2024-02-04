@@ -15,7 +15,7 @@ public class JspView implements View {
     private final String viewName;
 
     public JspView(String viewName) {
-        this.viewName = viewName;
+        this.viewName = viewResolver(viewName);
     }
 
     @Override
@@ -23,6 +23,10 @@ public class JspView implements View {
         modelToRequestAttribute(model, request);
         RequestDispatcher dispatcher = request.getRequestDispatcher(viewName);
         dispatcher.forward(request, response);
+    }
+
+    private String viewResolver(String viewName) {
+        return "/WEB-INF/views/" + viewName + ".jsp";
     }
 
     private void modelToRequestAttribute(Map<String, Object> model, HttpServletRequest request) {

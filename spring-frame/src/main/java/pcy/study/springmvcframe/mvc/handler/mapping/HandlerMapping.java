@@ -1,4 +1,4 @@
-package pcy.study.springmvcframe.mvc.mapping;
+package pcy.study.springmvcframe.mvc.handler.mapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 

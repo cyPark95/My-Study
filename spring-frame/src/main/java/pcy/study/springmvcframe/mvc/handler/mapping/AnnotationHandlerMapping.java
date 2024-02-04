@@ -1,14 +1,13 @@
-package pcy.study.springmvcframe.mvc.mapping;
+package pcy.study.springmvcframe.mvc.handler.mapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
-import org.springframework.web.bind.annotation.RequestMethod;
-import pcy.study.springmvcframe.mvc.controller.ControllerScanner;
-import pcy.study.springmvcframe.mvc.controller.HandlerExecution;
-import pcy.study.springmvcframe.mvc.controller.HandlerKey;
 import pcy.study.springmvcframe.mvc.annotation.RequestMapping;
+import pcy.study.springmvcframe.mvc.annotation.RequestMethod;
+import pcy.study.springmvcframe.mvc.handler.HandlerExecution;
+import pcy.study.springmvcframe.mvc.handler.HandlerKey;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 public class AnnotationHandlerMapping implements HandlerMapping {
 
     private static final Class<RequestMapping> REQUEST_MAPPING_CLASS = RequestMapping.class;
+    private static final String URL_FORMAT = "/front%s";
 
     private final Object[] basePackages;
     private final Map<HandlerKey, HandlerExecution> handlerExecutions;
@@ -61,12 +61,12 @@ public class AnnotationHandlerMapping implements HandlerMapping {
     }
 
     private Map<HandlerKey, HandlerExecution> getHandlerExecutions(Object handler, Method method) {
-        HandlerExecution handlerExecution = new HandlerExecution(handler, method);
+        HandlerExecution handlerExecution = new HandlerExecution(method, handler);
         RequestMapping requestMapping = method.getAnnotation(REQUEST_MAPPING_CLASS);
         log.info("Path : {}, Method : {}", requestMapping.value(), requestMapping.method());
 
         return Arrays.stream(requestMapping.method())
-                .map(status -> new HandlerKey(requestMapping.value(), status))
+                .map(status -> new HandlerKey(String.format(URL_FORMAT, requestMapping.value()), status))
                 .collect(Collectors.toMap(Function.identity(), key -> handlerExecution));
     }
 

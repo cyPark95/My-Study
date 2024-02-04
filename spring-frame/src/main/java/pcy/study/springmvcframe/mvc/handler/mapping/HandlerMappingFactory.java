@@ -1,4 +1,4 @@
-package pcy.study.springmvcframe.mvc.mapping;
+package pcy.study.springmvcframe.mvc.handler.mapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +24,7 @@ public class HandlerMappingFactory {
     public Object findHandler(HttpServletRequest request) {
         return handlerMappings.stream()
                 .map(handlerMapping -> handlerMapping.getHandler(request))
+                .toList().stream()
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("일치하는 핸들러가 없습니다."));
