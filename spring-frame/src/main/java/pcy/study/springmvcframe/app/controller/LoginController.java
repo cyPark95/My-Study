@@ -7,6 +7,7 @@ import pcy.study.springmvcframe.mvc.annotation.RequestMethod;
 import pcy.study.springmvcframe.mvc.annotation.RestController;
 
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 public class LoginController {
@@ -14,13 +15,12 @@ public class LoginController {
     private final MemberRepository memberRepository = MemberRepository.getInstance();
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(Map<String, String> paramMap) {
+    public Object login(Map<String, String> paramMap, Map<String, Object> model) {
         String username = paramMap.get("username");
         String password = paramMap.get("password");
 
         Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-
+        if (Objects.isNull(member)) {
             return "사용자 이름을 확인해 주세요.";
         }
 
@@ -28,6 +28,6 @@ public class LoginController {
             return "비밀번호를 확인해 주세요.";
         }
 
-        return "로그인 성공";
+        return member;
     }
 }

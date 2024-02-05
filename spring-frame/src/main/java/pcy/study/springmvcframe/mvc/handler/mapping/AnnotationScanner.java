@@ -2,26 +2,24 @@ package pcy.study.springmvcframe.mvc.handler.mapping;
 
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
-import pcy.study.springmvcframe.mvc.annotation.Controller;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class ControllerScanner {
-
-    private static final Class<Controller> CONTROLLER_CLASS = Controller.class;
+public class AnnotationScanner {
 
     private final Reflections reflections;
 
-    public ControllerScanner(Reflections reflections) {
+    public AnnotationScanner(Reflections reflections) {
         this.reflections = reflections;
     }
 
-    public Map<Class<?>, Object> getControllers() {
-        return instantiateControllers(reflections.getTypesAnnotatedWith(CONTROLLER_CLASS));
+    public Map<Class<?>, Object> getControllers(Class<? extends Annotation> annotation) {
+        return instantiateControllers(reflections.getTypesAnnotatedWith(annotation));
     }
 
     private Map<Class<?>, Object> instantiateControllers(Set<Class<?>> classes) {

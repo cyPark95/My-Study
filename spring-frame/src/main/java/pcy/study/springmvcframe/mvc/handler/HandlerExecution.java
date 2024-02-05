@@ -16,7 +16,7 @@ public class HandlerExecution {
         this.handler = handler;
     }
 
-    public String handle(Map<String, String> paramMap, Map<String, Object> model) throws Exception {
-        return (String) method.invoke(handler, paramMap, model);
+    public Object handle(Map<String, String> paramMap, Map<String, Object> model) throws Exception {
+        return method.invoke(handler, paramMap, model);
     }
 }

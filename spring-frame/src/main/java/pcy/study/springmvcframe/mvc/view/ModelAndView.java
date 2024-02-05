@@ -11,8 +11,8 @@ public class ModelAndView {
     private final View view;
     private final Map<String, Object> model;
 
-    public ModelAndView(String viewName, Map<String, Object> model) {
-        this.view = new JspView(viewName);
+    public ModelAndView(View view, Map<String, Object> model) {
+        this.view = view;
         this.model = model;
     }
 

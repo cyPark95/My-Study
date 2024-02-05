@@ -30,7 +30,7 @@ public class DispatcherServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        log.debug("Method : {}, Request URI : {}", request.getMethod(), request.getRequestURI());
+        log.info("Method : {}, Request URI : {}", request.getMethod(), request.getRequestURI());
 
         try {
             Object handler = handlerMappingFactory.findHandler(request);
