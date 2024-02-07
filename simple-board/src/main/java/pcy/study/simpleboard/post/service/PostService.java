@@ -27,8 +27,8 @@ public class PostService {
         return entity.getId();
     }
 
-    public Post findPost(Long id, PostGetRequest postGetRequest) {
-        var post = findPostById(id);
+    public Post findPost(PostGetRequest postGetRequest) {
+        var post = findPostById(postGetRequest.id());
         log.info("Find Post = {}", post);
 
         if (!post.getPassword().equals(postGetRequest.password())) {

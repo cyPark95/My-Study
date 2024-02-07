@@ -24,12 +24,9 @@ public class PostController {
         return new ResponseEntity<>(saveResult, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<PostResponse> getPost(
-            @PathVariable("id") Long id,
-            @RequestBody @Valid PostGetRequest postGetRequest
-    ) {
-        var findPostResult = postService.findPost(id, postGetRequest);
+    @PostMapping("/view")
+    public ResponseEntity<PostResponse> view(@RequestBody @Valid PostGetRequest postGetRequest) {
+        var findPostResult = postService.findPost(postGetRequest);
         return ResponseEntity.ok(PostResponse.of(findPostResult));
     }
 
