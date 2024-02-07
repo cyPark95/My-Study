@@ -1,6 +1,9 @@
 package pcy.study.simpleboard.post.model;
 
 import pcy.study.simpleboard.post.db.Post;
+import pcy.study.simpleboard.reply.model.ReplyResponse;
+
+import java.util.List;
 
 public record PostResponse(
         Long id,
@@ -8,7 +11,8 @@ public record PostResponse(
         String userName,
         String email,
         String title,
-        String contents
+        String contents,
+        List<ReplyResponse> replies
 ) {
 
     public static PostResponse of(Post post) {
@@ -18,7 +22,14 @@ public record PostResponse(
                 post.getUserName(),
                 post.getEmail(),
                 post.getTitle(),
-                post.getContents()
+                post.getContents(),
+                createReplies(post)
         );
+    }
+
+    private static List<ReplyResponse> createReplies(Post post) {
+        return post.getReplies().stream()
+                .map(ReplyResponse::of)
+                .toList();
     }
 }

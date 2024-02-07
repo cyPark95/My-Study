@@ -9,6 +9,8 @@ import pcy.study.simpleboard.post.db.PostRepository;
 import pcy.study.simpleboard.post.model.PostCreateRequest;
 import pcy.study.simpleboard.post.model.PostDeleteRequest;
 import pcy.study.simpleboard.post.model.PostGetRequest;
+import pcy.study.simpleboard.reply.db.Reply;
+import pcy.study.simpleboard.reply.service.ReplyService;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final ReplyService replyService;
 
     @Transactional
     public Long save(PostCreateRequest postCreateRequest) {
@@ -33,12 +36,10 @@ public class PostService {
         log.info("Find Post = {}", post);
 
         matchesPassword(post, postGetRequest.password());
-        return post;
-    }
 
-    private Post findPostById(Long id) {
-        return postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+        List<Reply> replies = replyService.findReplyAllByPostId(post.getId());
+        post.setReplies(replies);
+        return post;
     }
 
     public List<Post> findPostAll() {
@@ -52,6 +53,11 @@ public class PostService {
 
         matchesPassword(post, postDeleteRequest.password());
         postRepository.delete(post);
+    }
+
+    private Post findPostById(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
     }
 
     private void matchesPassword(Post post, String password) {

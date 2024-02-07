@@ -5,6 +5,10 @@ import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 import pcy.study.simpleboard.common.db.BaseTimeEntity;
 import pcy.study.simpleboard.common.db.Status;
+import pcy.study.simpleboard.reply.db.Reply;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,6 +32,9 @@ public class Post extends BaseTimeEntity {
     @Column(columnDefinition = "VARCHAR")
     private Status status;
 
+    @Transient
+    private final List<Reply> replies = new ArrayList<>();
+
     @Builder
     private Post(
             Long boardId,
@@ -44,5 +51,9 @@ public class Post extends BaseTimeEntity {
         this.title = title;
         this.contents = contents;
         this.status = Status.REGISTERED;
+    }
+
+    public void setReplies(List<Reply> replies) {
+        this.replies.addAll(replies);
     }
 }
