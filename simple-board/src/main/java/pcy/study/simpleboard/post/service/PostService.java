@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pcy.study.simpleboard.post.db.Post;
 import pcy.study.simpleboard.post.db.PostRepository;
 import pcy.study.simpleboard.post.model.PostCreateRequest;
+import pcy.study.simpleboard.post.model.PostDeleteRequest;
 import pcy.study.simpleboard.post.model.PostGetRequest;
 
 import java.util.List;
@@ -31,10 +32,7 @@ public class PostService {
         var post = findPostById(postGetRequest.id());
         log.info("Find Post = {}", post);
 
-        if (!post.getPassword().equals(postGetRequest.password())) {
-            throw new IllegalArgumentException("잘못된 패스워드 입니다.");
-        }
-
+        matchesPassword(post, postGetRequest.password());
         return post;
     }
 
@@ -45,5 +43,20 @@ public class PostService {
 
     public List<Post> findPostAll() {
         return postRepository.findAll();
+    }
+
+    @Transactional
+    public void delete(PostDeleteRequest postDeleteRequest) {
+        var post = findPostById(postDeleteRequest.id());
+        log.info("Delete Post = {}", post);
+
+        matchesPassword(post, postDeleteRequest.password());
+        postRepository.delete(post);
+    }
+
+    private void matchesPassword(Post post, String password) {
+        if (!post.getPassword().equals(password)) {
+            throw new IllegalArgumentException("잘못된 패스워드 입니다.");
+        }
     }
 }
