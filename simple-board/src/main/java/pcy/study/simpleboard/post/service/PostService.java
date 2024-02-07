@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pcy.study.simpleboard.post.db.Post;
 import pcy.study.simpleboard.post.db.PostRepository;
 import pcy.study.simpleboard.post.model.PostCreateRequest;
+import pcy.study.simpleboard.post.model.PostGetRequest;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -21,5 +25,21 @@ public class PostService {
         var entity = postCreateRequest.toPost();
         postRepository.save(entity);
         return entity.getId();
+    }
+
+    public Post findPost(Long id, PostGetRequest postGetRequest) {
+        var post = findPostById(id);
+        log.info("Find Post = {}", post);
+
+        if (!post.getPassword().equals(postGetRequest.password())) {
+            throw new IllegalArgumentException("잘못된 패스워드 입니다.");
+        }
+
+        return post;
+    }
+
+    private Post findPostById(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
     }
 }
