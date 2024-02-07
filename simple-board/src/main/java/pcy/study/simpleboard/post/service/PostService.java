@@ -8,7 +8,7 @@ import pcy.study.simpleboard.post.db.Post;
 import pcy.study.simpleboard.post.db.PostRepository;
 import pcy.study.simpleboard.post.model.PostCreateRequest;
 import pcy.study.simpleboard.post.model.PostDeleteRequest;
-import pcy.study.simpleboard.post.model.PostGetRequest;
+import pcy.study.simpleboard.post.model.PostDetailsRequest;
 import pcy.study.simpleboard.reply.db.Reply;
 import pcy.study.simpleboard.reply.service.ReplyService;
 
@@ -31,11 +31,11 @@ public class PostService {
         return entity.getId();
     }
 
-    public Post findPost(PostGetRequest postGetRequest) {
-        var post = findPostById(postGetRequest.id());
+    public Post findPost(PostDetailsRequest postDetailsRequest) {
+        var post = findPostById(postDetailsRequest.id());
         log.info("Find Post = {}", post);
 
-        matchesPassword(post, postGetRequest.password());
+        matchesPassword(post, postDetailsRequest.password());
 
         List<Reply> replies = replyService.findReplyAllByPostId(post.getId());
         post.setReplies(replies);

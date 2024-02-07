@@ -5,7 +5,7 @@ import pcy.study.simpleboard.reply.model.ReplyResponse;
 
 import java.util.List;
 
-public record PostResponse(
+public record PostDetailsResponse(
         Long id,
         Long boardId,
         String userName,
@@ -15,8 +15,8 @@ public record PostResponse(
         List<ReplyResponse> replies
 ) {
 
-    public static PostResponse of(Post post) {
-        return new PostResponse(
+    public static PostDetailsResponse of(Post post) {
+        return new PostDetailsResponse(
                 post.getId(),
                 post.getBoardId(),
                 post.getUserName(),

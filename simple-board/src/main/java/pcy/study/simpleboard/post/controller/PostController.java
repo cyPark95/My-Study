@@ -21,10 +21,10 @@ public class PostController {
         return new ResponseEntity<>(saveResult, HttpStatus.CREATED);
     }
 
-    @PostMapping("/view")
-    public ResponseEntity<PostResponse> view(@RequestBody @Valid PostGetRequest postGetRequest) {
-        var findPostResult = postService.findPost(postGetRequest);
-        return ResponseEntity.ok(PostResponse.of(findPostResult));
+    @PostMapping("/details")
+    public ResponseEntity<PostDetailsResponse> details(@RequestBody @Valid PostDetailsRequest postDetailsRequest) {
+        var findPostResult = postService.findPost(postDetailsRequest);
+        return ResponseEntity.ok(PostDetailsResponse.of(findPostResult));
     }
 
     @GetMapping
