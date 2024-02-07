@@ -42,4 +42,8 @@ public class PostService {
         return postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
     }
+
+    public List<Post> findPostAll() {
+        return postRepository.findAll();
+    }
 }

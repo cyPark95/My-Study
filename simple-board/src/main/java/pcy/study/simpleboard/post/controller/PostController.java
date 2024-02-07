@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pcy.study.simpleboard.post.model.PostResponse;
-import pcy.study.simpleboard.post.model.PostGetRequest;
 import pcy.study.simpleboard.post.model.PostCreateRequest;
+import pcy.study.simpleboard.post.model.PostGetAllResponse;
+import pcy.study.simpleboard.post.model.PostGetRequest;
+import pcy.study.simpleboard.post.model.PostResponse;
 import pcy.study.simpleboard.post.service.PostService;
 
 @RestController
@@ -30,5 +31,11 @@ public class PostController {
     ) {
         var findPostResult = postService.findPost(id, postGetRequest);
         return ResponseEntity.ok(PostResponse.of(findPostResult));
+    }
+
+    @GetMapping
+    public ResponseEntity<PostGetAllResponse> getPostAll() {
+        var findPostAllResult = postService.findPostAll();
+        return ResponseEntity.ok(PostGetAllResponse.of(findPostAllResult));
     }
 }
