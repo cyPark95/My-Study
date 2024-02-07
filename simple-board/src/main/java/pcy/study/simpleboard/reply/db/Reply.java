@@ -2,6 +2,7 @@ package pcy.study.simpleboard.reply.db;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 import pcy.study.simpleboard.common.db.BaseTimeEntity;
 import pcy.study.simpleboard.common.db.Status;
 
@@ -9,6 +10,7 @@ import pcy.study.simpleboard.common.db.Status;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @Entity
+@SQLRestriction("status = 'REGISTERED'")
 public class Reply extends BaseTimeEntity {
     
     @Id
