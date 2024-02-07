@@ -10,7 +10,7 @@ import pcy.study.simpleboard.post.service.PostService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/post")
+@RequestMapping("/api/posts")
 public class PostController {
 
     private final PostService postService;

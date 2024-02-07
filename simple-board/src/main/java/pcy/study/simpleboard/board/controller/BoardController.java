@@ -13,7 +13,7 @@ import pcy.study.simpleboard.board.service.BoardService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/board")
+@RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardService boardService;
