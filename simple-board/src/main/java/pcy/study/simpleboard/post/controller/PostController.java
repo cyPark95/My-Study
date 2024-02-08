@@ -2,6 +2,8 @@ package pcy.study.simpleboard.post.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +30,8 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<PostGetAllResponse> getPostAll() {
-        var findPostAllResult = postService.findPostAll();
+    public ResponseEntity<PostGetAllResponse> getPostAll(@PageableDefault Pageable pageable) {
+        var findPostAllResult = postService.findPostAll(pageable);
         return ResponseEntity.ok(PostGetAllResponse.of(findPostAllResult));
     }
 

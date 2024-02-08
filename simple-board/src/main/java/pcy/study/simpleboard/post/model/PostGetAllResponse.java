@@ -1,18 +1,16 @@
 package pcy.study.simpleboard.post.model;
 
+import org.springframework.data.domain.Page;
+import pcy.study.simpleboard.common.model.Pagination;
 import pcy.study.simpleboard.post.db.Post;
 
-import java.util.List;
+public record PostGetAllResponse(Pagination<PostGetResponse> posts) {
 
-public record PostGetAllResponse(List<PostGetResponse> posts) {
-
-    public static PostGetAllResponse of(List<Post> posts) {
-        return new PostGetAllResponse(createPostGetResponses(posts));
+    public static PostGetAllResponse of(Page<Post> posts) {
+        return new PostGetAllResponse(createPostGetResponses1(posts));
     }
 
-    private static List<PostGetResponse> createPostGetResponses(List<Post> posts) {
-        return posts.stream()
-                .map(PostGetResponse::of)
-                .toList();
+    private static Pagination<PostGetResponse> createPostGetResponses1(Page<Post> posts) {
+        return new Pagination<>(posts.map(PostGetResponse::of));
     }
 }

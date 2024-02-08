@@ -2,6 +2,8 @@ package pcy.study.simpleboard.post.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pcy.study.simpleboard.board.service.BoardService;
@@ -10,8 +12,6 @@ import pcy.study.simpleboard.post.db.PostRepository;
 import pcy.study.simpleboard.post.model.PostCreateRequest;
 import pcy.study.simpleboard.post.model.PostDeleteRequest;
 import pcy.study.simpleboard.post.model.PostDetailsRequest;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -41,8 +41,8 @@ public class PostService {
         return post;
     }
 
-    public List<Post> findPostAll() {
-        return postRepository.findAll();
+    public Page<Post> findPostAll(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 
     @Transactional
