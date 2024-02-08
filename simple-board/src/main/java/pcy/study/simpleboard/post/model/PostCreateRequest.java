@@ -25,7 +25,6 @@ public record PostCreateRequest(
 
     public Post toPost() {
         return Post.builder()
-                .boardId(boardId)
                 .userName(userName)
                 .password(password)
                 .email(email)

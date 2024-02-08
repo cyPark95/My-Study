@@ -18,7 +18,7 @@ public record PostDetailsResponse(
     public static PostDetailsResponse of(Post post) {
         return new PostDetailsResponse(
                 post.getId(),
-                post.getBoardId(),
+                post.getBoard().getId(),
                 post.getUserName(),
                 post.getEmail(),
                 post.getTitle(),

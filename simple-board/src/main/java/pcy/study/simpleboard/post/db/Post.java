@@ -3,16 +3,18 @@ package pcy.study.simpleboard.post.db;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
+import pcy.study.simpleboard.board.db.Board;
 import pcy.study.simpleboard.common.db.BaseTimeEntity;
 import pcy.study.simpleboard.common.db.Status;
 import pcy.study.simpleboard.reply.db.Reply;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(exclude = {"board"})
 @Entity
 @SQLRestriction("status = 'REGISTERED'")
 public class Post extends BaseTimeEntity {
@@ -21,7 +23,6 @@ public class Post extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long boardId;
     private String userName;
     private String password;
     private String email;
@@ -32,25 +33,35 @@ public class Post extends BaseTimeEntity {
     @Column(columnDefinition = "VARCHAR")
     private Status status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private Board board;
+
     @Transient
     private final List<Reply> replies = new ArrayList<>();
 
     @Builder
     private Post(
-            Long boardId,
             String userName,
             String password,
             String email,
             String title,
             String contents
     ) {
-        this.boardId = boardId;
         this.userName = userName;
         this.password = password;
         this.email = email;
         this.title = title;
         this.contents = contents;
         this.status = Status.REGISTERED;
+    }
+
+    public void registerBoard(Board board) {
+        if (Objects.nonNull(this.board)) {
+            this.board.getPosts().remove(this);
+        }
+        this.board = board;
+        board.addPost(this);
     }
 
     public void setReplies(List<Reply> replies) {

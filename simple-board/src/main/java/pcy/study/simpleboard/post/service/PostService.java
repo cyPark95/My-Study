@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pcy.study.simpleboard.board.service.BoardService;
 import pcy.study.simpleboard.post.db.Post;
 import pcy.study.simpleboard.post.db.PostRepository;
 import pcy.study.simpleboard.post.model.PostCreateRequest;
@@ -20,6 +21,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class PostService {
 
+    private final BoardService boardService;
     private final PostRepository postRepository;
     private final ReplyService replyService;
 
@@ -27,6 +29,9 @@ public class PostService {
     public Long save(PostCreateRequest postCreateRequest) {
         log.info("Save Post Info = {}", postCreateRequest);
         var entity = postCreateRequest.toPost();
+        var board = boardService.findBoardById(postCreateRequest.boardId());
+
+        entity.registerBoard(board);
         postRepository.save(entity);
         return entity.getId();
     }
@@ -57,7 +62,7 @@ public class PostService {
 
     private Post findPostById(Long id) {
         return postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("[%d] 존재하지 않는 게시글입니다.", id)));
     }
 
     private void matchesPassword(Post post, String password) {
