@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = {"board"})
+@ToString(exclude = {"board", "replies"})
 @Entity
 @SQLRestriction("status = 'REGISTERED'")
 public class Post extends BaseTimeEntity {
@@ -37,7 +37,7 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @Transient
+    @OneToMany(mappedBy = "post")
     private final List<Reply> replies = new ArrayList<>();
 
     @Builder
@@ -64,7 +64,7 @@ public class Post extends BaseTimeEntity {
         board.addPost(this);
     }
 
-    public void setReplies(List<Reply> replies) {
-        this.replies.addAll(replies);
+    public void addReply(Reply reply) {
+        this.replies.add(reply);
     }
 }

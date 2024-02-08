@@ -19,7 +19,6 @@ public record ReplyCreateRequest(
 
     public Reply toReply() {
         return Reply.builder()
-                .postId(postId)
                 .userName(userName)
                 .password(password)
                 .title(title)

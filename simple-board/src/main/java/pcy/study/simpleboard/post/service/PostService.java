@@ -10,8 +10,6 @@ import pcy.study.simpleboard.post.db.PostRepository;
 import pcy.study.simpleboard.post.model.PostCreateRequest;
 import pcy.study.simpleboard.post.model.PostDeleteRequest;
 import pcy.study.simpleboard.post.model.PostDetailsRequest;
-import pcy.study.simpleboard.reply.db.Reply;
-import pcy.study.simpleboard.reply.service.ReplyService;
 
 import java.util.List;
 
@@ -21,9 +19,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class PostService {
 
-    private final BoardService boardService;
     private final PostRepository postRepository;
-    private final ReplyService replyService;
+    private final BoardService boardService;
 
     @Transactional
     public Long save(PostCreateRequest postCreateRequest) {
@@ -37,13 +34,10 @@ public class PostService {
     }
 
     public Post findPost(PostDetailsRequest postDetailsRequest) {
-        var post = findPostById(postDetailsRequest.id());
+        var post = findPostByIdWithReply(postDetailsRequest);
         log.info("Find Post = {}", post);
 
         matchesPassword(post, postDetailsRequest.password());
-
-        List<Reply> replies = replyService.findReplyAllByPostId(post.getId());
-        post.setReplies(replies);
         return post;
     }
 
@@ -60,9 +54,14 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    private Post findPostById(Long id) {
+    public Post findPostById(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("[%d] 존재하지 않는 게시글입니다.", id)));
+    }
+
+    private Post findPostByIdWithReply(PostDetailsRequest postDetailsRequest) {
+        return postRepository.findByIdFetchReply(postDetailsRequest.id())
+                .orElseThrow(() -> new IllegalArgumentException(String.format("[%d] 존재하지 않는 게시글입니다.", postDetailsRequest.id())));
     }
 
     private void matchesPassword(Post post, String password) {

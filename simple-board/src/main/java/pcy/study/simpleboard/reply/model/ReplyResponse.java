@@ -13,7 +13,7 @@ public record ReplyResponse(
     public static ReplyResponse of(Reply reply) {
         return new ReplyResponse(
                 reply.getId(),
-                reply.getPostId(),
+                reply.getPost().getId(),
                 reply.getUserName(),
                 reply.getTitle(),
                 reply.getContents()

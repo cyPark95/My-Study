@@ -5,10 +5,13 @@ import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 import pcy.study.simpleboard.common.db.BaseTimeEntity;
 import pcy.study.simpleboard.common.db.Status;
+import pcy.study.simpleboard.post.db.Post;
+
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(exclude = {"post"})
 @Entity
 @SQLRestriction("status = 'REGISTERED'")
 public class Reply extends BaseTimeEntity {
@@ -17,7 +20,6 @@ public class Reply extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long postId;
     private String userName;
     private String password;
     private String title;
@@ -27,19 +29,30 @@ public class Reply extends BaseTimeEntity {
     @Column(columnDefinition = "VARCHAR")
     private Status status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
     @Builder
     private Reply(
-            Long postId,
             String userName,
             String password,
             String title,
             String contents
     ) {
-        this.postId = postId;
         this.userName = userName;
         this.password = password;
         this.title = title;
         this.contents = contents;
         this.status = Status.REGISTERED;
+    }
+
+    public void registerPost(Post post) {
+        if (Objects.nonNull(this.post)) {
+            this.post.getReplies().remove(this);
+        }
+
+        this.post = post;
+        post.addReply(this);
     }
 }
