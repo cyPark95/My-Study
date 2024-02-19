@@ -32,13 +32,12 @@ public class LoggerFilter implements Filter {
 
         var cachingRequestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) servletRequest);
         var cachingResponseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) servletResponse);
-        var startTime = System.currentTimeMillis();
 
         try {
             filterChain.doFilter(cachingRequestWrapper, cachingResponseWrapper);
         } finally {
             requestLogging(cachingRequestWrapper);
-            responseLogging(startTime, cachingResponseWrapper);
+            responseLogging(cachingResponseWrapper);
             cachingResponseWrapper.copyBodyToResponse();
         }
 
@@ -54,11 +53,10 @@ public class LoggerFilter implements Filter {
         );
     }
 
-    private void responseLogging(long startTime, ContentCachingResponseWrapper response) {
+    private void responseLogging(ContentCachingResponseWrapper response) {
         log.info(
-                "[RESPONSE] Status: {}, Duration: {} ms\n Body: {}",
+                "[RESPONSE] Status: {}\n Body: {}",
                 response.getStatus(),
-                System.currentTimeMillis() - startTime,
                 new String(response.getContentAsByteArray())
         );
     }
