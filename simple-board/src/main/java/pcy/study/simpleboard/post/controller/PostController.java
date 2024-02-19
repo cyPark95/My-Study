@@ -7,6 +7,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pcy.study.simpleboard.common.interceptor.Authenticated;
 import pcy.study.simpleboard.post.model.*;
 import pcy.study.simpleboard.post.service.PostService;
 
@@ -35,6 +36,7 @@ public class PostController {
         return ResponseEntity.ok(PostGetAllResponse.of(findPostAllResult));
     }
 
+    @Authenticated
     @PostMapping("/delete")
     public ResponseEntity<Void> delete(@RequestBody @Valid PostDeleteRequest postDeleteRequest) {
         postService.delete(postDeleteRequest);

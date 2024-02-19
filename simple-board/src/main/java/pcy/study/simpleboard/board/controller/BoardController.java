@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pcy.study.simpleboard.board.model.BoardCreateRequest;
 import pcy.study.simpleboard.board.service.BoardService;
+import pcy.study.simpleboard.common.interceptor.Authenticated;
 
+@Authenticated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/boards")

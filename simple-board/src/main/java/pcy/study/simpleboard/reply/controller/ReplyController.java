@@ -26,6 +26,7 @@ public class ReplyController {
         return new ResponseEntity<>(saveResult, HttpStatus.CREATED);
     }
 
+    @Authenticated
     @PostMapping("/delete")
     public ResponseEntity<Void> delete(@RequestBody @Valid ReplyDeleteRequest replyDeleteRequest) {
         replyService.delete(replyDeleteRequest);
