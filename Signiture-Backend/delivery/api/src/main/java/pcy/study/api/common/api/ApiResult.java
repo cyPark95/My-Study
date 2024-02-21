@@ -4,20 +4,22 @@ import lombok.Builder;
 
 @Builder
 public record ApiResult(
-        Integer status,
         Integer code,
-        String description
+        String message
 ) {
 
     public static ApiResult ok() {
         return create(ResponseCode.OK);
     }
 
-    private static ApiResult create(ResponseCode responseCode) {
+    public static ApiResult error(ApiCode apiCode) {
+        return create(apiCode);
+    }
+
+    private static ApiResult create(ApiCode apiCode) {
         return ApiResult.builder()
-                .status(responseCode.getHttpStatus().value())
-                .code(responseCode.getCode())
-                .description(responseCode.getDescription())
+                .code(apiCode.getCode())
+                .message(apiCode.getMessage())
                 .build();
     }
 }

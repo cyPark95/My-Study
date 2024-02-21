@@ -1,14 +1,15 @@
-package pcy.study.api.common.api;
+package pcy.study.api.common.api.error;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import pcy.study.api.common.api.ApiCode;
 
 @Getter
 @RequiredArgsConstructor
-public enum ResponseCode implements ApiCode {
+public enum UserErrorCode implements ApiCode {
 
-    OK(HttpStatus.OK, 0, "성공"),
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, 1404, "사용자를 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

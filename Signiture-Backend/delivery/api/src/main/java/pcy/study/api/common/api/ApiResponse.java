@@ -8,9 +8,15 @@ import org.springframework.http.ResponseEntity;
 public record ApiResponse<T>(ApiResult result, @Valid T body) {
 
     public static <T> ResponseEntity<ApiResponse<T>> ok(T data) {
-        return ResponseEntity.ok(
-                create(ApiResult.ok(), data)
-        );
+        return ResponseEntity.ok(create(ApiResult.ok(), data));
+    }
+
+    public static ResponseEntity<ApiResponse<Void>> error(ApiCode apiCode) {
+        return new ResponseEntity<>(create(ApiResult.error(apiCode)), apiCode.getHttpStatus());
+    }
+
+    private static ApiResponse<Void> create(ApiResult result) {
+        return create(result, null);
     }
 
     private static <T> ApiResponse<T> create(ApiResult result, T data) {
@@ -19,5 +25,4 @@ public record ApiResponse<T>(ApiResult result, @Valid T body) {
                 .body(data)
                 .build();
     }
-
 }
