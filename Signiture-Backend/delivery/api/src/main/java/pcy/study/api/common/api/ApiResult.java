@@ -19,10 +19,18 @@ public record ApiResult(
         return create(apiCode);
     }
 
+    public static ApiResult error(Integer code, String message) {
+        return create(code, message);
+    }
+
     private static ApiResult create(ApiCode apiCode) {
+        return create(apiCode.getCode(), apiCode.getMessage());
+    }
+
+    private static ApiResult create(Integer code, String message) {
         return ApiResult.builder()
-                .code(apiCode.getCode())
-                .message(apiCode.getMessage())
+                .code(code)
+                .message(message)
                 .build();
     }
 }

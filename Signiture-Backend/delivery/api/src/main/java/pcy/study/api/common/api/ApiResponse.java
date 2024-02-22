@@ -20,6 +20,10 @@ public record ApiResponse<T>(
         return new ResponseEntity<>(create(ApiResult.error(apiCode)), apiCode.getHttpStatus());
     }
 
+    public static ResponseEntity<ApiResponse<Void>> error(ApiCode apiCode, String message) {
+        return new ResponseEntity<>(create(ApiResult.error(apiCode.getCode(), message)), apiCode.getHttpStatus());
+    }
+
     private static ApiResponse<Void> create(ApiResult result) {
         return create(result, null);
     }
