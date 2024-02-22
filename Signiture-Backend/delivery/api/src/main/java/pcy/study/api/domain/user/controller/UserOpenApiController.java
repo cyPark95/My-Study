@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pcy.study.api.common.api.ApiResponse;
+import pcy.study.api.domain.token.controller.model.TokenResponse;
 import pcy.study.api.domain.user.business.UserBusiness;
+import pcy.study.api.domain.user.controller.model.UserLoginRequest;
 import pcy.study.api.domain.user.controller.model.UserRegisterRequest;
 import pcy.study.api.domain.user.controller.model.UserResponse;
 
@@ -26,6 +28,13 @@ public class UserOpenApiController {
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> register(@RequestBody @Valid UserRegisterRequest request) {
         var response = userBusiness.register(request);
+        return ApiResponse.ok(response);
+    }
+
+    @Operation(summary = "로그인", description = "인증받기 위한 로그인 기능 입니다.")
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<TokenResponse>> login(@RequestBody @Valid UserLoginRequest request) {
+        var response = userBusiness.login(request);
         return ApiResponse.ok(response);
     }
 }
