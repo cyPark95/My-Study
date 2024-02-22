@@ -23,3 +23,9 @@ Gradle Task
     - 라이브러리 등으로 배포할 때 사용될 수 있는 jar 파일 생성
     - `META-INF`와 클래스 파일만 포함하는 jar 파일 생성
 ```
+
+## 구현 기능
+
+### Filter
+
+- HTTP Request, Response Logging
