@@ -19,6 +19,10 @@ spring:
       mode: always
       schema-locations: classpath:schema.sql
 
+springdoc:
+  swagger-ui:
+    operations-sorter: alpha
+
 token:
   secret:
     key: SpringBootJWTHelperTokenSecretKeyValue
