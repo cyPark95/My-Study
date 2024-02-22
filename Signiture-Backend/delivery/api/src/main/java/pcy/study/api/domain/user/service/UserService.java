@@ -26,8 +26,7 @@ public class UserService {
     }
 
     public User login(String email, String password) {
-        var entity = getUserWithThrow(email, password);
-        return entity;
+        return getUserWithThrow(email, password);
     }
 
     public User getUserWithThrow(String email, String password) {

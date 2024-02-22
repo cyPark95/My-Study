@@ -26,12 +26,10 @@ public class TokenBusiness {
         var accessToken = tokenService.issueAccessToken(userId);
         var randomToken = UUID.randomUUID().toString();
         var refreshToken = tokenService.issueRefreshToken(randomToken);
-        var response = tokenConverter.toResponse(accessToken, refreshToken);
-        return response;
+        return tokenConverter.toResponse(accessToken, refreshToken);
     }
 
     public Long validationAccessToken(String accessToken) {
-        var userId = tokenService.validationAccessToken(accessToken);
-        return userId;
+        return tokenService.validationAccessToken(accessToken);
     }
 }

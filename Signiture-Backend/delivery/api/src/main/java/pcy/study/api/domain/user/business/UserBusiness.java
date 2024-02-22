@@ -22,20 +22,17 @@ public class UserBusiness {
     public UserResponse register(UserRegisterRequest request) {
         var entity = userConverter.toEntity(request);
         var newEntity = userService.register(entity);
-        var response = userConverter.toResponse(newEntity);
-        return response;
+        return userConverter.toResponse(newEntity);
     }
 
     public TokenResponse login(UserLoginRequest request) {
         var user = userService.login(request.email(), request.password());
         var userId = user.getId();
-        var tokenResponse = tokenBusiness.issueToken(userId);
-        return tokenResponse;
+        return tokenBusiness.issueToken(userId);
     }
 
     public UserResponse info(Long id) {
         var user = userService.getUserWithThrow(id);
-        var response = userConverter.toResponse(user);
-        return response;
+        return userConverter.toResponse(user);
     }
 }
