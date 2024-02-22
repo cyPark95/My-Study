@@ -1,10 +1,13 @@
 package pcy.study.api.common.api;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
 public record ApiResult(
+        @Schema(description = "코드")
         Integer code,
+        @Schema(description = "메시지")
         String message
 ) {
 

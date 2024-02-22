@@ -1,11 +1,16 @@
 package pcy.study.api.common.api;
 
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import org.springframework.http.ResponseEntity;
 
 @Builder
-public record ApiResponse<T>(ApiResult result, @Valid T body) {
+public record ApiResponse<T>(
+        @Schema(description = "결과")
+        ApiResult result,
+        @Schema(description = "데이터")
+        T body
+) {
 
     public static <T> ResponseEntity<ApiResponse<T>> ok(T data) {
         return ResponseEntity.ok(create(ApiResult.ok(), data));
