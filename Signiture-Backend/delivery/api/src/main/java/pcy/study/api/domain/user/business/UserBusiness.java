@@ -32,4 +32,10 @@ public class UserBusiness {
         var tokenResponse = tokenBusiness.issueToken(userId);
         return tokenResponse;
     }
+
+    public UserResponse info(Long id) {
+        var user = userService.getUserWithThrow(id);
+        var response = userConverter.toResponse(user);
+        return response;
+    }
 }

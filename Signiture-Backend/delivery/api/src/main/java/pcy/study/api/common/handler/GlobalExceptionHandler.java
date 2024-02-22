@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ApiResponse<Void>> NoResourceFoundExceptionHandler(NoResourceFoundException e) {
         log.error("[NoResourceFoundException] Method = {}, URL = {}", e.getHttpMethod(), e.getResourcePath(), e);
-        return ApiResponse.error(ErrorCode.NOT_FOUNT);
+        return ApiResponse.error(ErrorCode.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
