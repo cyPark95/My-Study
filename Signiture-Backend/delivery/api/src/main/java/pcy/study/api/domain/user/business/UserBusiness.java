@@ -2,6 +2,8 @@ package pcy.study.api.domain.user.business;
 
 import lombok.RequiredArgsConstructor;
 import pcy.study.api.common.annotation.Business;
+import pcy.study.api.domain.token.business.TokenBusiness;
+import pcy.study.api.domain.token.controller.model.TokenResponse;
 import pcy.study.api.domain.user.controller.model.UserLoginRequest;
 import pcy.study.api.domain.user.controller.model.UserRegisterRequest;
 import pcy.study.api.domain.user.controller.model.UserResponse;
@@ -15,6 +17,8 @@ public class UserBusiness {
     private final UserService userService;
     private final UserConverter userConverter;
 
+    private final TokenBusiness tokenBusiness;
+
     public UserResponse register(UserRegisterRequest request) {
         var entity = userConverter.toEntity(request);
         var newEntity = userService.register(entity);
@@ -22,10 +26,10 @@ public class UserBusiness {
         return response;
     }
 
-    public UserResponse login(UserLoginRequest request) {
+    public TokenResponse login(UserLoginRequest request) {
         var user = userService.login(request.email(), request.password());
-        // TODO Token 생성
-        var response = userConverter.toResponse(user);
-        return response;
+        var userId = user.getId();
+        var tokenResponse = tokenBusiness.issueToken(userId);
+        return tokenResponse;
     }
 }
