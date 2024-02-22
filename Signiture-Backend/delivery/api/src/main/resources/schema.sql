@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `store`;
 
 CREATE TABLE `user`
 (
@@ -12,5 +13,22 @@ CREATE TABLE `user`
     `last_login_at`   DATETIME(6),
     `created_at`      DATETIME(6),
     `updated_at`      DATETIME(6),
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+CREATE TABLE `store`
+(
+    `id`                      BIGINT         NOT NULL AUTO_INCREMENT,
+    `name`                    VARCHAR(100)   NOT NULL,
+    `address`                 VARCHAR(150)   NOT NULL,
+    `status`                  VARCHAR(50)    NOT NULL,
+    `category`                VARCHAR(50)    NOT NULL,
+    `star`                    DOUBLE DEFAULT (0),
+    `thumbnail_url`           VARCHAR(200)   NOT NULL,
+    `minimum_amount`          DECIMAL(11, 4) NOT NULL,
+    `minimum_delivery_amount` DECIMAL(11, 4) NOT NULL,
+    `phone_number`            VARCHAR(20),
+    `created_at`              DATETIME(6),
+    `updated_at`              DATETIME(6),
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
