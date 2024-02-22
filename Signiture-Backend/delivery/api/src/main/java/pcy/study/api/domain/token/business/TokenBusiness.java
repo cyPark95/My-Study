@@ -29,4 +29,9 @@ public class TokenBusiness {
         var response = tokenConverter.toResponse(accessToken, refreshToken);
         return response;
     }
+
+    public Long validationAccessToken(String accessToken) {
+        var userId = tokenService.validationAccessToken(accessToken);
+        return userId;
+    }
 }
