@@ -2,9 +2,11 @@ package pcy.study.api.config.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pcy.study.api.interceptor.AuthorizationInterceptor;
+import pcy.study.api.resolver.UserSessionResolver;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
     );
 
     private final AuthorizationInterceptor authorizationInterceptor;
+    private final UserSessionResolver userSessionResolver;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -36,5 +39,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns(OPEN_API)
                 .excludePathPatterns(DEFAULT_EXCLUDE)
                 .excludePathPatterns(SWAGGER);
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(userSessionResolver);
     }
 }

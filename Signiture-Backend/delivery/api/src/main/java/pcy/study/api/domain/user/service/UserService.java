@@ -41,4 +41,12 @@ public class UserService {
                         UserErrorCode.USER_NOT_FOUND)
                 );
     }
+
+    public User getUserWithThrow(Long id) {
+        return userRepository.findFirstByIdAndStatusOrderByIdDesc(id, UserStatus.REGISTERED)
+                .orElseThrow(() -> new ApiException(
+                        String.format("ID: [%d] User Not Found", id),
+                        UserErrorCode.USER_NOT_FOUND)
+                );
+    }
 }
