@@ -18,3 +18,11 @@ spring:
     init :
       mode: always
       schema-locations: classpath:schema.sql
+
+token:
+  secret:
+    key: SpringBootJWTHelperTokenSecretKeyValue
+  access-token:
+    plus-hour: 1
+  refresh-token:
+    plus-hour: 12
