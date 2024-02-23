@@ -45,4 +45,29 @@ public class UserOrder extends BaseTimeEntity {
         this.amount = amount;
         this.status = UserOrderStatus.REGISTERED;
     }
+
+    public void order() {
+        this.status = UserOrderStatus.ORDER;
+        this.orderedAt = LocalDateTime.now();
+    }
+
+    public void accept() {
+        this.status = UserOrderStatus.ACCEPT;
+        this.acceptedAt = LocalDateTime.now();
+    }
+
+    public void cooking() {
+        this.status = UserOrderStatus.COOKING;
+        this.cookingStartedAt = LocalDateTime.now();
+    }
+
+    public void delivery() {
+        this.status = UserOrderStatus.DELIVERY;
+        this.deliveryStartedAt = LocalDateTime.now();
+    }
+
+    public void receive() {
+        this.status = UserOrderStatus.RECEIVE;
+        this.receivedAt = LocalDateTime.now();
+    }
 }
