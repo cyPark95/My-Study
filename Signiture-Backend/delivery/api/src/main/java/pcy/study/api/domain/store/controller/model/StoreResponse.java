@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Builder
 public record StoreResponse(
-        @Schema(description = "식별값", example = "1L")
+        @Schema(description = "식별값", example = "1")
         Long id,
         @Schema(description = "이름", example = "이름")
         String name,
