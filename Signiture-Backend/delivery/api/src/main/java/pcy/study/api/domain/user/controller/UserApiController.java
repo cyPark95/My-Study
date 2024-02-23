@@ -1,6 +1,7 @@
 package pcy.study.api.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,10 @@ public class UserApiController {
 
     @Operation(summary = "사용자 정보 조회", description = "로그인된 사용자의 본인 정보를 조회합니다.")
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UserResponse>> me(@UserSession UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<UserResponse>> me(
+            @Parameter(hidden = true)
+            @UserSession UserDetails userDetails
+    ) {
         UserResponse response = userBusiness.info(userDetails.id());
         return ApiResponse.ok(response);
     }

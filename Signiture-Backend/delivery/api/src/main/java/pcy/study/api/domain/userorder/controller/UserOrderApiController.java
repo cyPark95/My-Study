@@ -1,6 +1,7 @@
 package pcy.study.api.domain.userorder.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class UserOrderApiController {
     @Operation(summary = "메뉴 주문", description = "메뉴를 주문합니다.")
     @PostMapping
     public ResponseEntity<ApiResponse<UserOrderResponse>> userOrder(
+            @Parameter(hidden = true)
             @UserSession UserDetails userDetails,
             @RequestBody @Valid UserOrderRequest request
     ) {
