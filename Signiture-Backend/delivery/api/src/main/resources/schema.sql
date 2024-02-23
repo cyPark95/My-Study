@@ -51,3 +51,33 @@ CREATE TABLE `store_menu`
     PRIMARY KEY (`id`),
     INDEX `fk_store_menu_store_idx` (`store_id` ASC) VISIBLE
 ) ENGINE = InnoDB;
+
+CREATE TABLE `user_order`
+(
+    `id`                  BIGINT         NOT NULL AUTO_INCREMENT,
+    `user_id`             BIGINT         NOT NULL,
+    `status`              VARCHAR(50)    NOT NULL,
+    `amount`              DECIMAL(11, 4) NOT NULL,
+    `ordered_at`          DATETIME(6),
+    `accepted_at`         DATETIME(6),
+    `cooking_started_at`  DATETIME(6),
+    `delivery_started_at` DATETIME(6),
+    `received_at`         DATETIME(6),
+    `created_at`          DATETIME(6),
+    `updated_at`          DATETIME(6),
+    PRIMARY KEY (`id`),
+    INDEX `fk_user_order_user_idx` (`user_id` ASC) VISIBLE
+) ENGINE = InnoDB;
+
+CREATE TABLE `user_order_menu`
+(
+    `id`            BIGINT      NOT NULL AUTO_INCREMENT,
+    `user_order_id` BIGINT      NOT NULL,
+    `store_menu_id` BIGINT      NOT NULL,
+    `status`        VARCHAR(50) NOT NULL,
+    `created_at`    DATETIME(6),
+    `updated_at`    DATETIME(6),
+    PRIMARY KEY (`id`),
+    INDEX `fk_user_order_menu_user_order_idx` (`user_order_id` ASC) VISIBLE,
+    INDEX `fk_user_order_menu_store_menu_idx` (`store_menu_id` ASC) VISIBLE
+) ENGINE = InnoDB;
