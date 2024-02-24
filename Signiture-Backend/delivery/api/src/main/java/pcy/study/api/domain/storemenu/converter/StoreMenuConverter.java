@@ -7,6 +7,7 @@ import pcy.study.api.domain.storemenu.controller.model.StoreMenuRequest;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuResponse;
 import pcy.study.db.storemenu.StoreMenu;
 
+import java.util.List;
 import java.util.Optional;
 
 @Converter
@@ -21,6 +22,12 @@ public class StoreMenuConverter {
                         .thumbnailUrl(request.thumbnailUrl())
                         .build())
                 .orElseThrow(() -> new ApiException("StoreMenuRequest is Null", ErrorCode.NULL_POINT));
+    }
+
+    public List<StoreMenuResponse> toResponse(List<StoreMenu> storeMenus) {
+        return storeMenus.stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     public StoreMenuResponse toResponse(StoreMenu storeMenu) {

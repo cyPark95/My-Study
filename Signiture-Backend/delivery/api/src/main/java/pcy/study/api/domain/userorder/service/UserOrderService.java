@@ -20,8 +20,8 @@ public class UserOrderService {
 
     private final UserOrderRepository userOrderRepository;
 
-    public UserOrder getUserOrderWithThrow(Long id, Long userId) {
-        return userOrderRepository.findFirstByIdAndUserIdAndStatus(id, userId, UserOrderStatus.REGISTERED)
+    public UserOrder getUserOrderWithOutStatusWithThrow(Long id, Long userId) {
+        return userOrderRepository.findFirstByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ApiException(
                         String.format("ID: [%d], User ID: [%d] UserOrder Not Found", id, userId),
                         UserOrderErrorCode.USER_ORDER_NOT_FOUND
