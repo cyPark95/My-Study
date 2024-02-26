@@ -5,6 +5,12 @@ spring:
     password: 1q2w3e4r!
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: 1q2w3e4r!
+
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
@@ -31,3 +37,8 @@ token:
     plus-hour: 1
   refresh-token:
     plus-hour: 12
+
+rabbitmq:
+  exchange: delivery.exchange
+  queue: delivery.queue
+  route-key: delivery.key
