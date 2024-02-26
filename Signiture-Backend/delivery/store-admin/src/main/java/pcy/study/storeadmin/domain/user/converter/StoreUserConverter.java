@@ -3,6 +3,7 @@ package pcy.study.storeadmin.domain.user.converter;
 import org.springframework.stereotype.Service;
 import pcy.study.db.store.Store;
 import pcy.study.db.storeuser.StoreUser;
+import pcy.study.storeadmin.domain.authorization.model.StoreUserDetails;
 import pcy.study.storeadmin.domain.user.controller.model.StoreResponse;
 import pcy.study.storeadmin.domain.user.controller.model.StoreUserRegisterRequest;
 import pcy.study.storeadmin.domain.user.controller.model.StoreUserResponse;
@@ -46,5 +47,21 @@ public class StoreUserConverter {
                 .id(store.getId())
                 .name(store.getName())
                 .build();
+    }
+
+    public StoreUserResponse toResponse(StoreUserDetails storeUserDetails) {
+        return Optional.ofNullable(storeUserDetails)
+                .map(it -> StoreUserResponse.builder()
+                        .user(UserResponse.builder()
+                                .id(storeUserDetails.userId())
+                                .email(storeUserDetails.email())
+                                .role(storeUserDetails.role())
+                                .build())
+                        .store(StoreResponse.builder()
+                                .id(storeUserDetails.storeId())
+                                .name(storeUserDetails.storeName())
+                                .build())
+                        .build())
+                .orElseThrow(() -> new IllegalArgumentException("StoreUserDetails is Null"));
     }
 }

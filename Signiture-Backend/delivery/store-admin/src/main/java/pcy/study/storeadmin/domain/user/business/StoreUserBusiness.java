@@ -3,6 +3,7 @@ package pcy.study.storeadmin.domain.user.business;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pcy.study.storeadmin.domain.authorization.model.StoreUserDetails;
 import pcy.study.storeadmin.domain.store.service.StoreService;
 import pcy.study.storeadmin.domain.user.controller.model.StoreUserRegisterRequest;
 import pcy.study.storeadmin.domain.user.controller.model.StoreUserResponse;
@@ -24,5 +25,9 @@ public class StoreUserBusiness {
         var entity = storeUserConverter.toEntity(request, encodedPassword, store);
         var newEntity = storeUserService.register(entity);
         return storeUserConverter.toResponse(newEntity, store);
+    }
+
+    public StoreUserResponse authorization(StoreUserDetails storeUserDetails) {
+        return storeUserConverter.toResponse(storeUserDetails);
     }
 }
