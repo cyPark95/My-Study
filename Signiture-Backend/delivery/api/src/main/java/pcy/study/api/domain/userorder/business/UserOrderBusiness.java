@@ -11,6 +11,7 @@ import pcy.study.api.domain.userorder.controller.model.UserOrderDetailResponse;
 import pcy.study.api.domain.userorder.controller.model.UserOrderRequest;
 import pcy.study.api.domain.userorder.controller.model.UserOrderResponse;
 import pcy.study.api.domain.userorder.converter.UserOrderConverter;
+import pcy.study.api.domain.userorder.producer.UserOrderProducer;
 import pcy.study.api.domain.userorder.service.UserOrderService;
 import pcy.study.api.domain.userordermenu.convertor.UserOrderMenuConverter;
 import pcy.study.api.domain.userordermenu.service.UserOrderMenuService;
@@ -32,6 +33,7 @@ public class UserOrderBusiness {
     private final StoreMenuConverter storeMenuConverter;
     private final UserOrderMenuService userOrderMenuService;
     private final UserOrderMenuConverter userOrderMenuConverter;
+    private final UserOrderProducer userOrderProducer;
 
     public UserOrderResponse userOrder(UserDetails userDetails, UserOrderRequest request) {
         var storeMenuEntities = getStoreMenus(request.storeMenuIds());
@@ -39,6 +41,7 @@ public class UserOrderBusiness {
         var newUserOrderEntity = userOrderService.order(userOrderEntity);
         var userOrderMenus = getOrderMenus(storeMenuEntities, userOrderEntity);
         userOrderMenus.forEach(userOrderMenuService::order);
+        userOrderProducer.sendOrder(newUserOrderEntity);
         return userOrderConverter.toResponse(newUserOrderEntity);
     }
 
