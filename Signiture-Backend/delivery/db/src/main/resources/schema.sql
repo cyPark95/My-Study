@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS `store`;
 DROP TABLE IF EXISTS `store_menu`;
 DROP TABLE IF EXISTS `user_order`;
 DROP TABLE IF EXISTS `user_order_menu`;
+DROP TABLE IF EXISTS `store_user`;
 
 CREATE TABLE `user`
 (
@@ -80,4 +81,20 @@ CREATE TABLE `user_order_menu`
     PRIMARY KEY (`id`),
     INDEX `fk_user_order_menu_user_order_idx` (`user_order_id` ASC) VISIBLE,
     INDEX `fk_user_order_menu_store_menu_idx` (`store_menu_id` ASC) VISIBLE
+) ENGINE = InnoDB;
+
+CREATE TABLE `store_user`
+(
+    `id`              BIGINT       NOT NULL AUTO_INCREMENT,
+    `store_id`        BIGINT       NOT NULL,
+    `email`           VARCHAR(100) NOT NULL,
+    `password`        VARCHAR(100) NOT NULL,
+    `status`          VARCHAR(50)  NOT NULL,
+    `role`            VARCHAR(50)  NOT NULL,
+    `unregistered_at` DATETIME(6),
+    `last_login_at`   DATETIME(6),
+    `created_at`      DATETIME(6),
+    `updated_at`      DATETIME(6),
+    PRIMARY KEY (`id`),
+    INDEX `fk_store_menu_store_idx` (`store_id` ASC) VISIBLE
 ) ENGINE = InnoDB;
