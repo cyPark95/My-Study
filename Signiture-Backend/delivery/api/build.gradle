@@ -40,6 +40,7 @@ dependencies {
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
 
     implementation project(':db')
+    implementation project(':common')
 }
 
 tasks.named('test') {
