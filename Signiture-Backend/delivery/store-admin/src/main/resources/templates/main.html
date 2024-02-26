@@ -5,13 +5,25 @@
     <title>Title</title>
 </head>
 <body>
-<h1>MAIN PAGE</h1>
+<h1>DELIVERY HOME PAGE</h1>
 
-<ul th:text="${#authentication.name}"></ul>
+<p>이름: <span th:text="${#authentication.name}">?</span></p>
+<p>가게명: <span th:text="${#authentication.principal.storeName}">?</span></p>
+<p>역할: <span th:text="${#authentication.principal.role}">?</span></p>
 
-<ul th:text="${#authentication.principal.storeName}"></ul>
-<ul th:text="${#authentication.principal.role}"></ul>
-
-<ul th:text="${#authentication}"></ul>
+<p>Authentication INFO: <span th:text="${#authentication}">?</span></p>
 </body>
+
+<script>
+    const url = "http://localhost:8081/api/sse/connect";
+    const eventSource = new EventSource(url);
+
+    eventSource.onopen = event => {
+        console.log("SSE Connection", event);
+    }
+
+    eventSource.onmessage = event => {
+        console.log("Receive Data", event);
+    }
+</script>
 </html>
