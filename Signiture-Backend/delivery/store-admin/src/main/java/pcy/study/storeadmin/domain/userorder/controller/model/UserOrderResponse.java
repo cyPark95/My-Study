@@ -1,4 +1,4 @@
-package pcy.study.api.domain.userorder.controller.model;
+package pcy.study.storeadmin.domain.userorder.controller.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -9,8 +9,12 @@ import java.time.LocalDateTime;
 
 @Builder
 public record UserOrderResponse(
-        @Schema(description = "식별값", example = "1")
+        @Schema(description = "주문 식별값", example = "1")
         Long id,
+        @Schema(description = "사용자 식별값", example = "1")
+        Long userId,
+        @Schema(description = "가게 식별값", example = "1")
+        Long storeId,
         @Schema(description = "주문 상태", example = "ORDER")
         UserOrderStatus status,
         @Schema(description = "주문금액", example = "10000.0")

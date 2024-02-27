@@ -15,6 +15,7 @@ public class UserSseConnection {
     private final Long uniqueKey;
     private final SseEmitter sseEmitter;
     private final ObjectMapper objectMapper;
+    private final ConnectionPool<Long, UserSseConnection> connectionPool;
 
     private UserSseConnection(
             Long uniqueKey,
@@ -22,15 +23,15 @@ public class UserSseConnection {
             ConnectionPool<Long, UserSseConnection> connectionPool
     ) {
         this.uniqueKey = uniqueKey;
-        this.sseEmitter = new SseEmitter();
+        this.sseEmitter = new SseEmitter(30 * 1000L);
         this.objectMapper = objectMapper;
-        connect(connectionPool);
+        this.connectionPool = connectionPool;
+        connect();
     }
 
-    private void connect(ConnectionPool<Long, UserSseConnection> connectionPool) {
-        this.sseEmitter.onCompletion(() -> connectionPool.onCompletionCallback(this));
+    private void connect() {
+        this.sseEmitter.onCompletion(() -> this.connectionPool.onCompletionCallback(this));
         this.sseEmitter.onTimeout(this.sseEmitter::complete);
-        connectionPool.addSession(this.uniqueKey, this);
         sendMessage("onopen", "connect");
     }
 
@@ -43,7 +44,15 @@ public class UserSseConnection {
     }
 
     public void sendMessage(Object data) {
-        sendMessage(null, data);
+        try {
+            var jsonData = this.objectMapper.writeValueAsString(data);
+            var event = SseEmitter.event()
+                    .data(jsonData);
+
+            this.sseEmitter.send(event);
+        } catch (IOException e) {
+            this.sseEmitter.completeWithError(e);
+        }
     }
 
     public void sendMessage(String name, Object data) {

@@ -40,7 +40,7 @@ public class SseApiController {
                 objectMapper,
                 connectionPool
         );
-
+        this.connectionPool.addSession(userSseConnection.getUniqueKey(), userSseConnection);
         return userSseConnection.getSseEmitter();
     }
 
