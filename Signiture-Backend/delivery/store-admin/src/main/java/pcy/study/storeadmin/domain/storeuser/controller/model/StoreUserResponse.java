@@ -1,4 +1,4 @@
-package pcy.study.storeadmin.domain.user.controller.model;
+package pcy.study.storeadmin.domain.storeuser.controller.model;
 
 import lombok.Builder;
 

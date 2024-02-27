@@ -1,4 +1,4 @@
-package pcy.study.storeadmin.domain.user.controller;
+package pcy.study.storeadmin.domain.storeuser.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pcy.study.storeadmin.domain.authorization.model.StoreUserDetails;
-import pcy.study.storeadmin.domain.user.business.StoreUserBusiness;
-import pcy.study.storeadmin.domain.user.controller.model.StoreUserResponse;
+import pcy.study.storeadmin.domain.storeuser.business.StoreUserBusiness;
+import pcy.study.storeadmin.domain.storeuser.controller.model.StoreUserResponse;
 
 @Tag(name = "가맹점 사용자 API", description = "인증된 사용자가 접근할 수 있습니다.")
 @RestController

@@ -1,13 +1,13 @@
-package pcy.study.storeadmin.domain.user.converter;
+package pcy.study.storeadmin.domain.storeuser.converter;
 
 import org.springframework.stereotype.Service;
 import pcy.study.db.store.Store;
 import pcy.study.db.storeuser.StoreUser;
 import pcy.study.storeadmin.domain.authorization.model.StoreUserDetails;
-import pcy.study.storeadmin.domain.user.controller.model.StoreResponse;
-import pcy.study.storeadmin.domain.user.controller.model.StoreUserRegisterRequest;
-import pcy.study.storeadmin.domain.user.controller.model.StoreUserResponse;
-import pcy.study.storeadmin.domain.user.controller.model.UserResponse;
+import pcy.study.storeadmin.domain.storeuser.controller.model.StoreResponse;
+import pcy.study.storeadmin.domain.storeuser.controller.model.StoreUserRegisterRequest;
+import pcy.study.storeadmin.domain.storeuser.controller.model.StoreUserResponse;
+import pcy.study.storeadmin.domain.storeuser.controller.model.UserResponse;
 
 import java.util.Optional;
 

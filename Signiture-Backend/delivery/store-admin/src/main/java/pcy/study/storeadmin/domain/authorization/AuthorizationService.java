@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pcy.study.storeadmin.domain.authorization.model.StoreUserDetails;
 import pcy.study.storeadmin.domain.store.service.StoreService;
-import pcy.study.storeadmin.domain.user.service.StoreUserService;
+import pcy.study.storeadmin.domain.storeuser.service.StoreUserService;
 
 @Slf4j
 @Service

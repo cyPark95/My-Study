@@ -1,4 +1,4 @@
-package pcy.study.storeadmin.domain.user.service;
+package pcy.study.storeadmin.domain.storeuser.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

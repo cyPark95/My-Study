@@ -1,14 +1,14 @@
-package pcy.study.storeadmin.domain.user.business;
+package pcy.study.storeadmin.domain.storeuser.business;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pcy.study.storeadmin.domain.authorization.model.StoreUserDetails;
 import pcy.study.storeadmin.domain.store.service.StoreService;
-import pcy.study.storeadmin.domain.user.controller.model.StoreUserRegisterRequest;
-import pcy.study.storeadmin.domain.user.controller.model.StoreUserResponse;
-import pcy.study.storeadmin.domain.user.converter.StoreUserConverter;
-import pcy.study.storeadmin.domain.user.service.StoreUserService;
+import pcy.study.storeadmin.domain.storeuser.controller.model.StoreUserRegisterRequest;
+import pcy.study.storeadmin.domain.storeuser.controller.model.StoreUserResponse;
+import pcy.study.storeadmin.domain.storeuser.converter.StoreUserConverter;
+import pcy.study.storeadmin.domain.storeuser.service.StoreUserService;
 
 @Service
 @RequiredArgsConstructor
