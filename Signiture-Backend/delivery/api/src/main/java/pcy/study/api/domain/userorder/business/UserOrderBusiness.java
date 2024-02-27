@@ -37,7 +37,7 @@ public class UserOrderBusiness {
 
     public UserOrderResponse userOrder(UserDetails userDetails, UserOrderRequest request) {
         var storeMenuEntities = getStoreMenus(request.storeMenuIds());
-        var userOrderEntity = userOrderConverter.toEntity(userDetails, storeMenuEntities);
+        var userOrderEntity = userOrderConverter.toEntity(userDetails, request.storeId(), storeMenuEntities);
         var newUserOrderEntity = userOrderService.order(userOrderEntity);
         var userOrderMenus = getOrderMenus(storeMenuEntities, userOrderEntity);
         userOrderMenus.forEach(userOrderMenuService::order);

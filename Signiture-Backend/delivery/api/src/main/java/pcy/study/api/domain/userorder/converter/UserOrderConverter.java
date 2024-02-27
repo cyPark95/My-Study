@@ -15,10 +15,11 @@ import java.util.Optional;
 @Converter
 public class UserOrderConverter {
 
-    public UserOrder toEntity(UserDetails userDetails, List<StoreMenu> storeMenus) {
+    public UserOrder toEntity(UserDetails userDetails, Long storeId, List<StoreMenu> storeMenus) {
         return Optional.ofNullable(storeMenus)
                 .map(it -> UserOrder.builder()
                         .userId(userDetails.id())
+                        .storeId(storeId)
                         .amount(getTotalAmount(storeMenus))
                         .build())
                 .orElseThrow(() -> new ApiException("StoreMenus is Null", ErrorCode.NULL_POINT));

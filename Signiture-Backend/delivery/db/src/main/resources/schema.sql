@@ -57,6 +57,7 @@ CREATE TABLE `user_order`
 (
     `id`                  BIGINT         NOT NULL AUTO_INCREMENT,
     `user_id`             BIGINT         NOT NULL,
+    `store_id`            BIGINT         NOT NULL,
     `status`              VARCHAR(50)    NOT NULL,
     `amount`              DECIMAL(11, 4) NOT NULL,
     `ordered_at`          DATETIME(6),

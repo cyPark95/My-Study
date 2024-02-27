@@ -22,6 +22,9 @@ public class UserOrder extends BaseTimeEntity {
     @Column(nullable = false)
     private Long userId;
 
+    @Column(nullable = false)
+    private Long storeId;
+
     @Column(length = 50, nullable = false, columnDefinition = "VARCHAR")
     @Enumerated(EnumType.STRING)
     private UserOrderStatus status;
@@ -40,8 +43,9 @@ public class UserOrder extends BaseTimeEntity {
     private LocalDateTime receivedAt;
 
     @Builder
-    private UserOrder(Long userId, BigDecimal amount) {
+    private UserOrder(Long userId, Long storeId, BigDecimal amount) {
         this.userId = userId;
+        this.storeId = storeId;
         this.amount = amount;
         this.status = UserOrderStatus.REGISTERED;
     }
