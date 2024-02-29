@@ -29,7 +29,7 @@ public class UserService {
         return getUserWithThrow(email, password);
     }
 
-    public User getUserWithThrow(String email, String password) {
+    private User getUserWithThrow(String email, String password) {
         return userRepository.findFirstByEmailAndPasswordAndStatusOrderByIdDesc(
                         email,
                         password,

@@ -1,6 +1,7 @@
 package pcy.study.api.domain.user.business;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import pcy.study.api.common.annotation.Business;
 import pcy.study.api.domain.token.business.TokenBusiness;
 import pcy.study.api.domain.token.controller.model.TokenResponse;
@@ -12,13 +13,14 @@ import pcy.study.api.domain.user.service.UserService;
 
 @Business
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserBusiness {
 
     private final UserService userService;
     private final UserConverter userConverter;
-
     private final TokenBusiness tokenBusiness;
 
+    @Transactional
     public UserResponse register(UserRegisterRequest request) {
         var entity = userConverter.toEntity(request);
         var newEntity = userService.register(entity);
