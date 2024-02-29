@@ -1,11 +1,11 @@
-DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS `store`;
 DROP TABLE IF EXISTS `store_menu`;
 DROP TABLE IF EXISTS `user_order`;
 DROP TABLE IF EXISTS `user_order_menu`;
 DROP TABLE IF EXISTS `store_user`;
 
-CREATE TABLE `user`
+CREATE TABLE users
 (
     `id`              BIGINT       NOT NULL AUTO_INCREMENT,
     `name`            VARCHAR(50)  NOT NULL,
