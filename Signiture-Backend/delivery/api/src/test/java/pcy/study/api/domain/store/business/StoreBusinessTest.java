@@ -18,6 +18,7 @@ import pcy.study.db.store.enums.StoreCategory;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static pcy.study.api.utility.StoreUtils.*;
@@ -60,6 +61,7 @@ class StoreBusinessTest {
         List<StoreResponse> results = storeBusiness.searchByCategory(StoreCategory.COFFEE_TEA);
 
         // then
+        assertThat(results.size()).isEqualTo(1);
         results.forEach(StoreUtils::assertEqualsStoreResponse);
     }
 

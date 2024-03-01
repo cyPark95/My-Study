@@ -3,7 +3,7 @@ package pcy.study.api.domain.storemenu.converter;
 import pcy.study.api.common.annotation.Converter;
 import pcy.study.api.common.api.error.ErrorCode;
 import pcy.study.api.common.exception.ApiException;
-import pcy.study.api.domain.storemenu.controller.model.StoreMenuRequest;
+import pcy.study.api.domain.storemenu.controller.model.StoreMenuRegisterRequest;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuResponse;
 import pcy.study.db.storemenu.StoreMenu;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 @Converter
 public class StoreMenuConverter {
 
-    public StoreMenu toEntity(StoreMenuRequest request) {
+    public StoreMenu toEntity(StoreMenuRegisterRequest request) {
         return Optional.ofNullable(request)
                 .map(it -> StoreMenu.builder()
                         .storeId(request.storeId())

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public record StoreMenuRequest(
+public record StoreMenuRegisterRequest(
         @Schema(description = "가게 식별값", example = "1")
         @NotNull
         Long storeId,
