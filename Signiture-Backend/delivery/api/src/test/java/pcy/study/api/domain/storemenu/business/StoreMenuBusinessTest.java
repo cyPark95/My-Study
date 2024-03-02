@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuRegisterRequest;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuResponse;
 import pcy.study.api.domain.storemenu.converter.StoreMenuConverter;
@@ -63,11 +62,5 @@ class StoreMenuBusinessTest {
         // then
         assertThat(results.size()).isEqualTo(1);
         results.forEach(StoreMenuUtils::assertEqualsStoreMenuResponse);
-    }
-
-    private StoreMenu createStoreMenuWithId() {
-        StoreMenu storeMenu = createStoreMenu();
-        ReflectionTestUtils.setField(storeMenu, "id", STORE_MENU_ID);
-        return storeMenu;
     }
 }

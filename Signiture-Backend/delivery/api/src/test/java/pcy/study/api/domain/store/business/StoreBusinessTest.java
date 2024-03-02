@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.domain.store.controller.model.StoreRegisterRequest;
 import pcy.study.api.domain.store.controller.model.StoreResponse;
 import pcy.study.api.domain.store.converter.StoreConverter;
@@ -63,11 +62,5 @@ class StoreBusinessTest {
         // then
         assertThat(results.size()).isEqualTo(1);
         results.forEach(StoreUtils::assertEqualsStoreResponse);
-    }
-
-    private Store createStoreWithId() {
-        Store store = createStore();
-        ReflectionTestUtils.setField(store, "id", STORE_ID);
-        return store;
     }
 }

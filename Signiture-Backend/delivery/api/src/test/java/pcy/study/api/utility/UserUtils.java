@@ -1,6 +1,7 @@
 package pcy.study.api.utility;
 
 import io.restassured.path.json.JsonPath;
+import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.domain.user.controller.model.UserLoginRequest;
 import pcy.study.api.domain.user.controller.model.UserRegisterRequest;
 import pcy.study.api.domain.user.controller.model.UserResponse;
@@ -27,6 +28,12 @@ public class UserUtils {
                 .address(USER_ADDRESS)
                 .password(USER_PASSWORD)
                 .build();
+    }
+
+    public static User createUserWithId() {
+        User user = createUser();
+        ReflectionTestUtils.setField(user, "id", USER_ID);
+        return user;
     }
 
     public static UserRegisterRequest createUserRegisterRequest() {

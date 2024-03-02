@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.domain.token.business.TokenBusiness;
 import pcy.study.api.domain.token.controller.model.TokenResponse;
 import pcy.study.api.domain.user.controller.model.UserLoginRequest;
@@ -82,11 +81,5 @@ class UserBusinessTest {
 
         // then
         assertEqualsUserResponse(result);
-    }
-
-    private User createUserWithId() {
-        User user = createUser();
-        ReflectionTestUtils.setField(user, "id", USER_ID);
-        return user;
     }
 }

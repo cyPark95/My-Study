@@ -1,6 +1,7 @@
 package pcy.study.api.utility;
 
 import io.restassured.path.json.JsonPath;
+import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.domain.store.controller.model.StoreRegisterRequest;
 import pcy.study.api.domain.store.controller.model.StoreResponse;
 import pcy.study.db.store.Store;
@@ -35,6 +36,12 @@ public class StoreUtils {
                 .minimumDeliveryAmount(STORE_MINIMUM_DELIVERY_AMOUNT)
                 .phoneNumber(STORE_PHONE_NUMBER)
                 .build();
+    }
+
+    public static Store createStoreWithId() {
+        Store store = createStore();
+        ReflectionTestUtils.setField(store, "id", STORE_ID);
+        return store;
     }
 
     public static StoreRegisterRequest createStoreRegisterRequest() {

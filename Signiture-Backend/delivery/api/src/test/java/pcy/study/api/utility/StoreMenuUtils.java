@@ -1,6 +1,7 @@
 package pcy.study.api.utility;
 
 import io.restassured.path.json.JsonPath;
+import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuRegisterRequest;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuResponse;
 import pcy.study.db.storemenu.StoreMenu;
@@ -31,6 +32,12 @@ public class StoreMenuUtils {
                 .amount(STORE_MENU_AMOUNT)
                 .thumbnailUrl(STORE_MENU_THUMBNAIL_URL)
                 .build();
+    }
+
+    public static StoreMenu createStoreMenuWithId() {
+        StoreMenu storeMenu = createStoreMenu();
+        ReflectionTestUtils.setField(storeMenu, "id", STORE_MENU_ID);
+        return storeMenu;
     }
 
     public static StoreMenuRegisterRequest createStoreMenuRegisterRequest() {
