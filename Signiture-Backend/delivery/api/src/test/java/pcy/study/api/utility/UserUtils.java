@@ -5,6 +5,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.domain.user.controller.model.UserLoginRequest;
 import pcy.study.api.domain.user.controller.model.UserRegisterRequest;
 import pcy.study.api.domain.user.controller.model.UserResponse;
+import pcy.study.api.domain.user.model.UserDetails;
 import pcy.study.db.user.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +48,15 @@ public class UserUtils {
 
     public static UserLoginRequest createUserLoginRequest() {
         return new UserLoginRequest(USER_EMAIL, USER_PASSWORD);
+    }
+
+    public static UserDetails createUserDetails() {
+        return UserDetails.builder()
+                .id(USER_ID)
+                .name(USER_NAME)
+                .email(USER_EMAIL)
+                .address(USER_ADDRESS)
+                .build();
     }
 
     public static void assertEqualsUserResponse(UserResponse response) {
