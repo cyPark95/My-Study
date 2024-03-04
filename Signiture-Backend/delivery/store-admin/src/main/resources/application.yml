@@ -37,6 +37,4 @@ springdoc:
     operations-sorter: alpha
 
 rabbitmq:
-  exchange: delivery.exchange
   queue: delivery.queue
-  route-key: delivery.key
