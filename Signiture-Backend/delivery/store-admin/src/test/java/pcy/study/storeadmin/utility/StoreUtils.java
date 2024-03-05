@@ -1,5 +1,6 @@
 package pcy.study.storeadmin.utility;
 
+import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.db.store.Store;
 import pcy.study.db.store.enums.StoreCategory;
 
@@ -29,5 +30,11 @@ public class StoreUtils {
                 .minimumDeliveryAmount(STORE_MINIMUM_DELIVERY_AMOUNT)
                 .phoneNumber(STORE_PHONE_NUMBER)
                 .build();
+    }
+
+    public static Store createStoreWithId() {
+        Store store = createStore();
+        ReflectionTestUtils.setField(store, "id", STORE_ID);
+        return store;
     }
 }
