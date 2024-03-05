@@ -9,7 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import pcy.study.api.domain.user.ApiTest;
+import pcy.study.api.common.ApiTest;
 import pcy.study.api.domain.userorder.controller.model.UserOrderDetailResponse;
 import pcy.study.api.domain.userorder.controller.model.UserOrderRequest;
 import pcy.study.api.domain.userorder.controller.model.UserOrderResponse;

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuResponse;
-import pcy.study.api.domain.user.ApiTest;
+import pcy.study.api.common.ApiTest;
 import pcy.study.api.utility.StoreMenuUtils;
 import pcy.study.db.storemenu.StoreMenuRepository;
 

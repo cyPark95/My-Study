@@ -1,4 +1,4 @@
-package pcy.study.api.domain.user;
+package pcy.study.api.common;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

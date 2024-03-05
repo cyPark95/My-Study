@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pcy.study.api.domain.user.ApiTest;
+import pcy.study.api.common.ApiTest;
 
 import static pcy.study.api.utility.UserUtils.assertEqualsUserResponse;
 

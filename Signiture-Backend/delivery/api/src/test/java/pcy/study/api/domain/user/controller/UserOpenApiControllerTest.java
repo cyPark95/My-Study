@@ -8,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import pcy.study.api.domain.user.OpenApiTest;
+import pcy.study.api.common.OpenApiTest;
 import pcy.study.api.domain.user.controller.model.UserLoginRequest;
 import pcy.study.api.domain.user.controller.model.UserRegisterRequest;
 import pcy.study.db.user.UserRepository;

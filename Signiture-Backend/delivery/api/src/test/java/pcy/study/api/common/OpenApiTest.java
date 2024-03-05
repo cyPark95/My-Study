@@ -1,4 +1,4 @@
-package pcy.study.api.domain.user;
+package pcy.study.api.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;

@@ -8,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import pcy.study.api.domain.store.controller.model.StoreRegisterRequest;
-import pcy.study.api.domain.user.OpenApiTest;
+import pcy.study.api.common.OpenApiTest;
 import pcy.study.db.store.enums.StoreCategory;
 
 import java.util.stream.Stream;
