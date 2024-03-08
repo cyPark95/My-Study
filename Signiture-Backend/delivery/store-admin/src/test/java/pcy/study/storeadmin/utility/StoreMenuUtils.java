@@ -1,5 +1,6 @@
 package pcy.study.storeadmin.utility;
 
+import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.db.storemenu.StoreMenu;
 
 import java.math.BigDecimal;
@@ -23,5 +24,11 @@ public class StoreMenuUtils {
                 .amount(STORE_MENU_AMOUNT)
                 .thumbnailUrl(STORE_MENU_THUMBNAIL)
                 .build();
+    }
+
+    public static StoreMenu createStoreMenuWithId() {
+        StoreMenu storeMenu = createStoreMenu();
+        ReflectionTestUtils.setField(storeMenu, "id", STORE_MENU_ID);
+        return storeMenu;
     }
 }

@@ -7,9 +7,9 @@ import pcy.study.api.common.api.ApiCode;
 
 @Getter
 @RequiredArgsConstructor
-public enum UserOrderErrorCode implements ApiCode {
+public enum StoreMenuErrorCode implements ApiCode {
 
-    USER_ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, 5001, "주문 정보를 찾을 수 없습니다."),
+    STORE_MENU_NOT_FOUND(HttpStatus.BAD_REQUEST, 4001, "가게 메뉴를 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

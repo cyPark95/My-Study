@@ -22,8 +22,8 @@
         console.log("SSE Connection", event);
     }
 
-    eventSource.onmessage = event => {
+    eventSource.addEventListener("push", event => {
         console.log("Receive Data", event);
-    }
+    })
 </script>
 </html>

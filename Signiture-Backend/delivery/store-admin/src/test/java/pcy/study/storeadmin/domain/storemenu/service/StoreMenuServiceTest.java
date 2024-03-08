@@ -45,7 +45,7 @@ class StoreMenuServiceTest {
     void getStoreMenuWithThrow_failureNotFound() {
         // when
         // then
-        assertThatThrownBy(() -> storeMenuService.getStoreMenuWithThrow(STORE_MENU_ID))
+        assertThatThrownBy(() -> storeMenuService.getStoreMenuWithThrow(-1L))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

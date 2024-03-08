@@ -3,14 +3,16 @@ package pcy.study.storeadmin.domain.userorder.business;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pcy.study.common.message.model.UserOrderMessage;
-import pcy.study.storeadmin.domain.sse.connection.ConnectionPool;
-import pcy.study.storeadmin.domain.sse.connection.model.UserSseConnection;
+import pcy.study.db.storemenu.StoreMenu;
+import pcy.study.db.userordermenu.UserOrderMenu;
+import pcy.study.storeadmin.domain.message.connection.ConnectionPool;
 import pcy.study.storeadmin.domain.storemenu.converter.StoreMenuConverter;
 import pcy.study.storeadmin.domain.storemenu.service.StoreMenuService;
-import pcy.study.storeadmin.domain.userorder.controller.model.UserOrderDetailResponse;
 import pcy.study.storeadmin.domain.userorder.converter.UserOrderConverter;
 import pcy.study.storeadmin.domain.userorder.service.UserOrderService;
 import pcy.study.storeadmin.domain.userordermenu.service.UserOrderMenuService;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,22 +23,22 @@ public class UserOrderBusiness {
     private final UserOrderMenuService userOrderMenuService;
     private final StoreMenuService storeMenuService;
     private final StoreMenuConverter storeMenuConverter;
-    private final ConnectionPool<Long, UserSseConnection> connectionPool;
+    private final ConnectionPool<Long> connectionPool;
 
     public void pushUserOrder(UserOrderMessage userOrderMessage) {
-        var userOrder = userOrderService.getUserOrder(userOrderMessage.userOrderId())
-                .orElseThrow(() -> new IllegalArgumentException(String.format("ID: [%d] UserOrder Not Found", userOrderMessage.userOrderId())));
+        var userOrder = userOrderService.getUserOrderWithThrow(userOrderMessage.userOrderId());
+        var userOrderResponse = userOrderConverter.toResponse(userOrder);
         var userOrderMenus = userOrderMenuService.getUserOrderMenus(userOrder.getId());
-        var storeMenus = userOrderMenus.stream()
+        var storeMenus = getStoreMenus(userOrderMenus);
+        var storeMenuResponse = storeMenuConverter.toResponse(storeMenus);
+        var userOrderDetailresponse = userOrderConverter.toDetailResponse(userOrderResponse, storeMenuResponse);
+        var userConnection = connectionPool.getConnection(userOrder.getStoreId());
+        userConnection.sendMessage("push", userOrderDetailresponse);
+    }
+
+    private List<StoreMenu> getStoreMenus(List<UserOrderMenu> userOrderMenus) {
+        return userOrderMenus.stream()
                 .map(it -> storeMenuService.getStoreMenuWithThrow(it.getStoreMenuId()))
                 .toList();
-        var userOrderResponse = userOrderConverter.toResponse(userOrder);
-        var storeMenuResponse = storeMenuConverter.toResponse(storeMenus);
-        var response = UserOrderDetailResponse.builder()
-                .userOrder(userOrderResponse)
-                .storeMenus(storeMenuResponse)
-                .build();
-        var userConnection = connectionPool.getSession(userOrder.getStoreId());
-        userConnection.sendMessage(response);
     }
 }

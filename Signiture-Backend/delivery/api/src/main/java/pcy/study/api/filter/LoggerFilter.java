@@ -23,9 +23,9 @@ public class LoggerFilter implements Filter {
         var responseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) servletResponse);
 
         try {
+            requestLogging(requestWrapper);
             filterChain.doFilter(requestWrapper, responseWrapper);
         } finally {
-            requestLogging(requestWrapper);
             responseLogging(responseWrapper);
         }
 

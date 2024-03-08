@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.api.error.StoreErrorCode;
+import pcy.study.api.common.api.error.StoreMenuErrorCode;
 import pcy.study.api.common.exception.ApiException;
 import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.storemenu.StoreMenuRepository;
@@ -30,7 +30,7 @@ public class StoreMenuService {
         return storeMenuRepository.findFirstByIdAndStatusOrderByIdDesc(id, StoreMenuStatus.REGISTERED)
                 .orElseThrow(() -> new ApiException(
                         String.format("ID: [%d] StoreMenu Not Found", id),
-                        StoreErrorCode.STORE_NOT_FOUND
+                        StoreMenuErrorCode.STORE_MENU_NOT_FOUND
                 ));
     }
 
