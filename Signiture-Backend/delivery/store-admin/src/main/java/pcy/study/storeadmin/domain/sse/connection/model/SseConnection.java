@@ -1,16 +1,15 @@
-package pcy.study.storeadmin.domain.message.connection.sse;
+package pcy.study.storeadmin.domain.sse.connection.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import pcy.study.storeadmin.domain.message.connection.Connection;
 
 @Slf4j
 @Getter
 @ToString
-public class SseConnection implements Connection {
+public class SseConnection {
 
     private final SseEmitter sseEmitter;
     private final ObjectMapper objectMapper;
@@ -24,12 +23,10 @@ public class SseConnection implements Connection {
         connect();
     }
 
-    @Override
     public void connect() {
         sendMessage("onopen", "connect");
     }
 
-    @Override
     public void sendMessage(String name, Object data) {
         try {
             var jsonData = this.objectMapper.writeValueAsString(data);

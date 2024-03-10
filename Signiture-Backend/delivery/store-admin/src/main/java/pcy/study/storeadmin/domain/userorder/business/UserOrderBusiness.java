@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pcy.study.common.message.model.UserOrderMessage;
 import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.userordermenu.UserOrderMenu;
-import pcy.study.storeadmin.domain.message.connection.ConnectionPool;
+import pcy.study.storeadmin.domain.sse.connection.ConnectionPool;
 import pcy.study.storeadmin.domain.storemenu.converter.StoreMenuConverter;
 import pcy.study.storeadmin.domain.storemenu.service.StoreMenuService;
 import pcy.study.storeadmin.domain.userorder.converter.UserOrderConverter;

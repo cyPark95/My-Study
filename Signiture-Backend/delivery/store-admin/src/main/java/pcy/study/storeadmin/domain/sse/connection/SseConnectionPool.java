@@ -1,11 +1,11 @@
-package pcy.study.storeadmin.domain.message.connection.sse;
+package pcy.study.storeadmin.domain.sse.connection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import pcy.study.storeadmin.domain.message.connection.ConnectionPool;
+import pcy.study.storeadmin.domain.sse.connection.model.SseConnection;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

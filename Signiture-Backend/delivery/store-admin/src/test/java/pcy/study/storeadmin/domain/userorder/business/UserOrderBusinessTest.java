@@ -11,8 +11,8 @@ import pcy.study.common.message.model.UserOrderMessage;
 import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.userorder.UserOrder;
 import pcy.study.db.userordermenu.UserOrderMenu;
-import pcy.study.storeadmin.domain.message.connection.Connection;
-import pcy.study.storeadmin.domain.message.connection.ConnectionPool;
+import pcy.study.storeadmin.domain.sse.connection.ConnectionPool;
+import pcy.study.storeadmin.domain.sse.connection.model.SseConnection;
 import pcy.study.storeadmin.domain.storemenu.converter.StoreMenuConverter;
 import pcy.study.storeadmin.domain.storemenu.service.StoreMenuService;
 import pcy.study.storeadmin.domain.userorder.controller.model.UserOrderDetailResponse;
@@ -61,14 +61,14 @@ class UserOrderBusinessTest {
         when(userOrderMenuService.getUserOrderMenus(USER_ORDER_ID)).thenReturn(List.of(userOrderMenu));
         StoreMenu storeMenu = createStoreMenuWithId();
         when(storeMenuService.getStoreMenuWithThrow(STORE_MENU_ID)).thenReturn(storeMenu);
-        Connection fakeConnection = mock(Connection.class);
-        when(connectionPool.getConnection(STORE_ID)).thenReturn(fakeConnection);
+        SseConnection sseConnection = mock(SseConnection.class);
+        when(connectionPool.getConnection(STORE_ID)).thenReturn(sseConnection);
 
         // when
         userOrderBusiness.pushUserOrder(userOrderMessage);
 
         // then
-        verify(fakeConnection, only()).sendMessage(any(String.class), any(UserOrderDetailResponse.class));
+        verify(sseConnection, only()).sendMessage(any(String.class), any(UserOrderDetailResponse.class));
     }
 
     private UserOrderMessage createUserOrderMessage() {
