@@ -16,7 +16,7 @@ public class UserOrderConsumer {
 
     @RabbitListener(queues = "${rabbitmq.queue}")
     public void userOrderConsumer(UserOrderMessage userOrderMessage) {
-        log.info("Consumer Message Queue UserOrder ID: {}", userOrderMessage);
+        log.info("Consumer Message Queue UserOrder: {}", userOrderMessage);
         userOrderBusiness.pushUserOrder(userOrderMessage);
     }
 }

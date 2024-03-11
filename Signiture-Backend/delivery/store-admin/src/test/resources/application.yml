@@ -32,4 +32,4 @@ springdoc:
     operations-sorter: alpha
 
 rabbitmq:
-  queue: delivery.queue
+  queue: test.queue
