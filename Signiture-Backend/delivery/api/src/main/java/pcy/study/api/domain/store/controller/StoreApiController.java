@@ -27,7 +27,7 @@ public class StoreApiController {
     @Operation(summary = "가게 조회", description = "카테고리에 포함된 가게 목록을 조회합니다.")
     @Parameter(name = "category", description = "카테고리", required = true)
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<StoreResponse>>> search(@RequestParam StoreCategory category) {
+    public ResponseEntity<ApiResponse<List<StoreResponse>>> search(@RequestParam("category") StoreCategory category) {
         var response = storeBusiness.searchByCategory(category);
         return ApiResponse.ok(response);
     }

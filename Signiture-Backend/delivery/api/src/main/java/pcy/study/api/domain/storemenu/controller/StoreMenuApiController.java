@@ -26,7 +26,7 @@ public class StoreMenuApiController {
     @Operation(summary = "가게 메뉴 조회", description = "가게에 포함된 메뉴 목록을 조회합니다.")
     @Parameter(name = "storeId", description = "가게 식별값", required = true)
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<StoreMenuResponse>>> search(@RequestParam Long storeId) {
+    public ResponseEntity<ApiResponse<List<StoreMenuResponse>>> search(@RequestParam("storeId") Long storeId) {
         var response = storeMenuBusiness.searchByStore(storeId);
         return ApiResponse.ok(response);
     }
