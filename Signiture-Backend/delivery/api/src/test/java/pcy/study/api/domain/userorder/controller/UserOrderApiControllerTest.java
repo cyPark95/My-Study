@@ -31,7 +31,6 @@ import static pcy.study.api.utility.StoreUtils.createStore;
 import static pcy.study.api.utility.UserOrderUtils.*;
 
 class UserOrderApiControllerTest extends ApiTest {
-    // TODO RABBITMQ 커넥션
 
     @Autowired
     private UserOrderRepository userOrderRepository;

@@ -1,13 +1,14 @@
-package pcy.study.api.common.rabbitmq;
+package pcy.study.api.common.message.rabbitmq;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import pcy.study.api.common.message.MessageService;
 
 @Slf4j
 @Component
-public class RabbitMqMessageService {
+public class RabbitMqMessageService implements MessageService {
 
     private final String exchange;
     private final String routeKey;
