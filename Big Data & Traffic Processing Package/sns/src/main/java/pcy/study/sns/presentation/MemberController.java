@@ -1,7 +1,8 @@
-package pcy.study.sns.controller;
+package pcy.study.sns.presentation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import pcy.study.sns.domain.member.converter.MemberConverter;
 import pcy.study.sns.domain.member.dto.MemberDto;
 import pcy.study.sns.domain.member.dto.MemberRegisterCommand;
 import pcy.study.sns.domain.member.entity.Member;
@@ -17,8 +18,8 @@ public class MemberController {
     private final MemberWriteService memberWriteService;
 
     @PostMapping
-    public void register(@RequestBody MemberRegisterCommand command) {
-        var member = memberWriteService.register(command);
+    public MemberDto register(@RequestBody MemberRegisterCommand command) {
+        return memberWriteService.register(command);
     }
 
     @GetMapping("/{id}")

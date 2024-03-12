@@ -2,6 +2,8 @@ package pcy.study.sns.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pcy.study.sns.domain.member.converter.MemberConverter;
+import pcy.study.sns.domain.member.dto.MemberDto;
 import pcy.study.sns.domain.member.dto.MemberRegisterCommand;
 import pcy.study.sns.domain.member.entity.Member;
 import pcy.study.sns.domain.member.repository.MemberRepository;
@@ -11,8 +13,9 @@ import pcy.study.sns.domain.member.repository.MemberRepository;
 public class MemberWriteService {
 
     private final MemberRepository memberRepository;
+    private final MemberConverter memberConverter;
 
-    public Member register(MemberRegisterCommand command) {
+    public MemberDto register(MemberRegisterCommand command) {
         /*
         목표 - 회원정보(이메일, 닉네임, 생년월일)를 등록한다.
             - 닉네임은 10자를 넘길 수 없다.
@@ -27,6 +30,7 @@ public class MemberWriteService {
                 .birthday(command.birthday())
                 .build();
 
-        return memberRepository.save(member);
+        var newMember = memberRepository.save(member);
+        return memberConverter.toDto(newMember);
     }
 }
