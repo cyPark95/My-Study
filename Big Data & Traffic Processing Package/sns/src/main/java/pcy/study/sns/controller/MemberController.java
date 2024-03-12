@@ -1,11 +1,11 @@
 package pcy.study.sns.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pcy.study.sns.domain.member.dto.MemberDto;
 import pcy.study.sns.domain.member.dto.MemberRegisterCommand;
+import pcy.study.sns.domain.member.entity.Member;
+import pcy.study.sns.domain.member.service.MemberReadService;
 import pcy.study.sns.domain.member.service.MemberWriteService;
 
 @RestController
@@ -13,10 +13,16 @@ import pcy.study.sns.domain.member.service.MemberWriteService;
 @RequestMapping("/members")
 public class MemberController {
 
+    private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
 
     @PostMapping
     public void register(@RequestBody MemberRegisterCommand command) {
-        memberWriteService.create(command);
+        var member = memberWriteService.register(command);
+    }
+
+    @GetMapping("/{id}")
+    public MemberDto getMember(@PathVariable("id") Long id) {
+        return memberReadService.getMember(id);
     }
 }

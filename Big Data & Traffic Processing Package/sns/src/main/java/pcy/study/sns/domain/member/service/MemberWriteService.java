@@ -12,7 +12,7 @@ public class MemberWriteService {
 
     private final MemberRepository memberRepository;
 
-    public void create(MemberRegisterCommand command) {
+    public Member register(MemberRegisterCommand command) {
         /*
         목표 - 회원정보(이메일, 닉네임, 생년월일)를 등록한다.
             - 닉네임은 10자를 넘길 수 없다.
@@ -27,6 +27,6 @@ public class MemberWriteService {
                 .birthday(command.birthday())
                 .build();
 
-        memberRepository.save(member);
+        return memberRepository.save(member);
     }
 }
