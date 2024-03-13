@@ -1,6 +1,7 @@
 package pcy.study.sns.domain.member.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -40,8 +41,8 @@ public class MemberRepository {
         var param = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        var member = namedParameterJdbcTemplate.queryForObject(sql, param, ROW_MAPPER);
-        return Optional.ofNullable(member);
+        var member = namedParameterJdbcTemplate.query(sql, param, ROW_MAPPER);
+        return DataAccessUtils.optionalResult(member);
     }
 
     public Member save(Member member) {
