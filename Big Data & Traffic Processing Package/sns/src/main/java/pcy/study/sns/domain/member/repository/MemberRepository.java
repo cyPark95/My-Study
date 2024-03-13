@@ -14,6 +14,7 @@ import pcy.study.sns.domain.member.entity.Member;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -45,12 +46,24 @@ public class MemberRepository {
         return DataAccessUtils.optionalResult(member);
     }
 
+    public List<Member> findAllByIdIn(List<Long> ids) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+
+        var sql = String.format("SELECT * FROM %s WHERE id IN (:ids)", TABLE);
+        var params = new MapSqlParameterSource()
+                .addValue("ids", ids);
+
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
+    }
+
     public Member save(Member member) {
         /*
         member ID를 보고 갱신 또는 삽입 결정
         반환값은 ID를 담아서 반환한다.
          */
-        if(member.getId() == null) {
+        if (member.getId() == null) {
             return insert(member);
         }
 

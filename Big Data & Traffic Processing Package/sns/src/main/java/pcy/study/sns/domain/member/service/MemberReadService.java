@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import pcy.study.sns.domain.member.converter.MemberConverter;
 import pcy.study.sns.domain.member.dto.MemberDto;
 import pcy.study.sns.domain.member.dto.MemberNicknameHistoryDto;
-import pcy.study.sns.domain.member.entity.Member;
-import pcy.study.sns.domain.member.entity.MemberNicknameHistory;
 import pcy.study.sns.domain.member.repository.MemberNicknameHistoryRepository;
 import pcy.study.sns.domain.member.repository.MemberRepository;
 
@@ -24,6 +22,13 @@ public class MemberReadService {
         var member = memberRepository.findById(id)
                 .orElseThrow();
         return memberConverter.toDto(member);
+    }
+
+    public List<MemberDto> getMembers(List<Long> ids) {
+        var members = memberRepository.findAllByIdIn(ids);
+        return members.stream()
+                .map(memberConverter::toDto)
+                .toList();
     }
 
     public List<MemberNicknameHistoryDto> getNicknameHistories(Long memberId) {
