@@ -5,7 +5,7 @@ import org.jeasy.random.EasyRandomParameters;
 import pcy.study.sns.domain.member.entity.Member;
 
 /**
- * EastRandom
+ * EasyRandom
  * 자바 빈을 만들어주는 라이브러리
  */
 public class MemberFixtureFactory {
