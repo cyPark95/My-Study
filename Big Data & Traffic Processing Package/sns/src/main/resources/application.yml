@@ -1,12 +1,13 @@
 spring:
   datasource:
+#    url: jdbc:mysql://localhost:3306/study?rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     url: jdbc:mysql://localhost:3306/study
     username: root
     password: 1q2w3e4r!
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-logging:
-  level:
-    org:
-      springframework:
-        jdbc: TRACE
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        jdbc: TRACE
