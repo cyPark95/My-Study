@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pcy.study.sns.domain.post.dto.DailyPostCount;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
 import pcy.study.sns.domain.post.dto.PostCommand;
-import pcy.study.sns.domain.post.entity.Post;
+import pcy.study.sns.domain.post.dto.PostDto;
 import pcy.study.sns.domain.post.service.PostReadService;
 import pcy.study.sns.domain.post.service.PostWriteService;
 
@@ -33,7 +33,7 @@ public class PostController {
     }
 
     @GetMapping("/members/{memberId}")
-    public Page<Post> getPosts(
+    public Page<PostDto> getPosts(
             @PathVariable("memberId") Long memberId,
             @RequestParam("size") int size,
             @RequestParam("page") int page

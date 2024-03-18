@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pcy.study.sns.domain.post.converter.PostConverter;
 import pcy.study.sns.domain.post.dto.DailyPostCount;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
-import pcy.study.sns.domain.post.entity.Post;
+import pcy.study.sns.domain.post.dto.PostDto;
 import pcy.study.sns.domain.post.repository.PostRepository;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 public class PostReadService {
 
     private final PostRepository postRepository;
+    private final PostConverter postConverter;
 
     public List<DailyPostCount> getDailyPostCounts(DailyPostCountRequest request) {
         /*
@@ -24,7 +26,8 @@ public class PostReadService {
         return postRepository.groupByCreatedDate(request);
     }
 
-    public Page<Post> getPosts(Long memberId, Pageable pageable) {
-        return postRepository.findAllByMemberId(memberId, pageable);
+    public Page<PostDto> getPosts(Long memberId, Pageable pageable) {
+        var posts = postRepository.findAllByMemberId(memberId, pageable);
+        return posts.map(postConverter::toDto);
     }
 }
