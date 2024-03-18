@@ -1,4 +1,4 @@
-package pcy.study.sns.domain;
+package pcy.study.sns.util;
 
 import org.springframework.data.domain.Sort;
 

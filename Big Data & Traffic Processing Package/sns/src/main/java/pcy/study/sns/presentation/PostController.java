@@ -10,6 +10,8 @@ import pcy.study.sns.domain.post.dto.PostCommand;
 import pcy.study.sns.domain.post.dto.PostDto;
 import pcy.study.sns.domain.post.service.PostReadService;
 import pcy.study.sns.domain.post.service.PostWriteService;
+import pcy.study.sns.util.CursorRequest;
+import pcy.study.sns.util.PageCursor;
 
 import java.util.List;
 
@@ -40,5 +42,13 @@ public class PostController {
     ) {
         var pageRequest = PageRequest.of(page, size);
         return postReadService.getPosts(memberId, pageRequest);
+    }
+
+    @GetMapping("/members/{memberId}/by-cursor")
+    public PageCursor<PostDto> getPostsByCursor(
+            @PathVariable("memberId") Long memberId,
+            @ModelAttribute CursorRequest cursorRequest
+    ) {
+        return postReadService.getPosts(memberId, cursorRequest);
     }
 }
