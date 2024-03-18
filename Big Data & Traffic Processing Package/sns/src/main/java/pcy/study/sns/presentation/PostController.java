@@ -1,13 +1,13 @@
 package pcy.study.sns.presentation;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.*;
 import pcy.study.sns.domain.post.dto.DailyPostCount;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
 import pcy.study.sns.domain.post.dto.PostCommand;
+import pcy.study.sns.domain.post.entity.Post;
 import pcy.study.sns.domain.post.service.PostReadService;
 import pcy.study.sns.domain.post.service.PostWriteService;
 
@@ -30,5 +30,15 @@ public class PostController {
     @GetMapping("/daily-counts")
     public List<DailyPostCount> getDailyPostCounts(DailyPostCountRequest request) {
         return postReadService.getDailyPostCounts(request);
+    }
+
+    @GetMapping("/members/{memberId}")
+    public Page<Post> getPosts(
+            @PathVariable("memberId") Long memberId,
+            @RequestParam("size") int size,
+            @RequestParam("page") int page
+    ) {
+        var pageRequest = PageRequest.of(page, size);
+        return postReadService.getPosts(memberId, pageRequest);
     }
 }

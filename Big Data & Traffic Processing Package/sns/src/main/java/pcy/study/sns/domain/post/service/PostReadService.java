@@ -1,9 +1,12 @@
 package pcy.study.sns.domain.post.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pcy.study.sns.domain.post.dto.DailyPostCount;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
+import pcy.study.sns.domain.post.entity.Post;
 import pcy.study.sns.domain.post.repository.PostRepository;
 
 import java.util.List;
@@ -19,5 +22,9 @@ public class PostReadService {
         반환 값 -> 리스트 [작성일자, 작성회원, 작성 게시물 갯수]
          */
         return postRepository.groupByCreatedDate(request);
+    }
+
+    public Page<Post> getPosts(Long memberId, Pageable pageable) {
+        return postRepository.findAllByMemberId(memberId, pageable);
     }
 }
