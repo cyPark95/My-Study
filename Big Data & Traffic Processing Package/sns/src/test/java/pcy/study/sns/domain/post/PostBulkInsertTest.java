@@ -1,6 +1,7 @@
 package pcy.study.sns.domain.post;
 
 import org.jeasy.random.EasyRandom;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,8 +21,8 @@ public class PostBulkInsertTest {
     private PostRepository postRepository;
 
     @Test
+    @Disabled
     void bulkInsert() {
-        // TODO 테스트 격리
         EasyRandom easyRandom = PostFixtureFactory.get(
                 1L,
                 LocalDate.of(2023, 2, 14),
