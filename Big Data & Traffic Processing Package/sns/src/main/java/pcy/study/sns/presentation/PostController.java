@@ -11,6 +11,7 @@ import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
 import pcy.study.sns.domain.post.dto.PostCommand;
 import pcy.study.sns.domain.post.dto.PostDto;
 import pcy.study.sns.domain.post.service.PostReadService;
+import pcy.study.sns.domain.post.service.PostWriteService;
 import pcy.study.sns.util.CursorRequest;
 import pcy.study.sns.util.PageCursor;
 
@@ -22,6 +23,7 @@ import java.util.List;
 public class PostController {
 
     private final PostReadService postReadService;
+    private final PostWriteService postWriteService;
 
     private final RegisterPostUsecase registerPostUsecase;
     private final GetTimelinePostUsecase getTimelinePostUsecase;
@@ -62,5 +64,10 @@ public class PostController {
     ) {
 //        return getTimelinePostUsecase.execute(memberId, cursorRequest);
         return getTimelinePostUsecase.executeByTimeline(memberId, cursorRequest);
+    }
+
+    @PostMapping("/{postId}/like")
+    public void likePost(@PathVariable("postId") Long postId) {
+        postWriteService.likePost(postId);
     }
 }

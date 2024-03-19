@@ -45,6 +45,7 @@ create table Post
     memberId    int          not null,
     contents    varchar(100) not null,
     createdDate date         not null,
+    likeCount   int,
     createdAt   datetime     not null,
     constraint Post_id_uindex
         primary key (id)
