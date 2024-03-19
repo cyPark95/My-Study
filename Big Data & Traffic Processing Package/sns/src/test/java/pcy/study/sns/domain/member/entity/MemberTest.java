@@ -22,7 +22,7 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("회원의 닉네임은 10자를 초과할 수 없다,")
+    @DisplayName("회원의 닉네임은 10자를 초과할 수 없다.")
     void changeNickname_maxLength() {
         // given
         var member = MemberFixtureFactory.create();
