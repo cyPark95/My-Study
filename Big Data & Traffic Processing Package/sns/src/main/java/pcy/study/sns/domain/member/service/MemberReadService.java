@@ -2,6 +2,7 @@ package pcy.study.sns.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pcy.study.sns.domain.member.converter.MemberConverter;
 import pcy.study.sns.domain.member.dto.MemberDto;
 import pcy.study.sns.domain.member.dto.MemberNicknameHistoryDto;
@@ -11,6 +12,7 @@ import pcy.study.sns.domain.member.repository.MemberRepository;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberReadService {
 

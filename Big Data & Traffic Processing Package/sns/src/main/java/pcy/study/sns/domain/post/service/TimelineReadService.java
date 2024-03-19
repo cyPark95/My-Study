@@ -2,6 +2,7 @@ package pcy.study.sns.domain.post.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pcy.study.sns.domain.post.converter.TimelineConverter;
 import pcy.study.sns.domain.post.dto.TimelineDto;
 import pcy.study.sns.domain.post.entity.Timeline;
@@ -12,6 +13,7 @@ import pcy.study.sns.util.PageCursor;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TimelineReadService {
 

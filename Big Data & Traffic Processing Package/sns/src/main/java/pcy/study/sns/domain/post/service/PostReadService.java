@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pcy.study.sns.domain.post.converter.PostConverter;
 import pcy.study.sns.domain.post.dto.DailyPostCount;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
@@ -16,6 +17,7 @@ import pcy.study.sns.util.PageCursor;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostReadService {
 
