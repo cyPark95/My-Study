@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+import pcy.study.sns.application.usecase.GetTimelinePostUsecase;
 import pcy.study.sns.domain.post.dto.DailyPostCount;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
 import pcy.study.sns.domain.post.dto.PostCommand;
@@ -22,6 +23,8 @@ public class PostController {
 
     private final PostReadService postReadService;
     private final PostWriteService postWriteService;
+
+    private final GetTimelinePostUsecase getTimelinePostUsecase;
 
     @PostMapping
     public Long register(PostCommand command) {
@@ -50,5 +53,13 @@ public class PostController {
             @ModelAttribute CursorRequest cursorRequest
     ) {
         return postReadService.getPosts(memberId, cursorRequest);
+    }
+
+    @GetMapping("/member/{memberId}/timeline")
+    public PageCursor<PostDto> getTimeline(
+            @PathVariable("memberId") Long memberId,
+            @ModelAttribute CursorRequest cursorRequest
+    ) {
+        return getTimelinePostUsecase.execute(memberId, cursorRequest);
     }
 }
