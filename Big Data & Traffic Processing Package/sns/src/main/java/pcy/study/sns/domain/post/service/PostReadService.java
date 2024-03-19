@@ -29,6 +29,11 @@ public class PostReadService {
         return postRepository.groupByCreatedDate(request);
     }
 
+    public List<PostDto> getPosts(List<Long> ids) {
+        var posts = postRepository.findAllByInId(ids);
+        return postConverter.toDto(posts);
+    }
+
     public Page<PostDto> getPosts(Long memberId, Pageable pageable) {
         var posts = postRepository.findAllByMemberId(memberId, pageable);
         return posts.map(postConverter::toDto);

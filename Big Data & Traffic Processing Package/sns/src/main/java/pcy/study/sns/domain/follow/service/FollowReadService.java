@@ -17,8 +17,11 @@ public class FollowReadService {
 
     public List<FollowDto> getFollowings(Long fromMemberId) {
         var followings = followRepository.findAllByFromMemberId(fromMemberId);
-        return followings.stream()
-                .map(followConverter::toDto)
-                .toList();
+        return followConverter.toDto(followings);
+    }
+
+    public List<FollowDto> getFollowers(Long toMemberId) {
+        var follower = followRepository.findAllByToMemberId(toMemberId);
+        return followConverter.toDto(follower);
     }
 }
