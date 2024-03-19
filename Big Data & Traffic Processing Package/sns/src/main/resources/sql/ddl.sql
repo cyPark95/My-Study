@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS Member;
+DROP TABLE IF EXISTS MemberNicknameHistory;
+DROP TABLE IF EXISTS Follow;
+DROP TABLE IF EXISTS Post;
+DROP TABLE IF EXISTS Timeline;
+
 create table Member
 (
     id        int auto_increment,
@@ -49,7 +55,6 @@ create index Post__index_member_id
 
 create index Post__index_created_date
     on Post (createdDate);
-
 
 create table Timeline
 (
