@@ -33,7 +33,7 @@ class MemberJdbcRepositoryTest {
     @DisplayName("ID로 회원 조회")
     void findById() {
         // given
-        Member member = MemberFixtureFactory.create();
+        Member member = MemberFixtureFactory.createWithoutId();
         Long id = memberRepository.save(member).getId();
 
         // when
@@ -61,7 +61,7 @@ class MemberJdbcRepositoryTest {
     void findAllByIdIn() {
         // given
         int size = 10;
-        EasyRandom easyRandom = MemberFixtureFactory.get();
+        EasyRandom easyRandom = MemberFixtureFactory.getWithoutId();
         List<Long> ids = IntStream.range(0, size)
                 .parallel()
                 .mapToObj(i -> {
@@ -81,7 +81,7 @@ class MemberJdbcRepositoryTest {
     @DisplayName("회원 저장")
     void save() {
         // given
-        Member member = MemberFixtureFactory.create();
+        Member member = MemberFixtureFactory.createWithoutId();
 
         // when
         Member result = memberRepository.save(member);

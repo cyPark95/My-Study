@@ -14,12 +14,12 @@ import pcy.study.sns.domain.member.entity.Member;
 import pcy.study.sns.domain.member.entity.MemberNicknameHistory;
 import pcy.study.sns.domain.member.repository.MemberNicknameHistoryRepository;
 import pcy.study.sns.domain.member.repository.MemberRepository;
+import pcy.study.sns.util.MemberAssertUtil;
 import pcy.study.sns.util.MemberFixtureFactory;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -43,19 +43,14 @@ class MemberWriteServiceTest {
         // given
         MemberRegisterCommand command = new MemberRegisterCommand("email", "nickname", LocalDate.now());
 
-        Member member = MemberFixtureFactory.createWithId();
+        Member member = MemberFixtureFactory.create();
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
         // when
         MemberDto result = memberWriteService.register(command);
 
         // then
-        assertAll(
-                () -> assertEquals(member.getId(), result.id()),
-                () -> assertEquals(member.getEmail(), result.email()),
-                () -> assertEquals(member.getNickname(), result.nickname()),
-                () -> assertEquals(member.getBirthday(), result.birthday())
-        );
+        MemberAssertUtil.assertEqualsMember(member, result);
 
         verify(memberNicknameHistoryRepository, atMostOnce()).save(any(MemberNicknameHistory.class));
     }
@@ -66,7 +61,7 @@ class MemberWriteServiceTest {
         // given
         String changeNickname = "change";
 
-        Member member = MemberFixtureFactory.createWithId();
+        Member member = MemberFixtureFactory.create();
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
 
         // when
