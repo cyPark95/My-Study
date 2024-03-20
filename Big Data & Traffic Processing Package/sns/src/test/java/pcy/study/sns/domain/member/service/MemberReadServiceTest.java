@@ -75,7 +75,7 @@ class MemberReadServiceTest {
         // given
         Long memberId = 1L;
         int size = 10;
-        List<MemberNicknameHistory> histories = MemberFixtureFactory.createMemberNicknameHistories(size);
+        List<MemberNicknameHistory> histories = MemberFixtureFactory.createMemberNicknameHistories(size, memberId);
         when(memberNicknameHistoryRepository.findAllByMemberId(memberId)).thenReturn(histories);
 
         // when

@@ -1,38 +1,38 @@
 package pcy.study.sns.domain.member.entity;
 
-import lombok.Builder;
-import lombok.Getter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import lombok.*;
 import org.springframework.util.Assert;
+import pcy.study.sns.domain.common.entity.BaseEntity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
-public class Member {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@ToString
+@Entity
+public class Member extends BaseEntity {
 
     private static final Long NAME_MAX_LENGTH = 10L;
 
-    private final Long id;
+    @Column(length = 20, nullable = false)
+    private String email;
 
-    private final String email;
-
+    @Column(length = 20, nullable = false)
     private String nickname;
 
-    private final LocalDate birthday;
-
-    private final LocalDateTime createdAt;
+    @Column(nullable = false)
+    private LocalDate birthday;
 
     @Builder
-    public Member(Long id, String email, String nickname, LocalDate birthday, LocalDateTime createdAt) {
-        this.id = id;
-
+    public Member(String email, String nickname, LocalDate birthday) {
         validateNickname(nickname);
         this.email = Objects.requireNonNull(email);
         this.nickname = Objects.requireNonNull(nickname);
         this.birthday = Objects.requireNonNull(birthday);
-
-        this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 
     public void changeNickname(String to) {

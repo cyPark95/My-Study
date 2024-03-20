@@ -1,25 +1,27 @@
 package pcy.study.sns.domain.member.entity;
 
-import lombok.Builder;
-import lombok.Getter;
+import jakarta.persistence.Entity;
+import lombok.*;
+import pcy.study.sns.domain.common.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
 @Getter
-public class MemberNicknameHistory {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@ToString
+public class MemberNicknameHistory extends BaseEntity {
 
-    private final Long id;
+    private Long memberId;
 
-    private final Long memberId;
+    private String nickname;
 
-    private final String nickname;
-
-    private final LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Builder
-    public MemberNicknameHistory(Long id, Long memberId, String nickname, LocalDateTime createdAt) {
-        this.id = id;
+    public MemberNicknameHistory(Long memberId, String nickname, LocalDateTime createdAt) {
         this.memberId = Objects.requireNonNull(memberId);
         this.nickname = Objects.requireNonNull(nickname);
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;

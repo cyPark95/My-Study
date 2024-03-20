@@ -16,19 +16,52 @@ import static org.jeasy.random.FieldPredicates.*;
  */
 public class MemberFixtureFactory {
 
-    public static EasyRandom get() {
+    public static Member create() {
+        return get()
+                .nextObject(Member.class);
+    }
+
+    public static List<Member> createMembers(int size) {
+        EasyRandom easyRandom = get();
+        return IntStream.range(0, size)
+                .mapToObj(i -> easyRandom.nextObject(Member.class))
+                .toList();
+    }
+
+    public static Member createWithoutId() {
+        return getWithoutId()
+                .nextObject(Member.class);
+    }
+
+    public static List<Member> createMembersWithoutId(int size) {
+        EasyRandom easyRandom = getWithoutId();
+        return IntStream.range(0, size)
+                .mapToObj(i -> easyRandom.nextObject(Member.class))
+                .toList();
+    }
+
+    public static MemberNicknameHistory createMemberNicknameHistory(Long memberId) {
+        return get(memberId)
+                .nextObject(MemberNicknameHistory.class);
+    }
+
+    public static List<MemberNicknameHistory> createMemberNicknameHistories(int size, Long memberId) {
+        EasyRandom easyRandom = get(memberId);
+
+        return IntStream.range(0, size)
+                .parallel()
+                .mapToObj(i -> easyRandom.nextObject(MemberNicknameHistory.class))
+                .toList();
+    }
+
+    private static EasyRandom get() {
         var param = new EasyRandomParameters()
                 .stringLengthRange(5, 10);
 
         return new EasyRandom(param);
     }
 
-    public static Member create() {
-        return get()
-                .nextObject(Member.class);
-    }
-
-    public static EasyRandom getWithoutId() {
+    private static EasyRandom getWithoutId() {
         var idPredicate = named("id")
                 .and(ofType(Long.class))
                 .and(inClass(Member.class));
@@ -40,23 +73,15 @@ public class MemberFixtureFactory {
         return new EasyRandom(param);
     }
 
-    public static Member createWithoutId() {
-        return getWithoutId()
-                .nextObject(Member.class);
-    }
+    private static EasyRandom get(Long memberId) {
+        var memberIdPredicate = named("memberId")
+                .and(ofType(Long.class))
+                .and(inClass(MemberNicknameHistory.class));
 
-    public static List<Member> createMembers(int size) {
-        EasyRandom easyRandom = get();
-        return IntStream.range(0, size)
-                .mapToObj(i -> easyRandom.nextObject(Member.class))
-                .toList();
-    }
+        var param = new EasyRandomParameters()
+                .randomize(memberIdPredicate, () -> memberId)
+                .stringLengthRange(5, 10);
 
-    public static List<MemberNicknameHistory> createMemberNicknameHistories(int size) {
-        EasyRandom easyRandom = get();
-        return IntStream.range(0, size)
-                .parallel()
-                .mapToObj(i -> easyRandom.nextObject(MemberNicknameHistory.class))
-                .toList();
+        return new EasyRandom(param);
     }
 }
