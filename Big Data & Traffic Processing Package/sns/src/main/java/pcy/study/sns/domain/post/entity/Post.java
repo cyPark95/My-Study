@@ -20,10 +20,12 @@ public class Post {
 
     private Long likeCount;
 
+    private Long version;
+
     private final LocalDateTime createdAt;
 
     @Builder
-    public Post(Long id, Long memberId, String contents, LocalDate createdDate, Long likeCount, LocalDateTime createdAt) {
+    public Post(Long id, Long memberId, String contents, LocalDate createdDate, Long likeCount, Long version, LocalDateTime createdAt) {
         this.id = id;
 
         this.memberId = Objects.requireNonNull(memberId);
@@ -31,6 +33,7 @@ public class Post {
 
         this.createdDate = createdDate == null ? LocalDate.now() : createdDate;
         this.likeCount = likeCount == null ? 0 : likeCount;
+        this.version = version == null ? 0 : version;
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 

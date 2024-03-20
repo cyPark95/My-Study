@@ -46,6 +46,7 @@ create table Post
     contents    varchar(100) not null,
     createdDate date         not null,
     likeCount   int,
+    version     int,
     createdAt   datetime     not null,
     constraint Post_id_uindex
         primary key (id)
