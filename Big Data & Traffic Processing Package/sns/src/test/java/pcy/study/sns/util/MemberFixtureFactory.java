@@ -2,6 +2,7 @@ package pcy.study.sns.util;
 
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
+import pcy.study.sns.common.EasyRandomFactory;
 import pcy.study.sns.domain.member.entity.Member;
 import pcy.study.sns.domain.member.entity.MemberNicknameHistory;
 
@@ -10,39 +11,21 @@ import java.util.stream.IntStream;
 
 import static org.jeasy.random.FieldPredicates.*;
 
-/**
- * EasyRandom
- * 자바 빈을 만들어주는 라이브러리
- */
-public class MemberFixtureFactory {
+public class MemberFixtureFactory extends EasyRandomFactory {
 
-    public static Member create() {
-        return get()
+    private static final EasyRandomParameters MEMBER_EASY_RANDOM_PARAMETERS = EASY_RANDOM_BASE_PARAMETERS
+            .stringLengthRange(5, 10);
+
+    public static Member createMember() {
+        return get(MEMBER_EASY_RANDOM_PARAMETERS)
                 .nextObject(Member.class);
     }
 
     public static List<Member> createMembers(int size) {
-        EasyRandom easyRandom = get();
+        EasyRandom easyRandom = get(MEMBER_EASY_RANDOM_PARAMETERS);
         return IntStream.range(0, size)
                 .mapToObj(i -> easyRandom.nextObject(Member.class))
                 .toList();
-    }
-
-    public static Member createWithoutId() {
-        return getWithoutId()
-                .nextObject(Member.class);
-    }
-
-    public static List<Member> createMembersWithoutId(int size) {
-        EasyRandom easyRandom = getWithoutId();
-        return IntStream.range(0, size)
-                .mapToObj(i -> easyRandom.nextObject(Member.class))
-                .toList();
-    }
-
-    public static MemberNicknameHistory createMemberNicknameHistory(Long memberId) {
-        return get(memberId)
-                .nextObject(MemberNicknameHistory.class);
     }
 
     public static List<MemberNicknameHistory> createMemberNicknameHistories(int size, Long memberId) {
@@ -54,33 +37,13 @@ public class MemberFixtureFactory {
                 .toList();
     }
 
-    private static EasyRandom get() {
-        var param = new EasyRandomParameters()
-                .stringLengthRange(5, 10);
-
-        return new EasyRandom(param);
-    }
-
-    private static EasyRandom getWithoutId() {
-        var idPredicate = named("id")
-                .and(ofType(Long.class))
-                .and(inClass(Member.class));
-
-        var param = new EasyRandomParameters()
-                .excludeField(idPredicate)
-                .stringLengthRange(5, 10);
-
-        return new EasyRandom(param);
-    }
-
     private static EasyRandom get(Long memberId) {
         var memberIdPredicate = named("memberId")
                 .and(ofType(Long.class))
                 .and(inClass(MemberNicknameHistory.class));
 
-        var param = new EasyRandomParameters()
-                .randomize(memberIdPredicate, () -> memberId)
-                .stringLengthRange(5, 10);
+        var param = MEMBER_EASY_RANDOM_PARAMETERS
+                .randomize(memberIdPredicate, () -> memberId);
 
         return new EasyRandom(param);
     }

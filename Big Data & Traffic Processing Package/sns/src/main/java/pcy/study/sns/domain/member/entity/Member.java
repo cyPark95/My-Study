@@ -11,7 +11,6 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @ToString
 @Entity
 public class Member extends BaseEntity {

@@ -11,7 +11,7 @@ class MemberTest {
     @DisplayName("회원은 닉네임을 변경할 수 있다.")
     void changeNickname() {
         // given
-        var member = MemberFixtureFactory.createWithoutId();
+        var member = MemberFixtureFactory.createMember();
         var expected = "name";
 
         // when
@@ -25,7 +25,7 @@ class MemberTest {
     @DisplayName("회원의 닉네임은 10자를 초과할 수 없다.")
     void changeNickname_maxLength() {
         // given
-        var member = MemberFixtureFactory.createWithoutId();
+        var member = MemberFixtureFactory.createMember();
         var expected = "12345678910";
 
         // when

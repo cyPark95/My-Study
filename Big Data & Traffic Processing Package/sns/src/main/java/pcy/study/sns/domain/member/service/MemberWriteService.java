@@ -45,7 +45,8 @@ public class MemberWriteService {
         1. 회원의 이름을 변경
         2. 변경 내역을 저장한다.
          */
-        var member = memberRepository.findById(id).orElseThrow();
+        var member = memberRepository.findById(id)
+                .orElseThrow();
         member.changeNickname(nickname);
         memberRepository.save(member);
         saveMemberNicknameHistory(member);

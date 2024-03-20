@@ -19,11 +19,11 @@ public class MemberAssertUtil {
         );
     }
 
-    public static void assertEqualsMemberNicknameHistory(MemberNicknameHistory member, MemberNicknameHistoryDto result) {
+    public static void assertEqualsMemberNicknameHistory(MemberNicknameHistory history, MemberNicknameHistoryDto result) {
         assertAll(
-                () -> assertEquals(member.getId(), result.id()),
-                () -> assertEquals(member.getMemberId(), result.memberId()),
-                () -> assertEquals(member.getNickname(), result.nickname())
+                () -> assertEquals(history.getId(), result.id()),
+                () -> assertEquals(history.getMemberId(), result.memberId()),
+                () -> assertEquals(history.getNickname(), result.nickname())
         );
     }
 }
