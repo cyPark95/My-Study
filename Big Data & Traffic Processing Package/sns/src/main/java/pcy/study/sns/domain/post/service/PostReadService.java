@@ -10,6 +10,7 @@ import pcy.study.sns.domain.post.dto.DailyPostCount;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
 import pcy.study.sns.domain.post.dto.PostDto;
 import pcy.study.sns.domain.post.entity.Post;
+import pcy.study.sns.domain.post.repository.PostLikeRepository;
 import pcy.study.sns.domain.post.repository.PostRepository;
 import pcy.study.sns.util.CursorRequest;
 import pcy.study.sns.util.PageCursor;
@@ -23,12 +24,18 @@ public class PostReadService {
 
     private final PostRepository postRepository;
     private final PostConverter postConverter;
+    private final PostLikeRepository postLikeRepository;
 
     public List<DailyPostCount> getDailyPostCounts(DailyPostCountRequest request) {
         /*
         반환 값 -> 리스트 [작성일자, 작성회원, 작성 게시물 갯수]
          */
         return postRepository.groupByCreatedDate(request);
+    }
+
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId, false)
+                .orElseThrow();
     }
 
     public List<PostDto> getPosts(List<Long> ids) {
@@ -38,7 +45,11 @@ public class PostReadService {
 
     public Page<PostDto> getPosts(Long memberId, Pageable pageable) {
         var posts = postRepository.findAllByMemberId(memberId, pageable);
-        return posts.map(postConverter::toDto);
+        return posts.map(post -> {
+            // TODO PostLike 테이블의 Count를 Post 테이블의 likeCount에 동기화
+            var likeCount = postLikeRepository.getCount(post.getId());
+            return postConverter.toDto(post, likeCount);
+        });
     }
 
     public PageCursor<PostDto> getPosts(Long memberId, CursorRequest cursorRequest) {

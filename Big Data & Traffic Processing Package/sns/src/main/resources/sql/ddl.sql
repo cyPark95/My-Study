@@ -70,3 +70,15 @@ create table Timeline
 
 create index Timeline__index_memberId
     on Post (memberId);
+
+create table PostLike
+(
+    id int auto_increment,
+    memberId int not null,
+    postId int not null,
+    createdAt datetime not null,
+    constraint PostLike_id_uindex
+        primary key (id),
+    constraint PostLike_unique
+        unique (memberId, postId)
+);

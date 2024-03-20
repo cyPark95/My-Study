@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import pcy.study.sns.application.usecase.GetTimelinePostUsecase;
+import pcy.study.sns.application.usecase.RegisterPostLikeUsecase;
 import pcy.study.sns.application.usecase.RegisterPostUsecase;
 import pcy.study.sns.domain.post.dto.DailyPostCount;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
@@ -27,6 +28,7 @@ public class PostController {
 
     private final RegisterPostUsecase registerPostUsecase;
     private final GetTimelinePostUsecase getTimelinePostUsecase;
+    private final RegisterPostLikeUsecase registerPostLikeUsecase;
 
     @PostMapping
     public Long register(PostCommand command) {
@@ -66,9 +68,17 @@ public class PostController {
         return getTimelinePostUsecase.executeByTimeline(memberId, cursorRequest);
     }
 
-    @PostMapping("/{postId}/like")
+    @PostMapping("/{postId}/v1/like")
     public void likePost(@PathVariable("postId") Long postId) {
 //        postWriteService.likePost(postId);
         postWriteService.likePostByOptimisticLock(postId);
+    }
+
+    @PostMapping("/{postId}/v2/like")
+    public void likePost(
+            @PathVariable("postId") Long postId,
+            @RequestParam("memberId") Long memberId
+    ) {
+        registerPostLikeUsecase.execute(postId, memberId);
     }
 }
