@@ -22,4 +22,11 @@ public class FollowConverter {
                 follow.getToMemberId()
         );
     }
+
+    public Follow toFollow(Long fromMemberId, Long toMemberI) {
+        return Follow.builder()
+                .fromMemberId(fromMemberId)
+                .toMemberId(toMemberI)
+                .build();
+    }
 }

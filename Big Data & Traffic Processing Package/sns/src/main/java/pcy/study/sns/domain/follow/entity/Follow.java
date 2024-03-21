@@ -1,28 +1,37 @@
 package pcy.study.sns.domain.follow.entity;
 
-import lombok.Builder;
-import lombok.Getter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.*;
+import pcy.study.sns.domain.common.entity.BaseEntity;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
-public class Follow {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
+@Entity
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "Follow_fromMemberId_toMemberId_uindex",
+                        columnNames = {"fromMemberId", "toMemberId"}
+                )
+        }
+)
+public class Follow extends BaseEntity {
 
-    private final Long id;
+    @Column(nullable = false)
+    private Long fromMemberId;
 
-    private final Long fromMemberId;
-
-    private final Long toMemberId;
-
-    private final LocalDateTime createdAt;
+    @Column(nullable = false)
+    private Long toMemberId;
 
     @Builder
-    public Follow(Long id, Long fromMemberId, Long toMemberId, LocalDateTime createdAt) {
-        this.id = id;
+    public Follow(Long fromMemberId, Long toMemberId) {
         this.fromMemberId = Objects.requireNonNull(fromMemberId);
         this.toMemberId = Objects.requireNonNull(toMemberId);
-
-        this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 }
