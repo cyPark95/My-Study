@@ -45,8 +45,8 @@
         - Hashed Sharding
             - Shard Key의 해시 값을 사용해 데이터를 균등하게 분산하는 방식
             - 데이터 불균형 문제를 줄일 수 있다.
-            - 데이터가 연속적이지 안기 때문에 브로드 캐스트 쿼리(모든 Shard에 쿼리)를 통해 필터링이 작업이 필요할 수 있다.
             - 범위 쿼리에는 비효율적일 수 있다.
+                - 데이터가 연속적이지 안기 때문에 브로드 캐스트 쿼리(모든 Shard에 쿼리)를 통해 필터링이 작업이 필요할 수 있다.
         - Zone Sharding
             - 특정 조건을 만족하는 데이터를 지정된 Shard에 할당하는 방식
             - Ranged Sharding과 Hashed Sharding을 함께 사용한다.
@@ -81,4 +81,15 @@ Replica Set vs Sharded Cluster
 
 - Sharded Cluster
     - Sharded Cluster는 각 Shard가 다른 데이터의 서브셋을 갖는다.
+```
+
+### Replica Set vs Sharded Cluster
+
+|      배포 형태      | 장점                                                                                                            | 단점                                                |
+|:---------------:|---------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
+|   Replica Set   | <li>운영이 쉽다.</li><li>장애 발생시 문제 해결 및 복구가 쉽다.</li><li>서버 비용이 적게 든다.</li><li>성능이 좋다.</li><li>개발 시, 설계가 용이하다.</li> | <li>Read에 대한 분산이 가능하지만, Write에 대한 분산은 불가능하다.</li> |
+| Sharded Cluster | <li>Scale-Out이 가능하다.</li><li>Write에 대한 분산이 가능하다.</li>                                                         | <li>Replica Set의 모든 장점이 상대적으로 단점이 된다.</li>        |
+
+```markdown
+가능하면 Replica Set으로 배포하고, 서비스의 요구사항이 Replica Set으로 충족할 수 없는 경우 Sharded Cluster를 사용한다.
 ```
