@@ -2,11 +2,9 @@ package pcy.study.sns.domain.post.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import pcy.study.sns.common.DatabaseClearExtension;
+import pcy.study.sns.common.IntegrationTest;
 import pcy.study.sns.domain.common.entity.BaseEntity;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
 import pcy.study.sns.domain.post.entity.Post;
@@ -24,8 +22,7 @@ import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(DatabaseClearExtension.class)
-@SpringBootTest
+@IntegrationTest
 class PostReadServiceTest {
 
     private static final Long MEMBER_ID = -1L;

@@ -3,7 +3,7 @@ package pcy.study.sns.domain.follow.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pcy.study.sns.common.IntegrationTest;
 import pcy.study.sns.domain.follow.entity.Follow;
 import pcy.study.sns.domain.follow.repository.FollowRepository;
 import pcy.study.sns.util.FollowAssertUtil;
@@ -13,7 +13,7 @@ import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@IntegrationTest
 class FollowReadServiceTest {
 
     @Autowired

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pcy.study.sns.common.IntegrationTest;
 import pcy.study.sns.domain.post.dto.PostCommand;
 import pcy.study.sns.domain.post.entity.Post;
 import pcy.study.sns.domain.post.repository.PostRepository;
@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@IntegrationTest
 class PostWriteServiceTest {
 
     @Autowired
