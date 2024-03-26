@@ -24,14 +24,14 @@ public class PostWriteService {
     }
 
     public void likePost(Long postId) {
-        var post = postRepository.findById(postId, true)
+        var post = postRepository.findById(postId)
                 .orElseThrow();
         post.incrementLickCount();
         postRepository.save(post);
     }
 
     public void likePostByOptimisticLock(Long postId) {
-        var post = postRepository.findById(postId, false)
+        var post = postRepository.findById(postId)
                 .orElseThrow();
         post.incrementLickCount();
         postRepository.save(post);

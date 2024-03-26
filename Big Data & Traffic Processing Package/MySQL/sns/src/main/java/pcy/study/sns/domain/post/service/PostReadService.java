@@ -10,8 +10,8 @@ import pcy.study.sns.domain.post.dto.DailyPostCount;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
 import pcy.study.sns.domain.post.dto.PostDto;
 import pcy.study.sns.domain.post.entity.Post;
-import pcy.study.sns.domain.post.repository.PostLikeRepository;
 import pcy.study.sns.domain.post.repository.PostRepository;
+import pcy.study.sns.domain.post.repository.PostLikeRepository;
 import pcy.study.sns.util.CursorRequest;
 import pcy.study.sns.util.PageCursor;
 
@@ -33,13 +33,14 @@ public class PostReadService {
         return postRepository.groupByCreatedDate(request);
     }
 
-    public Post getPost(Long postId) {
-        return postRepository.findById(postId, false)
+    public PostDto getPost(Long postId) {
+        var post = postRepository.findById(postId)
                 .orElseThrow();
+        return postConverter.toDto(post);
     }
 
     public List<PostDto> getPosts(List<Long> ids) {
-        var posts = postRepository.findAllByInId(ids);
+        var posts = postRepository.findAllByIdIn(ids);
         return postConverter.toDto(posts);
     }
 
@@ -68,18 +69,18 @@ public class PostReadService {
 
     private List<Post> findAllBy(Long memberId, CursorRequest cursorRequest) {
         if (cursorRequest.hasKey()) {
-            return postRepository.findAllByLessThanIdAndMemberIdOrderByIdDesc(cursorRequest.key(), memberId, cursorRequest.size());
+            return postRepository.findAllByIdLessThanAndMemberIdOrderByIdDesc(cursorRequest.key(), memberId, cursorRequest.getPageable());
         }
 
-        return postRepository.findAllByMemberIdOrderByIdDesc(memberId, cursorRequest.size());
+        return postRepository.findAllByMemberIdOrderByIdDesc(memberId, cursorRequest.getPageable());
     }
 
     private List<Post> findAllBy(List<Long> memberIds, CursorRequest cursorRequest) {
         if (cursorRequest.hasKey()) {
-            return postRepository.findAllByLessThanIdAndInMemberIdOrderByIdDesc(cursorRequest.key(), memberIds, cursorRequest.size());
+            return postRepository.findAllByIdLessThanAndMemberIdInOrderByIdDesc(cursorRequest.key(), memberIds, cursorRequest.getPageable());
         }
 
-        return postRepository.findAllByInMemberIdOrderByIdDesc(memberIds, cursorRequest.size());
+        return postRepository.findAllByMemberIdInOrderByIdDesc(memberIds, cursorRequest.getPageable());
     }
 
     private static long getNextKey(List<Post> posts) {

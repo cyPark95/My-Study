@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 import pcy.study.sns.domain.post.entity.Post;
-import pcy.study.sns.domain.post.repository.PostRepository;
+import pcy.study.sns.domain.post.repository.PostJdbcRepository;
 import pcy.study.sns.util.PostFixtureFactory;
 
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 public class PostBulkInsertTest {
 
     @Autowired
-    private PostRepository postRepository;
+    private PostJdbcRepository postJdbcRepository;
 
     @Test
     @Disabled
@@ -42,7 +42,7 @@ public class PostBulkInsertTest {
         
         var querystopWatch = new StopWatch();
         querystopWatch.start();
-        postRepository.bulkInsert(posts);
+        postJdbcRepository.bulkInsert(posts);
 
         querystopWatch.stop();
         System.out.println("DB 인서트 시간: " + querystopWatch.getTotalTimeSeconds());

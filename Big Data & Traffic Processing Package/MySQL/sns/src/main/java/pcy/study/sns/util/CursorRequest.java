@@ -1,5 +1,8 @@
 package pcy.study.sns.util;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 /**
  * 커서 기반 페이징
  * 어떤 정보를 Key로 정하는지가 중요하다.
@@ -12,6 +15,10 @@ public record CursorRequest(Long key, int size) {
 
     public boolean hasKey() {
         return key != null;
+    }
+
+    public Pageable getPageable() {
+        return PageRequest.of(0, size);
     }
 
     public CursorRequest next(Long key) {

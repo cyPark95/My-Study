@@ -10,6 +10,7 @@ public class PostAssertUtil {
 
     public static void assertEqualsPost(Post post, PostDto result) {
         assertAll(
+                () -> assertEquals(post.getId(), result.id()),
                 () -> assertEquals(post.getMemberId(), result.memberId()),
                 () -> assertEquals(post.getContents(), result.contents()),
                 () -> assertEquals(post.getCreatedDate(), result.createdDate())

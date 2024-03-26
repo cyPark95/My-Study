@@ -1,40 +1,41 @@
 package pcy.study.sns.domain.post.entity;
 
-import lombok.Builder;
-import lombok.Getter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Version;
+import lombok.*;
+import pcy.study.sns.domain.common.entity.BaseEntity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
-public class Post {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
+@Entity
+public class Post extends BaseEntity {
 
-    private final Long id;
+    @Column(nullable = false)
+    private Long memberId;
 
-    private final Long memberId;
+    @Column(length = 100, nullable = false)
+    private String contents;
 
-    private final String contents;
-
-    private final LocalDate createdDate;
+    @Column(nullable = false)
+    private LocalDate createdDate;
 
     private Long likeCount;
 
-    private Long version;
-
-    private final LocalDateTime createdAt;
+    @Version
+    private Integer version;
 
     @Builder
-    public Post(Long id, Long memberId, String contents, LocalDate createdDate, Long likeCount, Long version, LocalDateTime createdAt) {
-        this.id = id;
-
+    public Post(Long memberId, String contents, LocalDate createdDate, Long likeCount) {
         this.memberId = Objects.requireNonNull(memberId);
         this.contents = Objects.requireNonNull(contents);
 
         this.createdDate = createdDate == null ? LocalDate.now() : createdDate;
         this.likeCount = likeCount == null ? 0 : likeCount;
-        this.version = version == null ? 0 : version;
-        this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 
     public void incrementLickCount() {

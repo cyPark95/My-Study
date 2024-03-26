@@ -2,28 +2,33 @@ package pcy.study.sns.domain.post.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import pcy.study.sns.common.IntegrationTest;
+import pcy.study.sns.common.DatabaseClearExtension;
+import pcy.study.sns.domain.common.entity.BaseEntity;
 import pcy.study.sns.domain.post.dto.DailyPostCountRequest;
 import pcy.study.sns.domain.post.entity.Post;
+import pcy.study.sns.domain.post.repository.PostJdbcRepository;
 import pcy.study.sns.domain.post.repository.PostRepository;
 import pcy.study.sns.util.CursorRequest;
 import pcy.study.sns.util.PostAssertUtil;
 import pcy.study.sns.util.PostFixtureFactory;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@IntegrationTest
+@ExtendWith(DatabaseClearExtension.class)
+@SpringBootTest
 class PostReadServiceTest {
 
-    private static final Long memberId = -1L;
+    private static final Long MEMBER_ID = -1L;
 
     @Autowired
     private PostReadService postReadService;
@@ -31,19 +36,22 @@ class PostReadServiceTest {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private PostJdbcRepository postJdbcRepository;
+
     @Test
     @DisplayName("날짜별 게시물 개수 조회")
     void getDailyPostCounts() {
         // given
         var size = 10;
         var now = LocalDate.now();
-        var easyRandom = PostFixtureFactory.get(memberId, now, now);
+        var easyRandom = PostFixtureFactory.get(MEMBER_ID, now, now);
         var posts = IntStream.range(0, size)
                 .mapToObj(i -> easyRandom.nextObject(Post.class))
                 .toList();
-        postRepository.bulkInsert(posts);
+        postJdbcRepository.bulkInsert(posts);
 
-        var request = new DailyPostCountRequest(memberId, now, now.plusDays(7));
+        var request = new DailyPostCountRequest(MEMBER_ID, now, now.plusDays(7));
 
         // when
         var results = postReadService.getDailyPostCounts(request);
@@ -66,12 +74,7 @@ class PostReadServiceTest {
         var result = postReadService.getPost(post.getId());
 
         // then
-        assertAll(
-                () -> assertEquals(post.getId(), result.getId()),
-                () -> assertEquals(post.getMemberId(), result.getMemberId()),
-                () -> assertEquals(post.getContents(), result.getContents()),
-                () -> assertEquals(post.getCreatedDate(), result.getCreatedDate())
-        );
+        PostAssertUtil.assertEqualsPost(post, result);
     }
 
     @Test
@@ -86,13 +89,13 @@ class PostReadServiceTest {
     }
 
     @Test
-    @DisplayName("게시물 목록 조회 - List")
+    @DisplayName("게시물 ID 목록으로 게시물 목록 조회")
     void getPostList() {
         // given
         var size = 10;
-        var posts = PostFixtureFactory.createPosts(size, memberId);
+        var posts = savePosts(size);
         var ids = posts.stream()
-                .map(post -> postRepository.save(post).getId())
+                .map(Post::getId)
                 .toList();
 
         // when
@@ -100,13 +103,7 @@ class PostReadServiceTest {
 
         // then
         for (int i = 0; i < size; i++) {
-            var id = ids.get(i);
-            var post = posts.get(i);
-            var result = results.get(i);
-            assertAll(
-                    () -> assertEquals(id, result.id()),
-                    () -> PostAssertUtil.assertEqualsPost(post, result)
-            );
+            PostAssertUtil.assertEqualsPost(posts.get(i), results.get(i));
         }
     }
 
@@ -115,34 +112,21 @@ class PostReadServiceTest {
     void getPostPage() {
         // given
         var size = 5;
-        var posts = PostFixtureFactory.createPosts(size + 1, memberId);
-        var ids = posts.stream()
-                .map(post -> postRepository.save(post).getId())
-                .toList();
+        var posts = savePosts(size);
 
-        var pageReqeust = PageRequest.of(
-                0,
-                size,
-                Sort.by("createdDate").descending()
-                        .and(Sort.by("id").descending())
-        );
+        var pageReqeust = PageRequest.of(0, size);
 
         // when
-        var results = postReadService.getPosts(memberId, pageReqeust);
+        var results = postReadService.getPosts(MEMBER_ID, pageReqeust);
 
         // then
         assertEquals(size + 1, results.getTotalElements());
+        assertEquals(2, results.getTotalPages());
         assertEquals(0, results.getNumber());
         assertEquals(size, results.getNumberOfElements());
 
         for (int i = 0; i < size; i++) {
-            var id = ids.get(i);
-            var post = posts.get(i);
-            var result = results.getContent().get(i);
-            assertAll(
-                    () -> assertEquals(id, result.id()),
-                    () -> PostAssertUtil.assertEqualsPost(post, result)
-            );
+            PostAssertUtil.assertEqualsPost(posts.get(i), results.getContent().get(i));
         }
     }
 
@@ -151,16 +135,13 @@ class PostReadServiceTest {
     void fetPostPageCursor() {
         // given
         var size = 5;
-        var posts = PostFixtureFactory.createPosts(size + 1, memberId);
-        var maxId = posts.stream()
-                .mapToLong(post -> postRepository.save(post).getId())
-                .max()
-                .orElseThrow();
+        var posts = savePosts(size);
+        var key = getMaxId(posts) + 1;
 
-        var cursorReqeust = new CursorRequest(maxId + 1, size);
+        var cursorReqeust = new CursorRequest(key, size);
 
         // when
-        var results = postReadService.getPosts(memberId, cursorReqeust);
+        var results = postReadService.getPosts(MEMBER_ID, cursorReqeust);
 
         // then
         assertTrue(results.nextCursorRequest().hasKey());
@@ -175,19 +156,16 @@ class PostReadServiceTest {
     @DisplayName("회원 ID 목록으로 게시물 목록 조회 - PageCursor")
     void fetPostPageCursorByMemberIds() {
         // given
-        int size = 10;
+        var size = 10;
         var posts = LongStream.range(0, size)
                 .mapToObj(PostFixtureFactory::createPost)
                 .toList();
-        var maxId = posts.stream()
-                .mapToLong(post -> postRepository.save(post).getId())
-                .max()
-                .orElseThrow();
+        var key = getMaxId(posts) + 1;
 
         var memberIds = LongStream.range(0, size / 2)
                 .boxed()
                 .toList();
-        var cursorReqeust = new CursorRequest(maxId + 1, size);
+        var cursorReqeust = new CursorRequest(key + 1, size);
 
         // when
         var results = postReadService.getPosts(memberIds, cursorReqeust);
@@ -197,7 +175,20 @@ class PostReadServiceTest {
     }
 
     private Post savePost() {
-        var post = PostFixtureFactory.createPost(memberId);
+        var post = PostFixtureFactory.createPost(MEMBER_ID);
         return postRepository.save(post);
+    }
+
+    private List<Post> savePosts(int size) {
+        return PostFixtureFactory.createPosts(size + 1, MEMBER_ID).stream()
+                .map(postRepository::save)
+                .toList();
+    }
+
+    private Long getMaxId(List<Post> posts) {
+        return posts.stream()
+                .mapToLong(BaseEntity::getId)
+                .max()
+                .orElseThrow();
     }
 }
