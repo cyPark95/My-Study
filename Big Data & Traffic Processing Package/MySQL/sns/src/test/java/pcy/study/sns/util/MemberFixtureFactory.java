@@ -17,9 +17,6 @@ import static org.jeasy.random.FieldPredicates.*;
 
 public class MemberFixtureFactory extends EasyRandomFactory {
 
-    private static final EasyRandomParameters MEMBER_EASY_RANDOM_PARAMETERS = EASY_RANDOM_BASE_PARAMETERS
-            .stringLengthRange(5, 20);
-
     public static Member createMember() {
         return get(MEMBER_EASY_RANDOM_PARAMETERS)
                 .nextObject(Member.class);
@@ -49,6 +46,9 @@ public class MemberFixtureFactory extends EasyRandomFactory {
                 new LocalDateRandomizer().getRandomValue()
         );
     }
+
+    private static final EasyRandomParameters MEMBER_EASY_RANDOM_PARAMETERS = EASY_RANDOM_BASE_PARAMETERS
+            .stringLengthRange(5, 20);
 
     private static EasyRandom get(Long memberId) {
         var memberIdPredicate = named("memberId")

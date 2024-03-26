@@ -2,7 +2,6 @@ package pcy.study.sns.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pcy.study.sns.domain.member.converter.MemberConverter;
 import pcy.study.sns.domain.member.dto.MemberDto;
 import pcy.study.sns.domain.member.dto.MemberRegisterCommand;
@@ -12,7 +11,6 @@ import pcy.study.sns.domain.member.repository.MemberNicknameHistoryRepository;
 import pcy.study.sns.domain.member.repository.MemberRepository;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MemberWriteService {
 
@@ -35,9 +33,9 @@ public class MemberWriteService {
                 .birthday(command.birthday())
                 .build();
 
-        var newMember = memberRepository.save(member);
-        saveMemberNicknameHistory(newMember);
-        return memberConverter.toDto(newMember);
+        memberRepository.save(member);
+        saveMemberNicknameHistory(member);
+        return memberConverter.toDto(member);
     }
 
     public void changeNickname(Long id, String nickname) {
