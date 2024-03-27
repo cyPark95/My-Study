@@ -19,8 +19,7 @@ public class GetTimelinePostUsecase {
     private final PostReadService postReadService;
     private final TimelineReadService timelineReadService;
 
-    public PageCursor<PostDto> execute(Long memberId, CursorRequest cursorRequest) {
-        // TODO SSE 연동
+    public PageCursor<PostDto> executePullModel(Long memberId, CursorRequest cursorRequest) {
         /*
         1. memberId -> follow 조회
         2. 1번 결과로 게시물 조회
@@ -32,7 +31,7 @@ public class GetTimelinePostUsecase {
         return postReadService.getPosts(followingMemberIds, cursorRequest);
     }
 
-    public PageCursor<PostDto> executeByTimeline(Long memberId, CursorRequest cursorRequest) {
+    public PageCursor<PostDto> execute(Long memberId, CursorRequest cursorRequest) {
         /*
         1. Timeline 조회
         2. 1번에 해당하는 게시물을 조회

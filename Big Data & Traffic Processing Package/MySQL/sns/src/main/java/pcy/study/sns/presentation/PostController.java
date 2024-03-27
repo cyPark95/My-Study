@@ -64,8 +64,8 @@ public class PostController {
             @PathVariable("memberId") Long memberId,
             @ModelAttribute CursorRequest cursorRequest
     ) {
-//        return getTimelinePostUsecase.execute(memberId, cursorRequest);
-        return getTimelinePostUsecase.executeByTimeline(memberId, cursorRequest);
+//        return getTimelinePostUsecase.executePullModel(memberId, cursorRequest);
+        return getTimelinePostUsecase.execute(memberId, cursorRequest);
     }
 
     @PostMapping("/{postId}/v1/like")
