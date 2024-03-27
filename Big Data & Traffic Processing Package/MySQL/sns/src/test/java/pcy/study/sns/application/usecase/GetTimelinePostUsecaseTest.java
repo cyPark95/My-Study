@@ -11,7 +11,7 @@ import pcy.study.sns.util.StepUtil;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @IntegrationTest
-@DisplayName("타임라인 게시글 조회")
+@DisplayName("회원의 타임라인 게시글 목록을 조회한다.")
 class GetTimelinePostUsecaseTest {
 
     @Autowired
@@ -25,8 +25,8 @@ class GetTimelinePostUsecaseTest {
         // given
         int size = 3;
         stepUtil.saveFollowingMember(size);
-        var posts = stepUtil.saveToMembersPost(stepUtil.toMembers);
-        stepUtil.saveFromMemberTimelines(posts, stepUtil.fromMember);
+        var posts = stepUtil.saveMembersPost(stepUtil.toMembers);
+        stepUtil.saveMemberTimelines(posts, stepUtil.fromMember);
 
         var cursorRequest = new CursorRequest(null, size);
 

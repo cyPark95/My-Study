@@ -30,12 +30,12 @@ public class StepUtil {
     @Autowired
     private TimelineRepository timelineRepository;
 
-    public Member saveFromMember() {
+    public Member saveMember() {
         var member = MemberFixtureFactory.createMember();
         return memberRepository.save(member);
     }
 
-    public List<Member> saveToMembers(int size) {
+    public List<Member> saveMembers(int size) {
         return  MemberFixtureFactory.createMembers(size).stream()
                 .map(memberRepository::save)
                 .toList();
@@ -49,12 +49,12 @@ public class StepUtil {
     }
 
     public void saveFollowingMember(int size) {
-        fromMember = saveFromMember();
-        toMembers = saveToMembers(size);
+        fromMember = saveMember();
+        toMembers = saveMembers(size);
         following(toMembers, fromMember);
     }
 
-    public List<Post> saveToMembersPost(List<Member> toMembers) {
+    public List<Post> saveMembersPost(List<Member> toMembers) {
         return toMembers.stream()
                 .map(toMember -> savePost(toMember.getId()))
                 .toList();
@@ -65,7 +65,7 @@ public class StepUtil {
         return postRepository.save(post);
     }
 
-    public void saveFromMemberTimelines(List<Post> posts, Member fromMember) {
+    public void saveMemberTimelines(List<Post> posts, Member fromMember) {
         posts.forEach(post -> saveTimeline(post, fromMember.getId()));
     }
 
