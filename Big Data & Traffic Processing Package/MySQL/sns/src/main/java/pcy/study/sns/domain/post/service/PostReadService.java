@@ -48,7 +48,7 @@ public class PostReadService {
         var posts = postRepository.findAllByMemberId(memberId, pageable);
         return posts.map(post -> {
             // TODO PostLike 테이블의 Count를 Post 테이블의 likeCount에 동기화
-            var likeCount = postLikeRepository.getCount(post.getId());
+            var likeCount = postLikeRepository.countByPostId(post.getId());
             return postConverter.toDto(post, likeCount);
         });
     }
