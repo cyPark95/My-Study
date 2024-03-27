@@ -154,9 +154,7 @@ class PostReadServiceTest {
     void fetPostPageCursorByMemberIds() {
         // given
         var size = 10;
-        var posts = LongStream.range(0, size)
-                .mapToObj(PostFixtureFactory::createPost)
-                .toList();
+        var posts = savePosts(size);
         var key = getMaxId(posts) + 1;
 
         var memberIds = LongStream.range(0, size / 2)

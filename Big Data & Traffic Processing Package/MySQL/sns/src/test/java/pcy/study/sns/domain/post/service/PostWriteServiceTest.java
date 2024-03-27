@@ -52,8 +52,7 @@ class PostWriteServiceTest {
         postWriteService.likePostByOptimisticLock(post.getId());
 
         // then
-        var result = postRepository.findById(post.getId())
-                .orElseThrow();
+        var result = postRepository.findById(post.getId()).orElseThrow();
         assertEquals(1, result.getLikeCount());
     }
 
@@ -79,8 +78,7 @@ class PostWriteServiceTest {
         latch.await();
 
         // then
-        var result = postRepository.findById(post.getId())
-                .orElseThrow();
+        var result = postRepository.findById(post.getId()).orElseThrow();
         assertEquals(1, result.getLikeCount());
     }
 

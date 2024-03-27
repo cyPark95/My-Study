@@ -59,7 +59,8 @@ class MemberWriteServiceTest {
         memberWriteService.changeNickname(member.getId(), changeNickname);
 
         // then
-        assertEquals(changeNickname, member.getNickname());
+        var result = memberRepository.findById(member.getId()).orElseThrow();
+        assertEquals(changeNickname, result.getNickname());
     }
 
     @Test
