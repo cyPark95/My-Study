@@ -59,7 +59,7 @@ public class PostFixtureFactory extends EasyRandomFactory {
                 .build();
     }
 
-    private static final java.util.function.Predicate<java.lang.reflect.Field> LIKE_COUNT_PREDICATE = named("likeCount")
+    private static final Predicate<Field> LIKE_COUNT_PREDICATE = named("likeCount")
             .and(ofType(Long.class))
             .and(inClass(Post.class));
 
