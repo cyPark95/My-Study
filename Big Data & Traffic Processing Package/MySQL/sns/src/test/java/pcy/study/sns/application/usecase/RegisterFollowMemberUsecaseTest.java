@@ -32,9 +32,11 @@ class RegisterFollowMemberUsecaseTest {
         registerFollowMemberUsecase.execute(fromMember.getId(), toMember.getId());
 
         // then
-        var result = followRepository.findAllByFromMemberId(fromMember.getId());
-        assertEquals(1, result.size());
-        assertEquals(fromMember.getId(), result.get(0).getFromMemberId());
-        assertEquals(toMember.getId(), result.get(0).getToMemberId());
+        var follows = followRepository.findAllByFromMemberId(fromMember.getId());
+        assertEquals(1, follows.size());
+
+        var result = follows.get(0);
+        assertEquals(fromMember.getId(), result.getFromMemberId());
+        assertEquals(toMember.getId(), result.getToMemberId());
     }
 }
