@@ -21,6 +21,7 @@ public class RegisterPostUsecase {
         var followMemberIds = followReadService.getFollowers(command.memberId()).stream()
                 .map(FollowDto::fromMemberId)
                 .toList();
+        // TODO SSE 연동
         timelineWriteService.deliveryToTimeline(postId, followMemberIds);
         return postId;
     }

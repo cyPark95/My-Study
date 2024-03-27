@@ -15,8 +15,10 @@ import java.util.List;
 @Component
 public class StepUtil {
 
-    public Member fromMember;
-    public List<Member> toMembers;
+    public Member followingFromMember;
+    public List<Member> followingToMembers;
+    public Member followerToMember;
+    public List<Member> followerFromMembers;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -41,7 +43,7 @@ public class StepUtil {
                 .toList();
     }
 
-    public void following(List<Member> toMembers, Member fromMember) {
+    public void following(Member fromMember, List<Member> toMembers) {
         var follows = toMembers.stream()
                 .map(toMember -> FollowFixtureFactory.createFollow(fromMember.getId(), toMember.getId()))
                 .toList();
@@ -49,9 +51,22 @@ public class StepUtil {
     }
 
     public void saveFollowingMember(int size) {
-        fromMember = saveMember();
-        toMembers = saveMembers(size);
-        following(toMembers, fromMember);
+        followingFromMember = saveMember();
+        followingToMembers = saveMembers(size);
+        following(followingFromMember, followingToMembers);
+    }
+
+    public void follower(List<Member> fromMembers, Member toMember) {
+        var follows = fromMembers.stream()
+                .map(fromMember -> FollowFixtureFactory.createFollow(fromMember.getId(), toMember.getId()))
+                .toList();
+        followRepository.saveAll(follows);
+    }
+
+    public void saveFollowerMember(int size) {
+        followerToMember = saveMember();
+        followerFromMembers = saveMembers(size);
+        follower(followerFromMembers, followerToMember);
     }
 
     public List<Post> saveMembersPost(List<Member> toMembers) {

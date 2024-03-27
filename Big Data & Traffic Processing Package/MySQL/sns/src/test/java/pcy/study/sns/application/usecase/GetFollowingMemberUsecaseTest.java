@@ -10,7 +10,7 @@ import pcy.study.sns.util.StepUtil;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @IntegrationTest
-@DisplayName("회원을 팔로워한 회원 목록을 조회한다.")
+@DisplayName("회원이 팔로우한 회원 목록을 조회한다.")
 class GetFollowingMemberUsecaseTest {
 
     @Autowired
@@ -25,7 +25,7 @@ class GetFollowingMemberUsecaseTest {
         var size = 3;
         var fromMember = stepUtil.saveMember();
         var toMembers = stepUtil.saveMembers(size);
-        stepUtil.following(toMembers, fromMember);
+        stepUtil.following(fromMember, toMembers);
 
         // when
         var result = getFollowingMemberUsecase.execute(fromMember.getId());

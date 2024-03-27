@@ -25,13 +25,13 @@ class GetTimelinePostUsecaseTest {
         // given
         int size = 3;
         stepUtil.saveFollowingMember(size);
-        var posts = stepUtil.saveMembersPost(stepUtil.toMembers);
-        stepUtil.saveMemberTimelines(posts, stepUtil.fromMember);
+        var posts = stepUtil.saveMembersPost(stepUtil.followingToMembers);
+        stepUtil.saveMemberTimelines(posts, stepUtil.followingFromMember);
 
         var cursorRequest = new CursorRequest(null, size);
 
         // when
-        var result = getTimelinePostUsecase.execute(stepUtil.fromMember.getId(), cursorRequest);
+        var result = getTimelinePostUsecase.execute(stepUtil.followingFromMember.getId(), cursorRequest);
 
         // then
         assertEquals(size, result.body().size());
