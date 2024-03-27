@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pcy.study.sns.domain.post.entity.Timeline;
-import pcy.study.sns.domain.post.repository.TimelineRepository;
+import pcy.study.sns.domain.post.repository.TimelineJdbcRepository;
 
 import java.util.List;
 
@@ -13,17 +13,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TimelineWriteService {
 
-    private final TimelineRepository timelineRepository;
+    private final TimelineJdbcRepository timelineJdbcRepository;
 
     public void deliveryToTimeline(Long postId, List<Long> toMemberIds) {
-        var timeline = toMemberIds.stream()
+        var timelines = toMemberIds.stream()
                 .map(memberId -> toTimeline(postId, memberId))
                 .toList();
 
-        timelineRepository.bulkInsert(timeline);
+        timelineJdbcRepository.bulkInsert(timelines);
     }
 
-    private static Timeline toTimeline(Long postId, Long memberId) {
+    private Timeline toTimeline(Long postId, Long memberId) {
         return Timeline.builder()
                 .postId(postId)
                 .memberId(memberId)

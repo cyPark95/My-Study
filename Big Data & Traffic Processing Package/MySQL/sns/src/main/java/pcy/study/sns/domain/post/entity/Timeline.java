@@ -1,29 +1,27 @@
 package pcy.study.sns.domain.post.entity;
 
-import lombok.Builder;
-import lombok.Getter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import lombok.*;
+import pcy.study.sns.domain.common.entity.BaseEntity;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
-public class Timeline {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(callSuper = true)
+@Entity
+public class Timeline extends BaseEntity {
 
-    private final Long id;
+    @Column(nullable = false)
+    private Long memberId;
 
-    private final Long memberId;
-
-    private final Long postId;
-
-    private final LocalDateTime createdAt;
+    @Column(nullable = false)
+    private Long postId;
 
     @Builder
-    public Timeline(Long id, Long memberId, Long postId, LocalDateTime createdAt) {
-        this.id = id;
-
+    public Timeline(Long memberId, Long postId) {
         this.memberId = Objects.requireNonNull(memberId);
         this.postId = Objects.requireNonNull(postId);
-
-        this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 }

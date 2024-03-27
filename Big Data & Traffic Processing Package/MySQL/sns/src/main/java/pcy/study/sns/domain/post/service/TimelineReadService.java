@@ -28,10 +28,10 @@ public class TimelineReadService {
 
     private List<Timeline> findAllBy(Long memberId, CursorRequest cursorRequest) {
         if (cursorRequest.hasKey()) {
-            return timelineRepository.findAllByLessThanIdAndInMemberIdOrderByIdDesc(cursorRequest.key(), memberId, cursorRequest.size());
+            return timelineRepository.findAllByIdLessThanAndMemberIdOrderByIdDesc(cursorRequest.key(), memberId, cursorRequest.getPageable());
         }
 
-        return timelineRepository.findAllByMemberIdOrderByIdDesc(memberId, cursorRequest.size());
+        return timelineRepository.findAllByMemberIdOrderByIdDesc(memberId, cursorRequest.getPageable());
     }
 
     private static long getNextKey(List<Timeline> timelines) {
