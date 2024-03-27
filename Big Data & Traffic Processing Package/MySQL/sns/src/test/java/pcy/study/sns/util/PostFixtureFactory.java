@@ -2,7 +2,11 @@ package pcy.study.sns.util;
 
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
+import org.jeasy.random.randomizers.number.LongRandomizer;
+import org.jeasy.random.randomizers.text.StringRandomizer;
+import org.jeasy.random.randomizers.time.LocalDateRandomizer;
 import pcy.study.sns.common.EasyRandomFactory;
+import pcy.study.sns.domain.post.dto.PostDto;
 import pcy.study.sns.domain.post.entity.Post;
 
 import java.lang.reflect.Field;
@@ -35,6 +39,16 @@ public class PostFixtureFactory extends EasyRandomFactory {
                 .dateRange(firstDate, finalDate);
 
         return new EasyRandom(param);
+    }
+
+    public static PostDto createPostDto(Long memberId) {
+        return new PostDto(
+                new LongRandomizer().getRandomValue(),
+                memberId,
+                new StringRandomizer(20).getRandomValue(),
+                new LocalDateRandomizer().getRandomValue(),
+                0L
+        );
     }
 
     private static final java.util.function.Predicate<java.lang.reflect.Field> LIKE_COUNT_PREDICATE = named("likeCount")
