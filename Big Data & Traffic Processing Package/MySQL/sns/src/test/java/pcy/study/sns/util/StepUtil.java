@@ -38,7 +38,7 @@ public class StepUtil {
     }
 
     public List<Member> saveMembers(int size) {
-        return  MemberFixtureFactory.createMembers(size).stream()
+        return MemberFixtureFactory.createMembers(size).stream()
                 .map(memberRepository::save)
                 .toList();
     }
@@ -85,7 +85,7 @@ public class StepUtil {
     }
 
     public void saveTimeline(Post post, Long memberId) {
-        Timeline timeline = TimelineFixtureFactory.createTimeline(memberId, post.getId());
+        Timeline timeline = PostFixtureFactory.createTimeline(memberId, post.getId());
         timelineRepository.save(timeline);
     }
 }

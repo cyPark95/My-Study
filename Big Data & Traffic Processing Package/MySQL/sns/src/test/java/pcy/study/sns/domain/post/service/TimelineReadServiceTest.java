@@ -7,8 +7,8 @@ import pcy.study.sns.common.IntegrationTest;
 import pcy.study.sns.domain.post.entity.Timeline;
 import pcy.study.sns.domain.post.repository.TimelineRepository;
 import pcy.study.sns.util.CursorRequest;
-import pcy.study.sns.util.TimelineAssertUtil;
-import pcy.study.sns.util.TimelineFixtureFactory;
+import pcy.study.sns.util.PostAssertUtil;
+import pcy.study.sns.util.PostFixtureFactory;
 
 import java.util.List;
 import java.util.stream.LongStream;
@@ -45,7 +45,7 @@ class TimelineReadServiceTest {
         assertEquals(size, results.body().size());
 
         for (int i = 0; i < size; i++) {
-            TimelineAssertUtil.assertEqualsTimeline(timelines.get(size - i - 1), results.body().get(i));
+            PostAssertUtil.assertEqualsTimeline(timelines.get(size - i - 1), results.body().get(i));
         }
     }
 
@@ -67,14 +67,14 @@ class TimelineReadServiceTest {
         assertEquals(size, results.body().size());
 
         for (int i = 0; i < size; i++) {
-            TimelineAssertUtil.assertEqualsTimeline(timelines.get(size - i), results.body().get(i));
+            PostAssertUtil.assertEqualsTimeline(timelines.get(size - i), results.body().get(i));
         }
     }
 
     private List<Timeline> saveTimelines(int size) {
         return LongStream.range(0, size)
                 .mapToObj(l -> {
-                    var timeline = TimelineFixtureFactory.createTimeline(MEMBER_ID, l);
+                    var timeline = PostFixtureFactory.createTimeline(MEMBER_ID, l);
                     return timelineRepository.save(timeline);
                 })
                 .toList();

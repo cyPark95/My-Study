@@ -8,6 +8,7 @@ import org.jeasy.random.randomizers.time.LocalDateRandomizer;
 import pcy.study.sns.common.EasyRandomFactory;
 import pcy.study.sns.domain.post.dto.PostDto;
 import pcy.study.sns.domain.post.entity.Post;
+import pcy.study.sns.domain.post.entity.Timeline;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -49,6 +50,13 @@ public class PostFixtureFactory extends EasyRandomFactory {
                 new LocalDateRandomizer().getRandomValue(),
                 0L
         );
+    }
+
+    public static Timeline createTimeline(Long memberId, Long postId) {
+        return Timeline.builder()
+                .memberId(memberId)
+                .postId(postId)
+                .build();
     }
 
     private static final java.util.function.Predicate<java.lang.reflect.Field> LIKE_COUNT_PREDICATE = named("likeCount")
