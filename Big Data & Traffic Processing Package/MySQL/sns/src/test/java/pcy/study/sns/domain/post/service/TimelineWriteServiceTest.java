@@ -20,7 +20,7 @@ class TimelineWriteServiceTest {
     private TimelineRepository timelineRepository;
 
     @Test
-    @DisplayName("회원별 타임라인 저장")
+    @DisplayName("회원 목록 타임라인 저장한다.")
     void deliveryToTimeline() {
         // given
         var size = 5;
@@ -35,6 +35,7 @@ class TimelineWriteServiceTest {
         // then
         var results = timelineRepository.findAll();
         assertEquals(size, results.size());
+
         for (int i = 0; i < size; i++) {
             assertEquals(toMemberIds.get(i), results.get(i).getMemberId());
         }

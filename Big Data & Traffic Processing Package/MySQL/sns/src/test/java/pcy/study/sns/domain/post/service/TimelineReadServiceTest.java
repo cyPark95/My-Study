@@ -32,13 +32,8 @@ class TimelineReadServiceTest {
     void getTimelines() {
         // given
         int size = 5;
-        var timelines = LongStream.range(0, size + 1)
-                .mapToObj(l -> {
-                    var timeline = TimelineFixtureFactory.createTimeline(MEMBER_ID, -l);
-                    return timelineRepository.save(timeline);
-                })
-                .toList();
-        var key = getMaxId(timelines) + 1;
+        var timelines = saveTimelines(size + 1);
+        var key = getMaxId(timelines);
 
         var cursorRequest = new CursorRequest(key, size);
 
@@ -50,8 +45,39 @@ class TimelineReadServiceTest {
         assertEquals(size, results.body().size());
 
         for (int i = 0; i < size; i++) {
+            TimelineAssertUtil.assertEqualsTimeline(timelines.get(size - i - 1), results.body().get(i));
+        }
+    }
+
+    @Test
+    @DisplayName("Cursor Key 없이 타임라인 조회 - 최근순")
+    void getTimelines_HasNotKey() {
+        // given
+        int size = 5;
+        var timelines = saveTimelines(size + 1);
+        var key = getMaxId(timelines) + 1;
+
+        var cursorRequest = new CursorRequest(null, size);
+
+        // when
+        var results = timelineReadService.getTimelines(MEMBER_ID, cursorRequest);
+
+        // then
+        assertTrue(results.nextCursorRequest().hasKey());
+        assertEquals(size, results.body().size());
+
+        for (int i = 0; i < size; i++) {
             TimelineAssertUtil.assertEqualsTimeline(timelines.get(size - i), results.body().get(i));
         }
+    }
+
+    private List<Timeline> saveTimelines(int size) {
+        return LongStream.range(0, size)
+                .mapToObj(l -> {
+                    var timeline = TimelineFixtureFactory.createTimeline(MEMBER_ID, l);
+                    return timelineRepository.save(timeline);
+                })
+                .toList();
     }
 
     private Long getMaxId(List<Timeline> timelines) {
