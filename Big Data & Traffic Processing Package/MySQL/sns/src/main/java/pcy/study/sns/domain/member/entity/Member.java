@@ -20,6 +20,9 @@ public class Member extends BaseEntity {
     @Column(length = 20, nullable = false)
     private String email;
 
+    @Column(length = 100, nullable = false)
+    private String password;
+
     @Column(length = 20, nullable = false)
     private String nickname;
 
@@ -27,9 +30,10 @@ public class Member extends BaseEntity {
     private LocalDate birthday;
 
     @Builder
-    public Member(String email, String nickname, LocalDate birthday) {
+    public Member(String email, String password, String nickname, LocalDate birthday) {
         validateNickname(nickname);
         this.email = Objects.requireNonNull(email);
+        this.password = Objects.requireNonNull(password);
         this.nickname = Objects.requireNonNull(nickname);
         this.birthday = Objects.requireNonNull(birthday);
     }
