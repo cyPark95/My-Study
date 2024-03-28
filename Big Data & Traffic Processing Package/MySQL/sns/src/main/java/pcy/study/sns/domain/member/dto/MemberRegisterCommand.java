@@ -9,6 +9,7 @@ import java.time.LocalDate;
  */
 public record MemberRegisterCommand(
         String email,
+        String password,
         String nickname,
         LocalDate birthday
 ) {

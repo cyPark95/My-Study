@@ -7,10 +7,11 @@ DROP TABLE IF EXISTS Timeline;
 create table Member
 (
     id        int auto_increment,
-    email     varchar(20) not null,
-    nickname  varchar(20) not null,
-    birthday  date        not null,
-    createdAt datetime    not null,
+    email     varchar(20)  not null,
+    password  varchar(100) not null,
+    nickname  varchar(20)  not null,
+    birthday  date         not null,
+    createdAt datetime     not null,
     constraint member_id_uindex
         primary key (id)
 );
@@ -72,9 +73,9 @@ create index Timeline__index_memberId
 
 create table PostLike
 (
-    id int auto_increment,
-    memberId int not null,
-    postId int not null,
+    id        int auto_increment,
+    memberId  int      not null,
+    postId    int      not null,
     createdAt datetime not null,
     constraint PostLike_id_uindex
         primary key (id),

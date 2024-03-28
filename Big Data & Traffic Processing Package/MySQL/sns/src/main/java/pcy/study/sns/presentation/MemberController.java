@@ -2,6 +2,7 @@ package pcy.study.sns.presentation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import pcy.study.sns.application.usecase.RegisterMemberUsecase;
 import pcy.study.sns.domain.member.dto.MemberDto;
 import pcy.study.sns.domain.member.dto.MemberNicknameHistoryDto;
 import pcy.study.sns.domain.member.dto.MemberRegisterCommand;
@@ -18,9 +19,11 @@ public class MemberController {
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
 
+    private final RegisterMemberUsecase registerMemberUsecase;
+
     @PostMapping
     public MemberDto register(@RequestBody MemberRegisterCommand command) {
-        return memberWriteService.register(command);
+        return registerMemberUsecase.execute(command);
     }
 
     @GetMapping("/{id}")

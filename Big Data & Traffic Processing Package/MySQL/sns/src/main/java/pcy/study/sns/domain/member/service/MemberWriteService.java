@@ -18,7 +18,7 @@ public class MemberWriteService {
     private final MemberConverter memberConverter;
     private final MemberNicknameHistoryRepository memberNicknameHistoryRepository;
 
-    public MemberDto register(MemberRegisterCommand command) {
+    public MemberDto register(MemberRegisterCommand command, String encodedPassword) {
         /*
         목표 - 회원정보(이메일, 닉네임, 생년월일)를 등록한다.
             - 닉네임은 10자를 넘길 수 없다.
@@ -29,6 +29,7 @@ public class MemberWriteService {
          */
         var member = Member.builder()
                 .email(command.email())
+                .password(encodedPassword)
                 .nickname(command.nickname())
                 .birthday(command.birthday())
                 .build();

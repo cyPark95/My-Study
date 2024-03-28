@@ -32,13 +32,15 @@ class MemberWriteServiceTest {
     void register() {
         // given
         var command = new MemberRegisterCommand(
-                "email" ,
+                "email",
+                "password",
                 "nickname",
                 LocalDate.now()
         );
+        String encodedPassword = "encodedPassword";
 
         // when
-        var result = memberWriteService.register(command);
+        var result = memberWriteService.register(command, encodedPassword);
 
         // then
         Assertions.assertNotNull(result.id());
