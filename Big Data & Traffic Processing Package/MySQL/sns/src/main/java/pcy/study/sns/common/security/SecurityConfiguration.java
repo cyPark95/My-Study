@@ -19,6 +19,7 @@ import pcy.study.sns.common.security.authentication.AuthenticationConfigurer;
 import pcy.study.sns.common.security.authentication.LoginFailureHandler;
 import pcy.study.sns.common.security.authentication.LoginFilter;
 import pcy.study.sns.common.security.authentication.LoginSuccessHandler;
+import pcy.study.sns.common.security.token.JwtProvider;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -27,6 +28,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
+    private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
 
     @Bean
@@ -51,6 +53,10 @@ public class SecurityConfiguration {
     }
 
     private SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> getAuthenticationConfigurer() {
-        return new AuthenticationConfigurer(new LoginFilter(objectMapper), new LoginSuccessHandler(objectMapper), new LoginFailureHandler());
+        return new AuthenticationConfigurer(
+                new LoginFilter(objectMapper),
+                new LoginSuccessHandler(jwtProvider, objectMapper),
+                new LoginFailureHandler()
+        );
     }
 }

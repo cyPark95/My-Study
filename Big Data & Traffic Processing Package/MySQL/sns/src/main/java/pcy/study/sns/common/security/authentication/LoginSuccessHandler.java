@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import pcy.study.sns.common.security.token.JwtProvider;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -15,12 +16,13 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
+    private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        // TODO JWT 발급
-        String token = "token";
+        var username = authentication.getName();
+        var token = jwtProvider.getToken(username);
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
