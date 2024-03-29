@@ -16,10 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
-import pcy.study.sns.common.security.authentication.AuthenticationConfigurer;
-import pcy.study.sns.common.security.authentication.LoginFailureHandler;
-import pcy.study.sns.common.security.authentication.LoginFilter;
-import pcy.study.sns.common.security.authentication.LoginSuccessHandler;
+import pcy.study.sns.common.security.authentication.*;
+import pcy.study.sns.common.security.authorization.AccessDeniedExceptionHandler;
 import pcy.study.sns.common.security.authorization.AuthorizationConfigurer;
 import pcy.study.sns.common.security.token.JwtProvider;
 
@@ -45,13 +43,17 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(sessionConfigurer -> sessionConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorization -> authorization
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.POST, "/login", "/members").permitAll()
                         .anyRequest().authenticated()
                 )
                 .with(getAuthenticationConfigurer(), Customizer.withDefaults())
-                .with(getAuthorizationConfigurer(), Customizer.withDefaults());
+                .with(getAuthorizationConfigurer(), Customizer.withDefaults())
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(new AuthenticationExceptionHandler())
+                        .accessDeniedHandler(new AccessDeniedExceptionHandler())
+                );
 
         return http.build();
     }

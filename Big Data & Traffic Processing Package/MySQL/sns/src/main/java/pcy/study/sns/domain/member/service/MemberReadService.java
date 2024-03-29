@@ -47,6 +47,6 @@ public class MemberReadService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
-        return new MemberDetails(member.getEmail(), member.getPassword());
+        return new MemberDetails(member.getId(), member.getEmail(), member.getPassword());
     }
 }
