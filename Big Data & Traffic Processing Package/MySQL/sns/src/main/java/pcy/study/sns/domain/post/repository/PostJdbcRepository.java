@@ -17,7 +17,7 @@ public class PostJdbcRepository {
 
     public void bulkInsert(List<Post> posts) {
         var sql = """
-                INSERT INTO Post (memberId, contents, createdDate, likeCount, version, createdAt)
+                INSERT INTO post (member_id, contents, created_date, like_count, version, created_at)
                 VALUES (:memberId, :contents, :createdDate, :likeCount, :version, :createdAt)
                 """;
 

@@ -17,7 +17,7 @@ public class TimelineJdbcRepository {
 
     public void bulkInsert(List<Timeline> timelines) {
         var sql = """
-                INSERT INTO Timeline (memberId, postId, createdAt)
+                INSERT INTO timeline (member_id, post_id, created_at)
                 VALUES (:memberId, :postId, :createdAt)
                 """;
 

@@ -1,8 +1,10 @@
 package pcy.study.sns.presentation;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pcy.study.sns.application.usecase.RegisterMemberUsecase;
+import pcy.study.sns.domain.member.dto.MemberDetails;
 import pcy.study.sns.domain.member.dto.MemberDto;
 import pcy.study.sns.domain.member.dto.MemberNicknameHistoryDto;
 import pcy.study.sns.domain.member.dto.MemberRegisterCommand;
@@ -31,17 +33,19 @@ public class MemberController {
         return memberReadService.getMember(id);
     }
 
-    @PutMapping("/{id}/nickname")
+    @PutMapping("/nickname")
     public MemberDto changeNickname(
-            @PathVariable("id") Long id,
-            @RequestBody String nickname
+            @RequestBody String nickname,
+            @AuthenticationPrincipal MemberDetails memberDetails
     ) {
+        var id = memberDetails.id();
         memberWriteService.changeNickname(id, nickname);
         return memberReadService.getMember(id);
     }
 
-    @GetMapping("/{memberId}/nickname-history")
-    public List<MemberNicknameHistoryDto> getNicknameHistories(@PathVariable("memberId") Long memberId) {
-        return memberReadService.getNicknameHistories(memberId);
+    @GetMapping("/nickname-history")
+    public List<MemberNicknameHistoryDto> getNicknameHistories(@AuthenticationPrincipal MemberDetails memberDetails) {
+        var id = memberDetails.id();
+        return memberReadService.getNicknameHistories(id);
     }
 }

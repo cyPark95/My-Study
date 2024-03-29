@@ -14,20 +14,13 @@ public class PostWriteService {
 
     private final PostRepository postRepository;
 
-    public Long register(PostCommand command) {
+    public Long register(Long memberId, PostCommand command) {
         var post = Post.builder()
-                .memberId(command.memberId())
+                .memberId(memberId)
                 .contents(command.contents())
                 .build();
 
         return postRepository.save(post).getId();
-    }
-
-    public void likePost(Long postId) {
-        var post = postRepository.findById(postId)
-                .orElseThrow();
-        post.incrementLickCount();
-        postRepository.save(post);
     }
 
     public void likePostByOptimisticLock(Long postId) {

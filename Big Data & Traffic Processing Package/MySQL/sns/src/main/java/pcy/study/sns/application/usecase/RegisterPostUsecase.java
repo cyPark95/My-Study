@@ -16,9 +16,9 @@ public class RegisterPostUsecase {
     private final FollowReadService followReadService;
     private final TimelineWriteService timelineWriteService;
 
-    public Long execute(PostCommand command) {
-        var postId = postWriteService.register(command);
-        var followMemberIds = followReadService.getFollowers(command.memberId()).stream()
+    public Long execute(Long memberId, PostCommand command) {
+        var postId = postWriteService.register(memberId, command);
+        var followMemberIds = followReadService.getFollowers(memberId).stream()
                 .map(FollowDto::fromMemberId)
                 .toList();
         // TODO SSE 연동

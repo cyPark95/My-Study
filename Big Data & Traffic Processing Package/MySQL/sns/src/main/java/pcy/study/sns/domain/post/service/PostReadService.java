@@ -26,11 +26,11 @@ public class PostReadService {
     private final PostConverter postConverter;
     private final PostLikeRepository postLikeRepository;
 
-    public List<DailyPostCount> getDailyPostCounts(DailyPostCountRequest request) {
+    public List<DailyPostCount> getDailyPostCounts(Long memberId, DailyPostCountRequest request) {
         /*
         반환 값 -> 리스트 [작성일자, 작성회원, 작성 게시물 갯수]
          */
-        return postRepository.groupByCreatedDate(request);
+        return postRepository.groupByCreatedDate(memberId, request);
     }
 
     public PostDto getPost(Long postId) {

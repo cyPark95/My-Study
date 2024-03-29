@@ -15,9 +15,9 @@ public interface PostRepository extends CrudRepository<Post, Long> {
 
     @Query("SELECT new pcy.study.sns.domain.post.dto.DailyPostCount(memberId, createdDate, COUNT(id)) " +
             "FROM Post " +
-            "WHERE memberId = :#{#request.memberId} AND createdDate BETWEEN :#{#request.firstDate} AND :#{#request.lastDate} " +
+            "WHERE memberId = :memberId AND createdDate BETWEEN :#{#request.firstDate} AND :#{#request.lastDate} " +
             "GROUP BY createdDate, memberId")
-    List<DailyPostCount> groupByCreatedDate(@Param("request") DailyPostCountRequest request);
+    List<DailyPostCount> groupByCreatedDate(@Param("memberId") Long memberId, @Param("request") DailyPostCountRequest request);
 
     Page<Post> findAllByMemberId(Long memberId, Pageable pageable);
 
