@@ -35,13 +35,10 @@ class RegisterPostUsecaseTest {
         stepUtil.saveFollowerMember(size);
 
         var contents = "Post Contents";
-        var command = new PostCommand(
-                stepUtil.followerToMember.getId(),
-                contents
-        );
+        var command = new PostCommand(contents);
 
         // when
-        var id = registerPostUsecase.execute(command);
+        var id = registerPostUsecase.execute(stepUtil.followerToMember.getId(), command);
 
         // then
         assertNotNull(id);

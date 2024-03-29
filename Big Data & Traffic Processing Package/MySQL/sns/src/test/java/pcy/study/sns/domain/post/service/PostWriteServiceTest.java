@@ -30,13 +30,11 @@ class PostWriteServiceTest {
     @DisplayName("게시글 등록")
     void register() {
         // given
-        var command = new PostCommand(
-                1L,
-                "contents"
-        );
+        var memberId = 1L;
+        var command = new PostCommand("contents");
 
         // when
-        var result = postWriteService.register(command);
+        var result = postWriteService.register(memberId, command);
 
         // then
         Assertions.assertNotNull(result);

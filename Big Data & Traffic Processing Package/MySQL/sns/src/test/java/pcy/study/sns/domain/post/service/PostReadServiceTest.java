@@ -48,10 +48,10 @@ class PostReadServiceTest {
                 .toList();
         postJdbcRepository.bulkInsert(posts);
 
-        var request = new DailyPostCountRequest(MEMBER_ID, now, now.plusDays(7));
+        var request = new DailyPostCountRequest(now, now.plusDays(7));
 
         // when
-        var results = postReadService.getDailyPostCounts(request);
+        var results = postReadService.getDailyPostCounts(MEMBER_ID, request);
 
         // then
         assertEquals(1, results.size());
