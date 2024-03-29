@@ -1,9 +1,9 @@
 package pcy.study.sns.common.security.token;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pcy.study.sns.common.security.dto.Token;
@@ -41,6 +41,16 @@ public class JwtProvider {
                 .compact();
 
         return new Token(token, expireDate.getTime());
+    }
+
+    public String getClaim(String token) throws UnsupportedJwtException, MalformedJwtException, SignatureException, ExpiredJwtException, IllegalArgumentException {
+        var claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get(TOKEN_CLAIM_KEY, String.class);
     }
 
     private Key getSecretKey(String secretKey) {

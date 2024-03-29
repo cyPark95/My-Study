@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -19,6 +20,7 @@ import pcy.study.sns.common.security.authentication.AuthenticationConfigurer;
 import pcy.study.sns.common.security.authentication.LoginFailureHandler;
 import pcy.study.sns.common.security.authentication.LoginFilter;
 import pcy.study.sns.common.security.authentication.LoginSuccessHandler;
+import pcy.study.sns.common.security.authorization.AuthorizationConfigurer;
 import pcy.study.sns.common.security.token.JwtProvider;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -28,6 +30,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
+    private final UserDetailsService userDetailsService;
     private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
 
@@ -47,7 +50,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/login", "/members").permitAll()
                         .anyRequest().authenticated()
                 )
-                .with(getAuthenticationConfigurer(), Customizer.withDefaults());
+                .with(getAuthenticationConfigurer(), Customizer.withDefaults())
+                .with(getAuthorizationConfigurer(), Customizer.withDefaults());
 
         return http.build();
     }
@@ -58,5 +62,9 @@ public class SecurityConfiguration {
                 new LoginSuccessHandler(jwtProvider, objectMapper),
                 new LoginFailureHandler()
         );
+    }
+
+    private SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> getAuthorizationConfigurer() {
+        return new AuthorizationConfigurer(jwtProvider, userDetailsService);
     }
 }
