@@ -27,6 +27,5 @@ public class PostWriteService {
         var post = postRepository.findById(postId)
                 .orElseThrow();
         post.incrementLickCount();
-        postRepository.save(post);
     }
 }

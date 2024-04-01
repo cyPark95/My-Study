@@ -17,7 +17,7 @@ public record CursorRequest(Long key, int size) {
         return key != null;
     }
 
-    public Pageable getPageable() {
+    public Pageable converterPageable() {
         return PageRequest.of(0, size);
     }
 
