@@ -16,16 +16,12 @@ public class PostConverter {
     }
 
     public PostDto toDto(Post post) {
-        return toDto(post, post.getLikeCount());
-    }
-
-    public PostDto toDto(Post post, Long likeCount) {
         return new PostDto(
                 post.getId(),
                 post.getMemberId(),
                 post.getContents(),
                 post.getCreatedDate(),
-                likeCount
+                post.getLikeCount()
         );
     }
 }

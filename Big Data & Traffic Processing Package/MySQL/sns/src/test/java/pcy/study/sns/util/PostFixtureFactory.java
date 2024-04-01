@@ -8,6 +8,7 @@ import org.jeasy.random.randomizers.time.LocalDateRandomizer;
 import pcy.study.sns.common.EasyRandomFactory;
 import pcy.study.sns.domain.post.dto.PostDto;
 import pcy.study.sns.domain.post.entity.Post;
+import pcy.study.sns.domain.post.entity.PostLike;
 import pcy.study.sns.domain.post.entity.Timeline;
 
 import java.lang.reflect.Field;
@@ -56,6 +57,13 @@ public class PostFixtureFactory extends EasyRandomFactory {
         return Timeline.builder()
                 .memberId(memberId)
                 .postId(postId)
+                .build();
+    }
+
+    public static PostLike getPostLike(Long postId, long memberId) {
+        return PostLike.builder()
+                .postId(postId)
+                .memberId(memberId)
                 .build();
     }
 

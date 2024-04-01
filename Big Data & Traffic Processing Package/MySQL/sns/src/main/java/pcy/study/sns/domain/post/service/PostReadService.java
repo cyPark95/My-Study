@@ -46,11 +46,7 @@ public class PostReadService {
 
     public Page<PostDto> getPosts(Long memberId, Pageable pageable) {
         var posts = postRepository.findAllByMemberId(memberId, pageable);
-        return posts.map(post -> {
-            // TODO PostLike 테이블의 Count를 Post 테이블의 likeCount에 동기화
-            var likeCount = postLikeRepository.countByPostId(post.getId());
-            return postConverter.toDto(post, likeCount);
-        });
+        return posts.map(postConverter::toDto);
     }
 
     public PageCursor<PostDto> getPosts(Long memberId, CursorRequest cursorRequest) {
@@ -69,18 +65,18 @@ public class PostReadService {
 
     private List<Post> findAllBy(Long memberId, CursorRequest cursorRequest) {
         if (cursorRequest.hasKey()) {
-            return postRepository.findAllByIdLessThanAndMemberIdOrderByIdDesc(cursorRequest.key(), memberId, cursorRequest.getPageable());
+            return postRepository.findAllByIdLessThanAndMemberIdOrderByIdDesc(cursorRequest.key(), memberId, cursorRequest.converterPageable());
         }
 
-        return postRepository.findAllByMemberIdOrderByIdDesc(memberId, cursorRequest.getPageable());
+        return postRepository.findAllByMemberIdOrderByIdDesc(memberId, cursorRequest.converterPageable());
     }
 
     private List<Post> findAllBy(List<Long> memberIds, CursorRequest cursorRequest) {
         if (cursorRequest.hasKey()) {
-            return postRepository.findAllByIdLessThanAndMemberIdInOrderByIdDesc(cursorRequest.key(), memberIds, cursorRequest.getPageable());
+            return postRepository.findAllByIdLessThanAndMemberIdInOrderByIdDesc(cursorRequest.key(), memberIds, cursorRequest.converterPageable());
         }
 
-        return postRepository.findAllByMemberIdInOrderByIdDesc(memberIds, cursorRequest.getPageable());
+        return postRepository.findAllByMemberIdInOrderByIdDesc(memberIds, cursorRequest.converterPageable());
     }
 
     private static long getNextKey(List<Post> posts) {

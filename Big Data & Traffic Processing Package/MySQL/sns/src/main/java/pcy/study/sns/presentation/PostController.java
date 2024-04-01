@@ -87,8 +87,9 @@ public class PostController {
     @PostMapping("/{postId}/v2/like")
     public void likePost(
             @PathVariable("postId") Long postId,
-            @RequestParam("memberId") Long memberId
+            @AuthenticationPrincipal MemberDetails memberDetails
     ) {
+        var memberId = memberDetails.id();
         registerPostLikeUsecase.execute(postId, memberId);
     }
 }

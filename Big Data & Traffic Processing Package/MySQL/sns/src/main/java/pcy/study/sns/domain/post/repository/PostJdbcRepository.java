@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import pcy.study.sns.domain.post.entity.Post;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -26,5 +27,18 @@ public class PostJdbcRepository {
                 .toArray(SqlParameterSource[]::new);
 
         namedParameterJdbcTemplate.batchUpdate(sql, params);
+    }
+
+    public void PostLikeCountBulkUpdate() {
+        var sql = """
+                UPDATE post p
+                SET like_count = (
+                    SELECT COUNT(*)
+                    FROM post_like pl
+                    WHERE p.id = pl.post_id
+                )
+                """;
+
+        namedParameterJdbcTemplate.update(sql, Collections.emptyMap());
     }
 }
