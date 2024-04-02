@@ -13,3 +13,11 @@ spring:
 jwt:
   secret: c3ByaW5nIHNlY3VyaXR5IEJpZyBEYXRhICYgVHJhZmZpYyBQcm9jZXNzaW5nIFNOUyBQcm9qZWN0
   token-validate-in-seconds: 3600
+
+rabbitmq:
+  queue:
+    name: test-queue
+  exchange:
+    name: test-exchange
+  routing:
+    key: test

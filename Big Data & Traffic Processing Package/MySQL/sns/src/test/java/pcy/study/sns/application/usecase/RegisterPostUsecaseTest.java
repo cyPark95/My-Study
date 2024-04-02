@@ -9,6 +9,9 @@ import pcy.study.sns.domain.post.repository.PostRepository;
 import pcy.study.sns.domain.post.repository.TimelineRepository;
 import pcy.study.sns.util.StepUtil;
 
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -47,10 +50,14 @@ class RegisterPostUsecaseTest {
         assertEquals(id, result.getId());
         assertEquals(contents, result.getContents());
 
-        var timelines = timelineRepository.findAll();
-        assertEquals(size, timelines.size());
-        for (int i = 0; i < size; i++) {
-            assertEquals(stepUtil.followerFromMembers.get(i).getId(), timelines.get(i).getMemberId());
-        }
+        await()
+                .atMost(500, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> {
+                    var timelines = timelineRepository.findAll();
+                    assertEquals(size, timelines.size());
+                    for (int i = 0; i < size; i++) {
+                        assertEquals(stepUtil.followerFromMembers.get(i).getId(), timelines.get(i).getMemberId());
+                    }
+                });
     }
 }
