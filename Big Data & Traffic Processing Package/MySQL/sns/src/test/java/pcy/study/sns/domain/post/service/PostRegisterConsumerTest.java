@@ -7,17 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import pcy.study.sns.common.IntegrationTest;
+import pcy.study.sns.common.TestContainerTest;
 import pcy.study.sns.domain.post.dto.PostRegisterMessage;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 
 @IntegrationTest
-class PostRegisterConsumerTest {
+class PostRegisterConsumerTest extends TestContainerTest {
 
     @MockBean
     private TimelineWriteService timelineWriteService;
@@ -39,7 +41,7 @@ class PostRegisterConsumerTest {
 
         // then
         await()
-                .atMost(500, TimeUnit.MILLISECONDS)
+                .atMost(5, TimeUnit.SECONDS)
                 .untilAsserted(() -> verify(timelineWriteService).deliveryToTimeline(anyLong(), anyList()));
     }
 }

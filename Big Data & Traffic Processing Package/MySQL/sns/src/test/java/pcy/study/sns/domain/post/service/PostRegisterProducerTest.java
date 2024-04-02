@@ -26,12 +26,8 @@ class PostRegisterProducerTest {
     @Test
     @DisplayName("게시글 등록 메시지 전송")
     void sendMessage() {
-        // given
-        var postId = -1L;
-        var memberIds = List.of(0L, -1L);
-
         // when
-        postRegisterProducer.sendMessage(postId, memberIds);
+        postRegisterProducer.sendMessage(-1L, List.of(0L, -1L));
 
         // then
         verify(rabbitTemplate, atMostOnce()).convertAndSend(anyString(), anyString(), any(PostRegisterMessage.class));
