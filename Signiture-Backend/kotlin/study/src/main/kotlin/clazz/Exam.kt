@@ -32,4 +32,20 @@ fun main() {
 
     dog.age = 10;
     println("age: ${dog.age}")
+
+    val user = User()
+    user.name = "홍길동"
+    user.email = "email@gmail.com"
+    user.age = 20
+    println(user)
+
+    val copyUser = user.copy(name = "복제 사용자")
+    println(copyUser)
+
+    // Named Argument를 사용하면 매개변수를 직접 지정할 수 있다.
+    User(
+        age = 20,
+        name = "홍길동",
+        email = "email@gmail.com",  // 마지막 쉼표(,)에 대해 컴파일 에러가 발생하지 않는다.
+    )
 }

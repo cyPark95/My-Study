@@ -55,8 +55,16 @@ public class Exam {
         dog.bark();
 
         dog.setAge(10);
-        var age = dog.getAge();
-        System.out.println("age: " + age);
+        System.out.println("age: " + dog.getAge());
+
+        var user = new User();
+        user.setName("홍길동");
+        user.setEmail("email@gmail.com");
+        user.setAge(20);
+        System.out.println(user);
+
+        // 생성자 매개변수의 순서를 준수 해야 한다.
+        new User("홍길동", "email@gmail.com", 20);
     }
 
     public static void main(String[] args) {
