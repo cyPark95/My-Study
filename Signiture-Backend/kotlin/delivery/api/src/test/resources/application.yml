@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test;MODE=MYSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: 1q2w3e4r!
+
+  jpa:
+    database-platform: H2
+    hibernate:
+      ddl-auto: create-drop
+
+  sql:
+    init :
+      mode: NEVER
+
+token:
+  secret:
+    key: TEST_JavaWebTokenPropertySecretKey
+  access-token:
+    plus-hour: 1
+  refresh-token:
+    plus-hour: 10
+
+rabbitmq:
+  exchange: test.exchange
+  queue: test.queue
+  route-key: test.key
