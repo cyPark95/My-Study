@@ -9,11 +9,11 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import pcy.study.api.common.annotation.UserSession;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.exception.ApiException;
 import pcy.study.api.domain.user.model.UserDetails;
 import pcy.study.api.domain.user.service.UserService;
+import pcy.study.common.annotation.UserSession;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.exception.ApiException;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -37,7 +37,7 @@ public class UserSessionResolver implements HandlerMethodArgumentResolver {
         var attribute = requestContext.getAttribute("userId", RequestAttributes.SCOPE_REQUEST);
         var userId = Optional.ofNullable(attribute)
                 .map(it -> Long.parseLong(it.toString()))
-                .orElseThrow(() -> new ApiException("User ID Attribute is Null in Request Context", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "User ID Attribute is Null in Request Context"));
 
         var user = userService.getUserWithThrow(userId);
         return UserDetails.builder()

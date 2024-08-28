@@ -1,7 +1,7 @@
 package pcy.study.api.domain.userorder.business;
 
 import lombok.RequiredArgsConstructor;
-import pcy.study.api.common.annotation.Business;
+import pcy.study.common.annotation.Business;
 import pcy.study.api.domain.store.converter.StoreConverter;
 import pcy.study.api.domain.store.service.StoreService;
 import pcy.study.api.domain.storemenu.converter.StoreMenuConverter;

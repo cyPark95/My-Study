@@ -7,8 +7,8 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pcy.study.api.common.api.error.TokenErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.api.code.TokenErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.api.domain.token.model.Token;
 
 import javax.crypto.SecretKey;
@@ -73,13 +73,13 @@ public class JwtHelper implements TokenHelper {
             var result = parser.parseClaimsJws(token);
             return new HashMap<>(result.getBody());
         } catch (SignatureException e) {
-            throw new ApiException(e.getMessage(), TokenErrorCode.INVALID_TOKEN);
+            throw new ApiException(TokenErrorCode.INVALID_TOKEN, e.getMessage());
 
         } catch (ExpiredJwtException e) {
-            throw new ApiException(e.getMessage(), TokenErrorCode.EXPIRED_TOKEN);
+            throw new ApiException(TokenErrorCode.EXPIRED_TOKEN, e.getMessage());
 
         } catch (Exception e) {
-            throw new ApiException(e.getMessage(), TokenErrorCode.TOKEN_EXCEPTION);
+            throw new ApiException(TokenErrorCode.TOKEN_EXCEPTION, e.getMessage());
         }
     }
 }

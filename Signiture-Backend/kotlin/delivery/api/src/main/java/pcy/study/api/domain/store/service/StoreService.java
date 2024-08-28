@@ -3,9 +3,9 @@ package pcy.study.api.domain.store.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.api.error.StoreErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.api.code.StoreErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.db.store.Store;
 import pcy.study.db.store.StoreRepository;
 import pcy.study.db.store.enums.StoreCategory;
@@ -24,14 +24,14 @@ public class StoreService {
     public Store register(Store store) {
         return Optional.ofNullable(store)
                 .map(storeRepository::save)
-                .orElseThrow(() -> new ApiException("Store Entity is Null", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "Store Entity is Null"));
     }
 
     public Store getStoreWithThrow(Long id) {
         return storeRepository.findFirstByIdAndStatusOrderByIdDesc(id, StoreStatus.REGISTERED)
                 .orElseThrow(() -> new ApiException(
-                        String.format("ID: [%d] Store Not Found", id),
-                        StoreErrorCode.STORE_NOT_FOUND
+                        StoreErrorCode.STORE_NOT_FOUND,
+                        String.format("ID: [%d] Store Not Found", id)
                 ));
     }
 

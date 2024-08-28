@@ -2,7 +2,7 @@ package pcy.study.api.domain.user.business;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import pcy.study.api.common.annotation.Business;
+import pcy.study.common.annotation.Business;
 import pcy.study.api.domain.token.business.TokenBusiness;
 import pcy.study.api.domain.token.controller.model.TokenResponse;
 import pcy.study.api.domain.user.controller.model.UserLoginRequest;

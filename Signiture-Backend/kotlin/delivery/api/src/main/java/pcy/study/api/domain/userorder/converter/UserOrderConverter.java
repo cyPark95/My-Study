@@ -1,8 +1,8 @@
 package pcy.study.api.domain.userorder.converter;
 
-import pcy.study.api.common.annotation.Converter;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.annotation.Converter;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.api.domain.user.model.UserDetails;
 import pcy.study.api.domain.userorder.controller.model.UserOrderResponse;
 import pcy.study.db.storemenu.StoreMenu;
@@ -22,7 +22,7 @@ public class UserOrderConverter {
                         .storeId(storeId)
                         .amount(getTotalAmount(storeMenus))
                         .build())
-                .orElseThrow(() -> new ApiException("StoreMenus is Null", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "StoreMenus is Null"));
     }
 
     private BigDecimal getTotalAmount(List<StoreMenu> storeMenus) {
@@ -43,6 +43,6 @@ public class UserOrderConverter {
                         .deliveryStartedAt(userOrder.getDeliveryStartedAt())
                         .receivedAt(userOrder.getReceivedAt())
                         .build())
-                .orElseThrow(() -> new ApiException("UserOrder is Null", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "UserOrder is Null"));
     }
 }

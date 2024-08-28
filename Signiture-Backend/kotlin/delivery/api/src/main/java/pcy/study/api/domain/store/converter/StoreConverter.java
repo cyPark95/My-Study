@@ -1,8 +1,8 @@
 package pcy.study.api.domain.store.converter;
 
-import pcy.study.api.common.annotation.Converter;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.annotation.Converter;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.api.domain.store.controller.model.StoreRegisterRequest;
 import pcy.study.api.domain.store.controller.model.StoreResponse;
 import pcy.study.db.store.Store;
@@ -23,7 +23,7 @@ public class StoreConverter {
                         .minimumDeliveryAmount(request.minimumDeliveryAmount())
                         .phoneNumber(request.phoneNumber())
                         .build())
-                .orElseThrow(() -> new ApiException("StoreRegisterRequest is Null", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "StoreRegisterRequest is Null"));
     }
 
     public StoreResponse toResponse(Store store) {
@@ -39,6 +39,5 @@ public class StoreConverter {
                         .minimumDeliveryAmount(store.getMinimumDeliveryAmount())
                         .phoneNumber(store.getPhoneNumber())
                         .build())
-                .orElseThrow(() -> new ApiException("Store Entity is Null", ErrorCode.NULL_POINT));
-    }
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "Store Entity is Null"));    }
 }

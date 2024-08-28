@@ -1,8 +1,8 @@
 package pcy.study.api.domain.storemenu.converter;
 
-import pcy.study.api.common.annotation.Converter;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.annotation.Converter;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuRegisterRequest;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuResponse;
 import pcy.study.db.storemenu.StoreMenu;
@@ -21,7 +21,7 @@ public class StoreMenuConverter {
                         .amount(request.amount())
                         .thumbnailUrl(request.thumbnailUrl())
                         .build())
-                .orElseThrow(() -> new ApiException("StoreMenuRequest is Null", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "StoreMenuRequest is Null"));
     }
 
     public List<StoreMenuResponse> toResponse(List<StoreMenu> storeMenus) {
@@ -41,6 +41,6 @@ public class StoreMenuConverter {
                         .likeCount(storeMenu.getLikeCount())
                         .sequence(storeMenu.getSequence())
                         .build())
-                .orElseThrow(() -> new ApiException("StoreMenu Entity is Null", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "StoreMenu Entity is Null"));
     }
 }

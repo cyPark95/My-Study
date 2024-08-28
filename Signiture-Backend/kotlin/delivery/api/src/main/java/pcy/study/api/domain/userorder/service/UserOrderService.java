@@ -3,9 +3,9 @@ package pcy.study.api.domain.userorder.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.api.error.UserOrderErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.api.code.UserOrderErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.db.userorder.UserOrder;
 import pcy.study.db.userorder.UserOrderRepository;
 import pcy.study.db.userorder.enums.UserOrderStatus;
@@ -23,8 +23,8 @@ public class UserOrderService {
     public UserOrder getUserOrderWithOutStatusWithThrow(Long id, Long userId) {
         return userOrderRepository.findFirstByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ApiException(
-                        String.format("ID: [%d], User ID: [%d] UserOrder Not Found", id, userId),
-                        UserOrderErrorCode.USER_ORDER_NOT_FOUND
+                        UserOrderErrorCode.USER_ORDER_NOT_FOUND,
+                        String.format("ID: [%d], User ID: [%d] UserOrder Not Found", id, userId)
                 ));
     }
 
@@ -78,6 +78,6 @@ public class UserOrderService {
                     runnable.run();
                     return userOrderRepository.save(userOrder);
                 })
-                .orElseThrow(() -> new ApiException("UserOrder Entity is Null", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "UserOrder Entity is Null"));
     }
 }

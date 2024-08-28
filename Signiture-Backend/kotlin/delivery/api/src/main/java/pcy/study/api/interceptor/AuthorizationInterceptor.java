@@ -10,9 +10,9 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.api.error.TokenErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.api.code.TokenErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.api.domain.token.business.TokenBusiness;
 
 import java.util.Objects;
@@ -48,6 +48,6 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        throw new ApiException(String.format("AccessToken: [%s] Invalid Token", accessToken), ErrorCode.ACCESS_DENIED);
+        throw new ApiException(ErrorCode.ACCESS_DENIED, String.format("AccessToken: [%s] Invalid Token", accessToken));
     }
 }

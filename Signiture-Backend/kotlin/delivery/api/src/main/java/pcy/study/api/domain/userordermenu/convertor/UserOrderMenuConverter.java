@@ -1,6 +1,6 @@
 package pcy.study.api.domain.userordermenu.convertor;
 
-import pcy.study.api.common.annotation.Converter;
+import pcy.study.common.annotation.Converter;
 import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.userorder.UserOrder;
 import pcy.study.db.userordermenu.UserOrderMenu;

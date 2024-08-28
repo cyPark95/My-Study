@@ -1,8 +1,8 @@
 package pcy.study.api.domain.user.converter;
 
-import pcy.study.api.common.annotation.Converter;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.annotation.Converter;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.api.domain.user.controller.model.UserRegisterRequest;
 import pcy.study.api.domain.user.controller.model.UserResponse;
 import pcy.study.db.user.User;
@@ -20,7 +20,7 @@ public class UserConverter {
                         .password(request.password())
                         .address(request.address())
                         .build())
-                .orElseThrow(() -> new ApiException("UserRegisterRequest is Null", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "UserRegisterRequest is Null"));
     }
 
     public UserResponse toResponse(User user) {
@@ -31,6 +31,5 @@ public class UserConverter {
                         .email(user.getEmail())
                         .address(user.getAddress())
                         .build())
-                .orElseThrow(() -> new ApiException("User Entity is Null", ErrorCode.NULL_POINT));
-    }
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "User Entity is Null"));    }
 }

@@ -3,9 +3,9 @@ package pcy.study.api.domain.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.api.error.UserErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.api.code.UserErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.db.user.User;
 import pcy.study.db.user.UserRepository;
 import pcy.study.db.user.enums.UserStatus;
@@ -22,7 +22,7 @@ public class UserService {
     public User register(User user) {
         return Optional.ofNullable(user)
                 .map(userRepository::save)
-                .orElseThrow(() -> new ApiException("User Entity is Null", ErrorCode.NULL_POINT));
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "User Entity is Null"));
     }
 
     public User login(String email, String password) {
@@ -36,16 +36,16 @@ public class UserService {
                         UserStatus.REGISTERED
                 )
                 .orElseThrow(() -> new ApiException(
-                        String.format("Email: [%s], Password: [%s] User Not Found", email, password),
-                        UserErrorCode.USER_NOT_FOUND)
-                );
+                        UserErrorCode.USER_NOT_FOUND,
+                        String.format("Email: [%s], Password: [%s] User Not Found", email, password)
+                ));
     }
 
     public User getUserWithThrow(Long id) {
         return userRepository.findFirstByIdAndStatusOrderByIdDesc(id, UserStatus.REGISTERED)
                 .orElseThrow(() -> new ApiException(
-                        String.format("ID: [%d] User Not Found", id),
-                        UserErrorCode.USER_NOT_FOUND)
-                );
+                        UserErrorCode.USER_NOT_FOUND,
+                        String.format("ID: [%d] User Not Found", id)
+                ));
     }
 }

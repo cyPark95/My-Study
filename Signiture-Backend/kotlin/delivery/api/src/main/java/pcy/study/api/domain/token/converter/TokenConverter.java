@@ -1,8 +1,8 @@
 package pcy.study.api.domain.token.converter;
 
-import pcy.study.api.common.annotation.Converter;
-import pcy.study.api.common.api.error.ErrorCode;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.annotation.Converter;
+import pcy.study.common.api.code.ErrorCode;
+import pcy.study.common.exception.ApiException;
 import pcy.study.api.domain.token.controller.model.TokenResponse;
 import pcy.study.api.domain.token.model.Token;
 
@@ -13,10 +13,10 @@ public class TokenConverter {
 
     public TokenResponse toResponse(Token accessToken, Token refreshToken) {
         Objects.requireNonNull(accessToken, () -> {
-            throw new ApiException("AccessToken is Null", ErrorCode.NULL_POINT);
+            throw new ApiException(ErrorCode.NULL_POINT, "AccessToken is Null");
         });
         Objects.requireNonNull(refreshToken, () -> {
-            throw new ApiException("RefreshToken is Null", ErrorCode.NULL_POINT);
+            throw new ApiException(ErrorCode.NULL_POINT, "RefreshToken is Null");
         });
 
         return TokenResponse.builder()

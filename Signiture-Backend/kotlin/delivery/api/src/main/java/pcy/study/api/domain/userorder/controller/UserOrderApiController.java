@@ -5,15 +5,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pcy.study.api.common.annotation.UserSession;
-import pcy.study.api.common.api.ApiResponse;
 import pcy.study.api.domain.user.model.UserDetails;
 import pcy.study.api.domain.userorder.business.UserOrderBusiness;
 import pcy.study.api.domain.userorder.controller.model.UserOrderDetailResponse;
 import pcy.study.api.domain.userorder.controller.model.UserOrderRequest;
 import pcy.study.api.domain.userorder.controller.model.UserOrderResponse;
+import pcy.study.common.annotation.UserSession;
+import pcy.study.common.api.ApiResponse;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class UserOrderApiController {
 
     @Operation(summary = "메뉴 주문", description = "메뉴를 주문합니다.")
     @PostMapping
-    public ResponseEntity<ApiResponse<UserOrderResponse>> userOrder(
+    public ApiResponse<UserOrderResponse> userOrder(
             @Parameter(hidden = true)
             @UserSession UserDetails userDetails,
             @RequestBody @Valid UserOrderRequest request
@@ -38,7 +37,7 @@ public class UserOrderApiController {
 
     @Operation(summary = "현재 주문 내역 조회", description = "현재 진행중인 주문 메뉴 목록을 조회합니다.")
     @GetMapping("/current")
-    public ResponseEntity<ApiResponse<List<UserOrderDetailResponse>>> current(
+    public ApiResponse<List<UserOrderDetailResponse>> current(
             @Parameter(hidden = true)
             @UserSession UserDetails userDetails
     ) {
@@ -48,7 +47,7 @@ public class UserOrderApiController {
 
     @Operation(summary = "과거 주문 내역 조회", description = "과거에 주문했던 메뉴 목록을 조회합니다.")
     @GetMapping("/history")
-    public ResponseEntity<ApiResponse<List<UserOrderDetailResponse>>> history(
+    public ApiResponse<List<UserOrderDetailResponse>> history(
             @Parameter(hidden = true)
             @UserSession UserDetails userDetails
     ) {
@@ -59,7 +58,7 @@ public class UserOrderApiController {
     @Operation(summary = "주문 조회", description = "주문 단건을 조회합니다.")
     @Parameter(name = "id", description = "주문 식별값", required = true)
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserOrderDetailResponse>> read(
+    public ApiResponse<UserOrderDetailResponse> read(
             @Parameter(hidden = true)
             @UserSession UserDetails userDetails,
             @PathVariable("id") Long id

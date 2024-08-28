@@ -4,12 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pcy.study.api.common.api.ApiResponse;
+import pcy.study.common.api.ApiResponse;
 import pcy.study.api.domain.store.business.StoreBusiness;
 import pcy.study.api.domain.store.controller.model.StoreResponse;
 import pcy.study.db.store.enums.StoreCategory;
@@ -27,7 +26,7 @@ public class StoreApiController {
     @Operation(summary = "가게 조회", description = "카테고리에 포함된 가게 목록을 조회합니다.")
     @Parameter(name = "category", description = "카테고리", required = true)
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<StoreResponse>>> search(@RequestParam("category") StoreCategory category) {
+    public ApiResponse<List<StoreResponse>> search(@RequestParam("category") StoreCategory category) {
         var response = storeBusiness.searchByCategory(category);
         return ApiResponse.ok(response);
     }
