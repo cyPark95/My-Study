@@ -145,8 +145,9 @@ class UserOrderBusinessTest {
     }
 
     private void mockToSuerOrderDetailResponse() {
+        UserOrder userOrderWithId = createUserOrderWithId();
         UserOrderMenu userOrderMenu = createUserOrderMenuWithId();
-        when(userOrderMenuService.searchByUserOrder(USER_ORDER_ID)).thenReturn(List.of(userOrderMenu));
+        when(userOrderMenuService.searchByUserOrder(userOrderWithId)).thenReturn(List.of(userOrderMenu));
         StoreMenu storeMenu = createStoreMenuWithId();
         when(storeMenuService.getStoreMenuWithThrow(STORE_MENU_ID)).thenReturn(storeMenu);
         Store store = createStoreWithId();

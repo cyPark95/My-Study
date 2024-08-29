@@ -9,11 +9,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.common.ApiTest;
 import pcy.study.api.domain.userorder.controller.model.UserOrderDetailResponse;
 import pcy.study.api.domain.userorder.controller.model.UserOrderRequest;
 import pcy.study.api.domain.userorder.controller.model.UserOrderResponse;
 import pcy.study.db.store.StoreRepository;
+import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.storemenu.StoreMenuRepository;
 import pcy.study.db.userorder.UserOrder;
 import pcy.study.db.userorder.UserOrderRepository;
@@ -24,8 +26,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static pcy.study.api.utility.StoreMenuUtils.STORE_MENU_ID;
-import static pcy.study.api.utility.StoreMenuUtils.createStoreMenu;
+import static pcy.study.api.utility.StoreMenuUtils.*;
 import static pcy.study.api.utility.StoreUtils.STORE_ID;
 import static pcy.study.api.utility.StoreUtils.createStore;
 import static pcy.study.api.utility.UserOrderUtils.*;
@@ -164,9 +165,12 @@ class UserOrderApiControllerTest extends ApiTest {
     }
 
     private void saveUserOrderMenu(Long userOrderId) {
+        UserOrder userOrder = createUserOrder();
+        ReflectionTestUtils.setField(userOrder, "id", userOrderId);
+        StoreMenu storeMenu = createStoreMenuWithId();
         userOrderMenuRepository.save(UserOrderMenu.builder()
-                .userOrderId(userOrderId)
-                .storeMenuId(STORE_MENU_ID)
+                .userOrder(userOrder)
+                .storeMenu(storeMenu)
                 .build());
     }
 }

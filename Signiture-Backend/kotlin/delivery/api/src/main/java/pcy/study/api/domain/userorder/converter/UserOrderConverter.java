@@ -1,10 +1,11 @@
 package pcy.study.api.domain.userorder.converter;
 
+import pcy.study.api.domain.user.model.UserDetails;
+import pcy.study.api.domain.userorder.controller.model.UserOrderResponse;
 import pcy.study.common.annotation.Converter;
 import pcy.study.common.api.code.ErrorCode;
 import pcy.study.common.exception.ApiException;
-import pcy.study.api.domain.user.model.UserDetails;
-import pcy.study.api.domain.userorder.controller.model.UserOrderResponse;
+import pcy.study.db.store.Store;
 import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.userorder.UserOrder;
 
@@ -15,11 +16,11 @@ import java.util.Optional;
 @Converter
 public class UserOrderConverter {
 
-    public UserOrder toEntity(UserDetails userDetails, Long storeId, List<StoreMenu> storeMenus) {
+    public UserOrder toEntity(UserDetails userDetails, Store store, List<StoreMenu> storeMenus) {
         return Optional.ofNullable(storeMenus)
                 .map(it -> UserOrder.builder()
                         .userId(userDetails.id())
-                        .storeId(storeId)
+                        .store(store)
                         .amount(getTotalAmount(storeMenus))
                         .build())
                 .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "StoreMenus is Null"));

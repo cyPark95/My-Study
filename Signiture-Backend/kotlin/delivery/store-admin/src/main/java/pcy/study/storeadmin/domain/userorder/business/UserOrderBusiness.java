@@ -28,17 +28,17 @@ public class UserOrderBusiness {
     public void pushUserOrder(UserOrderMessage userOrderMessage) {
         var userOrder = userOrderService.getUserOrderWithThrow(userOrderMessage.userOrderId());
         var userOrderResponse = userOrderConverter.toResponse(userOrder);
-        var userOrderMenus = userOrderMenuService.getUserOrderMenus(userOrder.getId());
+        var userOrderMenus = userOrderMenuService.getUserOrderMenus(userOrder);
         var storeMenus = getStoreMenus(userOrderMenus);
         var storeMenuResponse = storeMenuConverter.toResponse(storeMenus);
         var userOrderDetailresponse = userOrderConverter.toDetailResponse(userOrderResponse, storeMenuResponse);
-        var userConnection = connectionPool.getConnection(userOrder.getStoreId());
+        var userConnection = connectionPool.getConnection(userOrder.getStore().getId());
         userConnection.sendMessage("push", userOrderDetailresponse);
     }
 
     private List<StoreMenu> getStoreMenus(List<UserOrderMenu> userOrderMenus) {
         return userOrderMenus.stream()
-                .map(it -> storeMenuService.getStoreMenuWithThrow(it.getStoreMenuId()))
+                .map(it -> storeMenuService.getStoreMenuWithThrow(it.getStoreMenu().getId()))
                 .toList();
     }
 }

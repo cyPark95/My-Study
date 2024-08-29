@@ -4,8 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import pcy.study.api.common.exception.ApiException;
 import pcy.study.api.config.annotation.ServiceTest;
+import pcy.study.api.utility.StoreUtils;
+import pcy.study.common.exception.ApiException;
+import pcy.study.db.store.Store;
 import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.storemenu.StoreMenuRepository;
 
@@ -39,8 +41,9 @@ class StoreMenuServiceTest {
     @DisplayName("가게 메뉴 등록")
     void register() {
         // given
+        Store store = StoreUtils.createStoreWithId();
         StoreMenu storeMenu = StoreMenu.builder()
-                .storeId(1L)
+                .store(store)
                 .name("name")
                 .amount(BigDecimal.valueOf(10000))
                 .thumbnailUrl("https://www.example.com")

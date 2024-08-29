@@ -27,7 +27,7 @@ public class StoreMenuService {
     }
 
     public StoreMenu getStoreMenuWithThrow(Long id) {
-        return storeMenuRepository.findFirstByIdAndStatusOrderByIdDesc(id, StoreMenuStatus.REGISTERED)
+        return Optional.ofNullable(storeMenuRepository.findFirstByIdAndStatusOrderByIdDesc(id, StoreMenuStatus.REGISTERED))
                 .orElseThrow(() -> new ApiException(
                         StoreMenuErrorCode.STORE_MENU_NOT_FOUND,
                         String.format("ID: [%d] StoreMenu Not Found", id)

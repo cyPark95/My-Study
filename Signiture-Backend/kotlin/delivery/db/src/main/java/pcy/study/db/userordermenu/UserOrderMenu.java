@@ -1,35 +1,36 @@
 package pcy.study.db.userordermenu;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import pcy.study.db.BaseTimeEntity;
+import pcy.study.db.storemenu.StoreMenu;
+import pcy.study.db.userorder.UserOrder;
 import pcy.study.db.userordermenu.enums.UserOrderMenuStatus;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 @Entity
 public class UserOrderMenu extends BaseTimeEntity {
 
+    @ManyToOne
+    @JoinColumn(name = "userOrderId", nullable = false)
     @Column(nullable = false)
-    private Long userOrderId;
+    private UserOrder userOrder;
 
+    @ManyToOne
+    @JoinColumn(name = "storeMenuId", nullable = false)
     @Column(nullable = false)
-    private Long storeMenuId;
+    private StoreMenu storeMenu;
 
     @Column(length = 50, nullable = false, columnDefinition = "VARCHAR")
     @Enumerated(EnumType.STRING)
     private UserOrderMenuStatus status;
 
     @Builder
-    private UserOrderMenu(Long userOrderId, Long storeMenuId) {
-        this.userOrderId = userOrderId;
-        this.storeMenuId = storeMenuId;
+    private UserOrderMenu(UserOrder userOrder, StoreMenu storeMenu) {
+        this.userOrder = userOrder;
+        this.storeMenu = storeMenu;
         this.status = UserOrderMenuStatus.REGISTERED;
     }
 }

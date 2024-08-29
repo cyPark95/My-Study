@@ -30,11 +30,11 @@ public class UserService {
     }
 
     private User getUserWithThrow(String email, String password) {
-        return userRepository.findFirstByEmailAndPasswordAndStatusOrderByIdDesc(
+        return Optional.ofNullable(userRepository.findFirstByEmailAndPasswordAndStatusOrderByIdDesc(
                         email,
                         password,
                         UserStatus.REGISTERED
-                )
+                ))
                 .orElseThrow(() -> new ApiException(
                         UserErrorCode.USER_NOT_FOUND,
                         String.format("Email: [%s], Password: [%s] User Not Found", email, password)
@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public User getUserWithThrow(Long id) {
-        return userRepository.findFirstByIdAndStatusOrderByIdDesc(id, UserStatus.REGISTERED)
+        return Optional.ofNullable(userRepository.findFirstByIdAndStatusOrderByIdDesc(id, UserStatus.REGISTERED))
                 .orElseThrow(() -> new ApiException(
                         UserErrorCode.USER_NOT_FOUND,
                         String.format("ID: [%d] User Not Found", id)

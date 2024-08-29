@@ -1,29 +1,30 @@
 package pcy.study.db.userorder;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import pcy.study.db.BaseTimeEntity;
+import pcy.study.db.store.Store;
 import pcy.study.db.userorder.enums.UserOrderStatus;
+import pcy.study.db.userordermenu.UserOrderMenu;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = "userOrderMenus")
 @Entity
 public class UserOrder extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Long userId;
 
+    @ManyToOne
+    @JoinColumn(name = "storeId", nullable = false)
     @Column(nullable = false)
-    private Long storeId;
+    private Store store;
 
     @Column(length = 50, nullable = false, columnDefinition = "VARCHAR")
     @Enumerated(EnumType.STRING)
@@ -42,10 +43,13 @@ public class UserOrder extends BaseTimeEntity {
 
     private LocalDateTime receivedAt;
 
+    @OneToMany(mappedBy = "userOrder")
+    private final List<UserOrderMenu> userOrderMenus = new ArrayList<>();
+
     @Builder
-    private UserOrder(Long userId, Long storeId, BigDecimal amount) {
+    private UserOrder(Long userId, Store store, BigDecimal amount) {
         this.userId = userId;
-        this.storeId = storeId;
+        this.store = store;
         this.amount = amount;
         this.status = UserOrderStatus.REGISTERED;
     }

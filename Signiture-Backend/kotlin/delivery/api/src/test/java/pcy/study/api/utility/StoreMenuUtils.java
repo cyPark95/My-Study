@@ -4,6 +4,7 @@ import io.restassured.path.json.JsonPath;
 import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuRegisterRequest;
 import pcy.study.api.domain.storemenu.controller.model.StoreMenuResponse;
+import pcy.study.db.store.Store;
 import pcy.study.db.storemenu.StoreMenu;
 
 import java.math.BigDecimal;
@@ -26,8 +27,9 @@ public class StoreMenuUtils {
     }
 
     public static StoreMenu createStoreMenu() {
+        Store store = StoreUtils.createStoreWithId();
         return StoreMenu.builder()
-                .storeId(STORE_ID)
+                .store(store)
                 .name(STORE_MENU_NAME)
                 .amount(STORE_MENU_AMOUNT)
                 .thumbnailUrl(STORE_MENU_THUMBNAIL_URL)

@@ -28,7 +28,7 @@ public class StoreService {
     }
 
     public Store getStoreWithThrow(Long id) {
-        return storeRepository.findFirstByIdAndStatusOrderByIdDesc(id, StoreStatus.REGISTERED)
+        return Optional.ofNullable(storeRepository.findFirstByIdAndStatusOrderByIdDesc(id, StoreStatus.REGISTERED))
                 .orElseThrow(() -> new ApiException(
                         StoreErrorCode.STORE_NOT_FOUND,
                         String.format("ID: [%d] Store Not Found", id)

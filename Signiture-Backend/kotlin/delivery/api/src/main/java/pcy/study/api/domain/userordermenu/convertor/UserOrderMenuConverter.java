@@ -10,8 +10,8 @@ public class UserOrderMenuConverter {
 
     public UserOrderMenu toEntity(UserOrder userOrder, StoreMenu storeMenu) {
         return UserOrderMenu.builder()
-                .userOrderId(userOrder.getId())
-                .storeMenuId(storeMenu.getId())
+                .userOrder(userOrder)
+                .storeMenu(storeMenu)
                 .build();
     }
 }

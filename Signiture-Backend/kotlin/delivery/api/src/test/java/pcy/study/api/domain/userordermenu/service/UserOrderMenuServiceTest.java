@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import pcy.study.api.common.exception.ApiException;
 import pcy.study.api.config.annotation.ServiceTest;
+import pcy.study.common.exception.ApiException;
 import pcy.study.db.userordermenu.UserOrderMenu;
 import pcy.study.db.userordermenu.UserOrderMenuRepository;
 
@@ -36,7 +36,7 @@ class UserOrderMenuServiceTest {
         userOrderMenuRepository.save(userOrderMenu);
 
         // when
-        List<UserOrderMenu> result = userOrderMenuService.searchByUserOrder(userOrderMenu.getId());
+        List<UserOrderMenu> result = userOrderMenuService.searchByUserOrder(userOrderMenu.getUserOrder());
 
         // then
         assertThat(result.size()).isEqualTo(1);

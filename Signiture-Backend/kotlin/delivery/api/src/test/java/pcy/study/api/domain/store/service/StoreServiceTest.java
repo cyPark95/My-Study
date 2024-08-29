@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import pcy.study.api.common.exception.ApiException;
+import pcy.study.common.exception.ApiException;
 import pcy.study.api.config.annotation.ServiceTest;
 import pcy.study.db.store.Store;
 import pcy.study.db.store.StoreRepository;

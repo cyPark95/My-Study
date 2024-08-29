@@ -4,6 +4,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.api.domain.userorder.controller.model.UserOrderDetailResponse;
 import pcy.study.api.domain.userorder.controller.model.UserOrderRequest;
 import pcy.study.api.domain.userorder.controller.model.UserOrderResponse;
+import pcy.study.db.store.Store;
 import pcy.study.db.userorder.UserOrder;
 import pcy.study.db.userorder.enums.UserOrderStatus;
 
@@ -41,9 +42,10 @@ public class UserOrderUtils {
     }
 
     public static UserOrder createUserOrder() {
+        Store store = StoreUtils.createStoreWithId();
         return UserOrder.builder()
                 .userId(USER_ID)
-                .storeId(STORE_ID)
+                .store(store)
                 .amount(USER_ORDER_AMOUNT)
                 .build();
     }

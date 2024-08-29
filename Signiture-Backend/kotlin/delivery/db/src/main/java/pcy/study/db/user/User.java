@@ -1,10 +1,7 @@
 package pcy.study.db.user;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pcy.study.db.BaseTimeEntity;
 import pcy.study.db.user.enums.UserStatus;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 @Entity
 @Table(name = "users")
 public class User extends BaseTimeEntity {

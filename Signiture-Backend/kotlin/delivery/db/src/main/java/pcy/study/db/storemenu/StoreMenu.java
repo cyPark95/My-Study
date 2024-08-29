@@ -1,25 +1,23 @@
 package pcy.study.db.storemenu;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import pcy.study.db.BaseTimeEntity;
+import pcy.study.db.store.Store;
 import pcy.study.db.storemenu.enums.StoreMenuStatus;
 
 import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 @Entity
 public class StoreMenu extends BaseTimeEntity {
 
+    @ManyToOne
+    @JoinColumn(name = "storeId", nullable = false)
     @Column(nullable = false)
-    private Long storeId;
+    private Store store;
 
     @Column(length = 100, nullable = false)
     private String name;
@@ -38,8 +36,8 @@ public class StoreMenu extends BaseTimeEntity {
     private int sequence;
 
     @Builder
-    private StoreMenu(Long storeId, String name, BigDecimal amount, String thumbnailUrl) {
-        this.storeId = storeId;
+    private StoreMenu(Store store, String name, BigDecimal amount, String thumbnailUrl) {
+        this.store = store;
         this.name = name;
         this.amount = amount;
         this.thumbnailUrl = thumbnailUrl;

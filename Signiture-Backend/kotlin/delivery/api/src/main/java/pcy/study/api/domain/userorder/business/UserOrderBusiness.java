@@ -1,7 +1,6 @@
 package pcy.study.api.domain.userorder.business;
 
 import lombok.RequiredArgsConstructor;
-import pcy.study.common.annotation.Business;
 import pcy.study.api.domain.store.converter.StoreConverter;
 import pcy.study.api.domain.store.service.StoreService;
 import pcy.study.api.domain.storemenu.converter.StoreMenuConverter;
@@ -15,6 +14,7 @@ import pcy.study.api.domain.userorder.producer.UserOrderProducer;
 import pcy.study.api.domain.userorder.service.UserOrderService;
 import pcy.study.api.domain.userordermenu.convertor.UserOrderMenuConverter;
 import pcy.study.api.domain.userordermenu.service.UserOrderMenuService;
+import pcy.study.common.annotation.Business;
 import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.userorder.UserOrder;
 import pcy.study.db.userordermenu.UserOrderMenu;
@@ -36,13 +36,14 @@ public class UserOrderBusiness {
     private final UserOrderProducer userOrderProducer;
 
     public UserOrderResponse userOrder(UserDetails userDetails, UserOrderRequest request) {
-        var storeMenuEntities = getStoreMenus(request.storeMenuIds());
-        var userOrderEntity = userOrderConverter.toEntity(userDetails, request.storeId(), storeMenuEntities);
-        var newUserOrderEntity = userOrderService.order(userOrderEntity);
-        var userOrderMenus = getOrderMenus(storeMenuEntities, userOrderEntity);
+        var store = storeService.getStoreWithThrow(request.storeId());
+        var storeMenus = getStoreMenus(request.storeMenuIds());
+        var userOrder = userOrderConverter.toEntity(userDetails, store, storeMenus);
+        var newUserOrder = userOrderService.order(userOrder);
+        var userOrderMenus = getOrderMenus(storeMenus, userOrder);
         userOrderMenus.forEach(userOrderMenuService::order);
-        userOrderProducer.sendOrder(newUserOrderEntity);
-        return userOrderConverter.toResponse(newUserOrderEntity);
+        userOrderProducer.sendOrder(newUserOrder);
+        return userOrderConverter.toResponse(newUserOrder);
     }
 
     private List<StoreMenu> getStoreMenus(List<Long> storeMenuIds) {
@@ -77,12 +78,12 @@ public class UserOrderBusiness {
     }
 
     private UserOrderDetailResponse toUserOrderDetailResponse(UserOrder userOrder) {
-        var userOrderMenus = userOrderMenuService.searchByUserOrder(userOrder.getId());
+        var userOrderMenus = userOrderMenuService.searchByUserOrder(userOrder);
         var storeMenus = userOrderMenus.stream()
-                .map(userOrderMenu -> storeMenuService.getStoreMenuWithThrow(userOrderMenu.getStoreMenuId()))
+                .map(userOrderMenu -> storeMenuService.getStoreMenuWithThrow(userOrderMenu.getStoreMenu().getId()))
                 .toList();
         // TODO 리팩토링
-        var store = storeService.getStoreWithThrow(storeMenus.stream().findFirst().get().getStoreId());
+        var store = storeService.getStoreWithThrow(storeMenus.stream().findFirst().get().getStore().getId());
         return UserOrderDetailResponse.builder()
                 .userOrder(userOrderConverter.toResponse(userOrder))
                 .store(storeConverter.toResponse(store))
