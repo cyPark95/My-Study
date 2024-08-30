@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
                 ApiResponse.error(ErrorCode.BAD_REQUEST, String.join("," + System.lineSeparator(), errorMessage)),
-                HttpStatusCode.valueOf(ErrorCode.METHOD_NOT_ALLOWED.getHttpStatusCode())
+                HttpStatusCode.valueOf(ErrorCode.BAD_REQUEST.getHttpStatusCode())
         );
     }
 

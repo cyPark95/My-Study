@@ -18,11 +18,11 @@ public class UserOrderConverter {
 
     public UserOrder toEntity(UserDetails userDetails, Store store, List<StoreMenu> storeMenus) {
         return Optional.ofNullable(storeMenus)
-                .map(it -> UserOrder.builder()
-                        .userId(userDetails.id())
-                        .store(store)
-                        .amount(getTotalAmount(storeMenus))
-                        .build())
+                .map(it -> new UserOrder(
+                        userDetails.id(),
+                        store,
+                        getTotalAmount(storeMenus)
+                ))
                 .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "StoreMenus is Null"));
     }
 

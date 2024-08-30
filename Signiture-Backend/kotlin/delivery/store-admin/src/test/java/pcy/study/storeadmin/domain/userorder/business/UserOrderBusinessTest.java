@@ -58,7 +58,7 @@ class UserOrderBusinessTest {
         UserOrder userOrder = createUserOrderWithId();
         when(userOrderService.getUserOrderWithThrow(USER_ORDER_ID)).thenReturn(userOrder);
         UserOrderMenu userOrderMenu = createUserOrderMenuWithId();
-        when(userOrderMenuService.getUserOrderMenus(USER_ORDER_ID)).thenReturn(List.of(userOrderMenu));
+        when(userOrderMenuService.getUserOrderMenus(userOrder)).thenReturn(List.of(userOrderMenu));
         StoreMenu storeMenu = createStoreMenuWithId();
         when(storeMenuService.getStoreMenuWithThrow(STORE_MENU_ID)).thenReturn(storeMenu);
         SseConnection sseConnection = mock(SseConnection.class);

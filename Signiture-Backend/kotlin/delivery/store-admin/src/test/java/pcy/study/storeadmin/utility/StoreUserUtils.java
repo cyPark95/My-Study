@@ -24,12 +24,12 @@ public class StoreUserUtils {
     }
 
     public static StoreUser createStoreUser() {
-        return StoreUser.builder()
-                .storeId(STORE_ID)
-                .email(STORE_USER_EMAIL)
-                .password(STORE_USER_PASSWORD)
-                .role(StoreUserRole.USER)
-                .build();
+        return new StoreUser(
+                STORE_ID,
+                STORE_USER_EMAIL,
+                STORE_USER_PASSWORD,
+                StoreUserRole.USER
+        );
     }
 
     public static StoreUserRegisterRequest createStoreUserRegisterRequest() {

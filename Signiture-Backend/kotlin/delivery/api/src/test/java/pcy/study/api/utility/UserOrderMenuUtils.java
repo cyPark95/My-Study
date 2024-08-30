@@ -15,10 +15,7 @@ public class UserOrderMenuUtils {
     public static UserOrderMenu createUserOrderMenu() {
         UserOrder userOrder = UserOrderUtils.createUserOrderWithId();
         StoreMenu storeMenu = StoreMenuUtils.createStoreMenuWithId();
-        return UserOrderMenu.builder()
-                .userOrder(userOrder)
-                .storeMenu(storeMenu)
-                .build();
+        return new UserOrderMenu(userOrder, storeMenu);
     }
 
     public static UserOrderMenu createUserOrderMenuWithId() {

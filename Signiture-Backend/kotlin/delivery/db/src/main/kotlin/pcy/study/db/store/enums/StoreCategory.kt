@@ -1,11 +1,6 @@
-package pcy.study.db.store.enums;
+package pcy.study.db.store.enums
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@Getter
-@RequiredArgsConstructor
-public enum StoreCategory {
+enum class StoreCategory(val display: String) {
 
     CHINESE_FOOD("중식"),
     WESTERN_FOOD("양식"),
@@ -16,6 +11,4 @@ public enum StoreCategory {
     HAMBURGER("햄버거"),
     COFFEE_TEA("커피&차"),
     ;
-
-    private final String display;
 }

@@ -16,12 +16,12 @@ public class StoreMenuConverter {
 
     public StoreMenu toEntity(Store store, StoreMenuRegisterRequest request) {
         return Optional.ofNullable(request)
-                .map(it -> StoreMenu.builder()
-                        .store(store)
-                        .name(request.name())
-                        .amount(request.amount())
-                        .thumbnailUrl(request.thumbnailUrl())
-                        .build())
+                .map(it -> new StoreMenu(
+                        store,
+                        request.name(),
+                        request.amount(),
+                        request.thumbnailUrl()
+                ))
                 .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "StoreMenuRequest is Null"));
     }
 

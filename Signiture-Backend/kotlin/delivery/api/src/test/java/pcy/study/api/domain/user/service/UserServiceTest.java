@@ -35,12 +35,12 @@ class UserServiceTest {
     @DisplayName("사용자 등록")
     void register() {
         // given
-        User user = User.builder()
-                .name("name")
-                .email("example@gmail.com")
-                .address("서울특별시")
-                .password("example")
-                .build();
+        User user = new User(
+                "name",
+                "example@gmail.com",
+                "example",
+                "서울특별시"
+        );
 
         // when
         User result = userService.register(user);

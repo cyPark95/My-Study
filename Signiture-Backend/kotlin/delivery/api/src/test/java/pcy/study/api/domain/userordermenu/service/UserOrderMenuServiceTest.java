@@ -29,20 +29,6 @@ class UserOrderMenuServiceTest {
     }
 
     @Test
-    @DisplayName("사용자 주문 메뉴 조회")
-    void searchByUserOrder() {
-        // given
-        UserOrderMenu userOrderMenu = createUserOrderMenu();
-        userOrderMenuRepository.save(userOrderMenu);
-
-        // when
-        List<UserOrderMenu> result = userOrderMenuService.searchByUserOrder(userOrderMenu.getUserOrder());
-
-        // then
-        assertThat(result.size()).isEqualTo(1);
-    }
-
-    @Test
     @DisplayName("사용자 메뉴 주문")
     void order() {
         // given

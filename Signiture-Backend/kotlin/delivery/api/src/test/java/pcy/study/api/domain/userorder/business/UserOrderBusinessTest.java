@@ -23,7 +23,6 @@ import pcy.study.api.domain.userordermenu.service.UserOrderMenuService;
 import pcy.study.db.store.Store;
 import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.userorder.UserOrder;
-import pcy.study.db.userordermenu.UserOrderMenu;
 
 import java.util.List;
 
@@ -34,7 +33,6 @@ import static pcy.study.api.utility.StoreMenuUtils.STORE_MENU_ID;
 import static pcy.study.api.utility.StoreMenuUtils.createStoreMenuWithId;
 import static pcy.study.api.utility.StoreUtils.STORE_ID;
 import static pcy.study.api.utility.StoreUtils.createStoreWithId;
-import static pcy.study.api.utility.UserOrderMenuUtils.createUserOrderMenuWithId;
 import static pcy.study.api.utility.UserOrderUtils.*;
 import static pcy.study.api.utility.UserUtils.createUserDetails;
 
@@ -145,9 +143,6 @@ class UserOrderBusinessTest {
     }
 
     private void mockToSuerOrderDetailResponse() {
-        UserOrder userOrderWithId = createUserOrderWithId();
-        UserOrderMenu userOrderMenu = createUserOrderMenuWithId();
-        when(userOrderMenuService.searchByUserOrder(userOrderWithId)).thenReturn(List.of(userOrderMenu));
         StoreMenu storeMenu = createStoreMenuWithId();
         when(storeMenuService.getStoreMenuWithThrow(STORE_MENU_ID)).thenReturn(storeMenu);
         Store store = createStoreWithId();

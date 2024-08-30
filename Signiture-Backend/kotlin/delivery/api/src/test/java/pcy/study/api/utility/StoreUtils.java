@@ -27,15 +27,15 @@ public class StoreUtils {
     }
 
     public static Store createStore() {
-        return Store.builder()
-                .name(STORE_NAME)
-                .address(STORE_ADDRESS)
-                .category(StoreCategory.COFFEE_TEA)
-                .thumbnailUrl(STORE_THUMBNAIL_URL)
-                .minimumAmount(STORE_MINIMUM_AMOUNT)
-                .minimumDeliveryAmount(STORE_MINIMUM_DELIVERY_AMOUNT)
-                .phoneNumber(STORE_PHONE_NUMBER)
-                .build();
+        return new Store(
+                STORE_NAME,
+                STORE_ADDRESS,
+                StoreCategory.COFFEE_TEA,
+                STORE_THUMBNAIL_URL,
+                STORE_MINIMUM_AMOUNT,
+                STORE_MINIMUM_DELIVERY_AMOUNT,
+                STORE_PHONE_NUMBER
+        );
     }
 
     public static Store createStoreWithId() {

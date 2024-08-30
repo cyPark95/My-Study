@@ -42,12 +42,12 @@ class StoreMenuServiceTest {
     void register() {
         // given
         Store store = StoreUtils.createStoreWithId();
-        StoreMenu storeMenu = StoreMenu.builder()
-                .store(store)
-                .name("name")
-                .amount(BigDecimal.valueOf(10000))
-                .thumbnailUrl("https://www.example.com")
-                .build();
+        StoreMenu storeMenu = new StoreMenu(
+                store,
+                "name",
+                BigDecimal.valueOf(10000),
+                "https://www.example.com"
+        );
 
         // when
         StoreMenu result = storeMenuService.register(storeMenu);

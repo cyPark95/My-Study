@@ -18,6 +18,7 @@ import pcy.study.common.annotation.Business;
 import pcy.study.db.storemenu.StoreMenu;
 import pcy.study.db.userorder.UserOrder;
 import pcy.study.db.userordermenu.UserOrderMenu;
+import pcy.study.db.userordermenu.enums.UserOrderMenuStatus;
 
 import java.util.List;
 
@@ -78,16 +79,21 @@ public class UserOrderBusiness {
     }
 
     private UserOrderDetailResponse toUserOrderDetailResponse(UserOrder userOrder) {
-        var userOrderMenus = userOrderMenuService.searchByUserOrder(userOrder);
+        var userOrderMenus = getRegisterUserOrderMenus(userOrder);
         var storeMenus = userOrderMenus.stream()
-                .map(userOrderMenu -> storeMenuService.getStoreMenuWithThrow(userOrderMenu.getStoreMenu().getId()))
+                .map(UserOrderMenu::getStoreMenu)
                 .toList();
-        // TODO 리팩토링
-        var store = storeService.getStoreWithThrow(storeMenus.stream().findFirst().get().getStore().getId());
+        var store = userOrder.getStore();
         return UserOrderDetailResponse.builder()
                 .userOrder(userOrderConverter.toResponse(userOrder))
                 .store(storeConverter.toResponse(store))
                 .storeMenus(storeMenuConverter.toResponse(storeMenus))
                 .build();
+    }
+
+    private List<UserOrderMenu> getRegisterUserOrderMenus(UserOrder userOrder) {
+        return userOrder.getUserOrderMenus().stream()
+                .filter(userOrderMenu -> userOrderMenu.getStatus().equals(UserOrderMenuStatus.REGISTERED))
+                .toList();
     }
 }

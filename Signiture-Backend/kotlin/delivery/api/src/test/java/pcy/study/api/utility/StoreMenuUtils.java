@@ -28,12 +28,12 @@ public class StoreMenuUtils {
 
     public static StoreMenu createStoreMenu() {
         Store store = StoreUtils.createStoreWithId();
-        return StoreMenu.builder()
-                .store(store)
-                .name(STORE_MENU_NAME)
-                .amount(STORE_MENU_AMOUNT)
-                .thumbnailUrl(STORE_MENU_THUMBNAIL_URL)
-                .build();
+        return new StoreMenu(
+                store,
+                STORE_MENU_NAME,
+                STORE_MENU_AMOUNT,
+                STORE_MENU_THUMBNAIL_URL
+        );
     }
 
     public static StoreMenu createStoreMenuWithId() {

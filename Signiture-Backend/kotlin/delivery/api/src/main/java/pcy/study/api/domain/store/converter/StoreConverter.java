@@ -14,15 +14,15 @@ public class StoreConverter {
 
     public Store toEntity(StoreRegisterRequest request) {
         return Optional.ofNullable(request)
-                .map(it -> Store.builder()
-                        .name(request.name())
-                        .address(request.address())
-                        .category(request.category())
-                        .thumbnailUrl(request.thumbnailUrl())
-                        .minimumAmount(request.minimumAmount())
-                        .minimumDeliveryAmount(request.minimumDeliveryAmount())
-                        .phoneNumber(request.phoneNumber())
-                        .build())
+                .map(it -> new Store(
+                        request.name(),
+                        request.address(),
+                        request.category(),
+                        request.thumbnailUrl(),
+                        request.minimumAmount(),
+                        request.minimumDeliveryAmount(),
+                        request.phoneNumber()
+                ))
                 .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "StoreRegisterRequest is Null"));
     }
 
@@ -39,5 +39,6 @@ public class StoreConverter {
                         .minimumDeliveryAmount(store.getMinimumDeliveryAmount())
                         .phoneNumber(store.getPhoneNumber())
                         .build())
-                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "Store Entity is Null"));    }
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "Store Entity is Null"));
+    }
 }

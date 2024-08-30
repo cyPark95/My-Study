@@ -168,9 +168,6 @@ class UserOrderApiControllerTest extends ApiTest {
         UserOrder userOrder = createUserOrder();
         ReflectionTestUtils.setField(userOrder, "id", userOrderId);
         StoreMenu storeMenu = createStoreMenuWithId();
-        userOrderMenuRepository.save(UserOrderMenu.builder()
-                .userOrder(userOrder)
-                .storeMenu(storeMenu)
-                .build());
+        userOrderMenuRepository.save(new UserOrderMenu(userOrder, storeMenu));
     }
 }

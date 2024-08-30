@@ -43,11 +43,11 @@ public class UserOrderUtils {
 
     public static UserOrder createUserOrder() {
         Store store = StoreUtils.createStoreWithId();
-        return UserOrder.builder()
-                .userId(USER_ID)
-                .store(store)
-                .amount(USER_ORDER_AMOUNT)
-                .build();
+        return new UserOrder(
+                USER_ID,
+                store,
+                USER_ORDER_AMOUNT
+        );
     }
 
     public static UserOrder createUserOrderWithId() {

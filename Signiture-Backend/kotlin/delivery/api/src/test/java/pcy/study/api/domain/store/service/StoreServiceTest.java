@@ -39,15 +39,15 @@ class StoreServiceTest {
     @DisplayName("가게 등록")
     void register() {
         // given
-        Store store = Store.builder()
-                .name("name")
-                .address("서울특별시")
-                .category(StoreCategory.KOREAN_FOOD)
-                .thumbnailUrl("https://www.example.com")
-                .minimumAmount(BigDecimal.valueOf(10000))
-                .minimumDeliveryAmount(BigDecimal.valueOf(7000))
-                .phoneNumber("010-0000-0000")
-                .build();
+        Store store = new Store(
+                "name",
+                "서울특별시",
+                StoreCategory.KOREAN_FOOD,
+                "https://www.example.com",
+                BigDecimal.valueOf(10000),
+                BigDecimal.valueOf(7000),
+                "010-0000-0000"
+        );
 
         // when
         Store result = storeService.register(store);

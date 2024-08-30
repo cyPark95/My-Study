@@ -1,10 +1,12 @@
 package pcy.study.storeadmin.utility;
 
 import org.springframework.test.util.ReflectionTestUtils;
+import pcy.study.db.storemenu.StoreMenu;
+import pcy.study.db.userorder.UserOrder;
 import pcy.study.db.userordermenu.UserOrderMenu;
 
-import static pcy.study.storeadmin.utility.StoreUtils.STORE_ID;
-import static pcy.study.storeadmin.utility.UserOrderUtils.USER_ORDER_ID;
+import static pcy.study.storeadmin.utility.StoreMenuUtils.createStoreMenu;
+import static pcy.study.storeadmin.utility.UserOrderUtils.createUserOrder;
 
 public class UserOrderMenuUtils {
 
@@ -14,10 +16,12 @@ public class UserOrderMenuUtils {
     }
 
     public static UserOrderMenu createUserOrderMenu() {
-        return UserOrderMenu.builder()
-                .storeMenuId(STORE_ID)
-                .userOrderId(USER_ORDER_ID)
-                .build();
+        StoreMenu storeMenu = createStoreMenu();
+        UserOrder userOrder = createUserOrder();
+        return new UserOrderMenu(
+                userOrder,
+                storeMenu
+        );
     }
 
     public static UserOrderMenu createUserOrderMenuWithId() {

@@ -9,9 +9,6 @@ import pcy.study.db.userordermenu.UserOrderMenu;
 public class UserOrderMenuConverter {
 
     public UserOrderMenu toEntity(UserOrder userOrder, StoreMenu storeMenu) {
-        return UserOrderMenu.builder()
-                .userOrder(userOrder)
-                .storeMenu(storeMenu)
-                .build();
+        return new UserOrderMenu(userOrder, storeMenu);
     }
 }

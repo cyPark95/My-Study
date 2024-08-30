@@ -14,12 +14,12 @@ public class UserConverter {
 
     public User toEntity(UserRegisterRequest request) {
         return Optional.ofNullable(request)
-                .map(it -> User.builder()
-                        .name(request.name())
-                        .email(request.email())
-                        .password(request.password())
-                        .address(request.address())
-                        .build())
+                .map(it -> new User(
+                        request.name(),
+                        request.email(),
+                        request.password(),
+                        request.address()
+                ))
                 .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "UserRegisterRequest is Null"));
     }
 
@@ -31,5 +31,6 @@ public class UserConverter {
                         .email(user.getEmail())
                         .address(user.getAddress())
                         .build())
-                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "User Entity is Null"));    }
+                .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "User Entity is Null"));
+    }
 }

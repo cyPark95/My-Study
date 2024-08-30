@@ -23,12 +23,12 @@ public class UserUtils {
     }
 
     public static User createUser() {
-        return User.builder()
-                .name(USER_NAME)
-                .email(USER_EMAIL)
-                .address(USER_ADDRESS)
-                .password(USER_PASSWORD)
-                .build();
+        return new User(
+                USER_NAME,
+                USER_EMAIL,
+                USER_PASSWORD,
+                USER_ADDRESS
+        );
     }
 
     public static User createUserWithId() {
