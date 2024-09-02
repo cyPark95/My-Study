@@ -28,7 +28,7 @@ public class UserBusiness {
     }
 
     public TokenResponse login(UserLoginRequest request) {
-        var user = userService.login(request.email(), request.password());
+        var user = userService.login(request.getEmail(), request.getPassword());
         var userId = user.getId();
         return tokenBusiness.issueToken(userId);
     }

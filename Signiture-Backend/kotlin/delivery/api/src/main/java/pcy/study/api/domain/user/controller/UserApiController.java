@@ -27,7 +27,7 @@ public class UserApiController {
             @Parameter(hidden = true)
             @UserSession UserDetails userDetails
     ) {
-        UserResponse response = userBusiness.info(userDetails.id());
+        UserResponse response = userBusiness.info(userDetails.getId());
         return ApiResponse.ok(response);
     }
 }

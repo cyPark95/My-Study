@@ -15,22 +15,22 @@ public class UserConverter {
     public User toEntity(UserRegisterRequest request) {
         return Optional.ofNullable(request)
                 .map(it -> new User(
-                        request.name(),
-                        request.email(),
-                        request.password(),
-                        request.address()
+                        request.getName(),
+                        request.getEmail(),
+                        request.getPassword(),
+                        request.getAddress()
                 ))
                 .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "UserRegisterRequest is Null"));
     }
 
     public UserResponse toResponse(User user) {
         return Optional.ofNullable(user)
-                .map(it -> UserResponse.builder()
-                        .id(user.getId())
-                        .name(user.getName())
-                        .email(user.getEmail())
-                        .address(user.getAddress())
-                        .build())
+                .map(it -> new UserResponse(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getAddress()
+                ))
                 .orElseThrow(() -> new ApiException(ErrorCode.NULL_POINT, "User Entity is Null"));
     }
 }
