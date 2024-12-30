@@ -1,2 +1,14 @@
 server:
   port: 9000
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: public-service-api                                    # 라우트 ID
+          uri: http://localhost:8080                                # API 서버 주소(목적지 URI)
+          predicates:                                               # 요청을 라우팅 할 조건
+            - Path=/service-api/open-api/**                         # 경로 매칭
+          filters:                                                  # 요청/응답 수정 필터
+            - RewritePath=/service-api(?<segment>/?.*), $\{segment} # 경로 설정
+            - ServiceApiPublicFilter                                # 매칭 될 Filter Class
