@@ -1,8 +1,0 @@
-### 1. 게시판 생성
-POST {{api-url}}/api/boards
-Authentication: TRUE
-Content-Type: application/json
-
-{
-  "name": "게시판 이름"
-}
