@@ -5,7 +5,7 @@
 
 ## 5.1 사용자 레벨 관리 기능 추가
 
-- 지금까지 UserDao는 기초적인 CRUD(Create-Read-Update-Delete) 작업만 가능하다.
+- 지금까지 `UserDao`는 기초적인 CRUD(Create-Read-Update-Delete) 작업만 가능하다.
 - 사용자 관리 기능을 추가한다.
     - 사용자의 레벨은 `BASIC`, `SILVER`, `GOLD` 세 가지 중 하나다.
     - 시용자가 처음 가입하면 `BASIC` 레벨이 되며, 이후 활동에 따라서 한 단계씩 업그레이드될 수 있다.
@@ -16,56 +16,146 @@
 ### 5.1.1 필드 추가
 
 - 사용자의 레벨을 저장하기 위한 필드로 각 레벨을 코드화해서 숫자로 저장하면 DB 용량도 덜 차지하고, 가볍운 장점이 있다.
-    - User에 추가할 Level 타입을 정수로 지정한다면 다음과 같은 문제들이 발생할 수 있다.
+    - `User`에 추가할 Level 타입을 정수로 지정한다면 다음과 같은 문제들이 발생할 수 있다.
       ```java
-        public class User {
-        
+      public class User {
+      
           private static final int BASIC = 1;
           private static final int SILVER = 2;
           private static final int GOLD = 3;
-        
+          
           private int level;
-        
+          
           public void setLevel(int level) {
               this.level = level;
           }
-        }
+      }
       ```
         - 다른 종류의 정보를 넣는 실수를 해도 컴파일러가 체크해주지 못한다.
             ```java
-              user.setLevel(other.getSum());
+            user.setLevel(other.getSum());
             ```
         - 범위를 벗어나는 값을 넣어도 컴파일러가 체크해주지 못한다.
             ```java
-              user.setLevel(1000);
+            user.setLevel(1000);
             ```
     - Java의 Enum을 이용하면 안전하고 편리하다.
-      ```java
-        public enum Level {
-            
-            BASIC(1),
-            SILVER(2),
-            GOLD(3),
-            ;
-            
-            private final int value;
-            
-            Level(int value) {
-                this.value = value;
-            }
-            
-            public int getValue() {
-                return value;
-            }
-            
-            public static Level valueOf(int value) {
-                return switch (value) {
-                    case 1 -> BASIC;
-                    case 2 -> SILVER;
-                    case 3 -> GOLD;
-                    default -> throw new AssertionError("Unknown value: " + value);
-                };
+    - `Level` Enum 내부에는 DB에 저장할 정수 타입의 값을 가지고 있지만, 객체이기 때문에 타입이 일치하지 않으면 컴파일러가 체크해서 걸러준다.
+- `User` 필드 추가(소스 참고)
+- `UserDaoTest` 테스트 수정(소스 참고)
+    - 기존 코드에 새로운 기능을 추가할 때는 테스트를 먼저 만드는 것이 안전하다.
+    - `User` 객체의 필드 비교 로직을 `checkSameUser()` 메서드를 통해 일정하게 유지할 수 있다.
+- `UserDaoJdbc` 수정(소스 참고)
+    - `Level` Enum은 오브젝트로, DB에 저장/조회 시 타입 변환이 필요하다.
+    - JDBC가 사용하는 SQL은 컴파일 과정에서 자동으로 검증되지 않는 단순 문자열이다.
+    - 실제 DB에 전달되기 전까지 문법 오류나 오타를 발견하기 힘들다.
+    - 이러한 상황에서 DB까지 연동되는 포괄적인 테스트는 위력을 발휘한다.
+
+### 5.1.2 사용자 수정 기능 추가
+
+- 수정 기능 테스트 추가(소스 참고)
+    - 테스트 메소드가 실행될 때마다 `UserDaoTest`는 새로 만들어지기 때문에, 테스트 픽스처 인스턴스를 직접 변경해도 상관 없다.
+- `UserDao`와 `UserDaoJdbc` 수정(소스 참고)
+  > 테스트를 먼저 만들면, 아직 생성되지 않은 클래스나 메서드를 먼저 사용하는 경우가 있다.
+  > 이 경우 IDE의 자동 수정 기능을 활용해서 생성하면 오타도 막아주고, 편리하다.
+- 수정 테스트 보완
+    - JDBC 개발에서 가장 많은 실수가 일어나는 곳은 SQL 문장이다.
+        - UPDATE 문장에서 WHERE 절이 없어도 정상적으로 동작하는것 처럼 보인다.
+    - 해결 방법
+        - `JdbcTemplate`의 `update()` 반환 값을 통해 SQL을 통해 영향 받은 Row의 수를 확인한다.
+        - 테스트를 보강하여 변경하려는 사용자 외의 정보는 변경되지 않았음을 직접 확인한다.(소스 참고)
+            - 사용자를 두 명 등록하고, 그 중 하나만 수정한 뒤 수정된 사용자와 수정하지 않은 사용자의 정보 모두 확인하는 방법이다.
+
+### 5.1.3 UserService.updateLevels()
+
+- DAO는 데이터 어떻게 가져오고 조작할지를 다루는 곳으로 비즈니스 로직을 두기에는 적당하지 않다.
+- 비즈니스 로직을 담을 클래스를 추가하고. 서비스를 제공한다는 의미에에서 `UserService`로 한다.
+- `UserService` 클래스와 빈 등록(소스 참고)
+- `upgradeLevels()` 메서드(소스 참고)
+
+### 5.1.4 UserService.add()
+
+- 처음 가입하는 사용자는 기본적으로 BASIC 레벨이어야 한다는 로직은 어디에 담는 것이 좋을까?
+    - `UserDaoJdbc.add()`는 적합하지 않다.
+        - `UserDaoJdbc`는 User 객체를 DB에 저장하고, 조회하는 관심만 가져야 한다.
+    - `User` 객체에서 `level` 필드를 `Level.BASIC`으로 초기화 하는 방법
+        - 처음 가입할 때를 제외하면 무의미한 정보인데, 단지 이 로직을 담기위해 클래스에 직접 초기화 하는 것은 문제가 있다.
+    - `UserService`에도 `add()`를 만들고, 필요한 비즈니스 로직을 담당하게 한다.
+- `UserService.add()` 테스트 작성(소스 참고)
+- `UserService.add()` 메서드 작성(소스 참고)
+
+### 5.1.5 코드 개선
+
+> 작성된 코드를 상펴볼 때 필요한 질문
+>
+>- 코드에 중복된 부분은 없는가?
+>- 코드가 무엇을 하는 것인지 이해하기 불편하지 않은가?
+>- 코드가 자신이 있어야할자리에 있는가?
+>- 앞으로 변경이 일어난다면 어떤 것이 있을 수 있고，그 변화에 쉽게 대응할 수 있게 작성되어 있는가?
+
+- `upgradeLevels()` 메서드 코드의 문제점
+    ```java
+        public void upgradeLevels() {
+            List<User> users = userDao.getAll();
+    
+            for(User user: users) {
+                boolean changed;
+                if(user.getLevel() == Level.BASIC && user.getLogin() >= 50) {
+                    user.setLevel(Level.SILVER);
+                    changed = true;
+                } else if(user.getLevel() == Level.SILVER && user.getRecommend() >= 30) {
+                    user.setLevel(Level.GOLD);
+                    changed = true;
+                } else if(user.getLevel() == Level.GOLD) {
+                    changed = false;
+                } else {
+                    changed = false;
+                }
+    
+                if(changed) {
+                    userDao.update(user);
+                }
             }
         }
-      ```
-        - Level Enum 내부에는 DB에 저장할 정수 타입의 값을 가지고 있지만, 객체이기 때문에 타입이 일치하지 않으면 컴파일러가 체크해서 걸러준다.
+    ```
+    - for 루프 속 if/elseif/else 블록들에 여러 로직들이 한데 섞여 있어 로직을 이해하기 어렵다.
+        - 무엇인지 파악하는 로직
+        - 업그레이드 조건을 담은 로직
+        - 다음 단계의 레벨과 업그레이드 조건이 충족됐을 때 해야 할 작업
+        - DB에 update 하는 로직
+    - if 조건 블록이 레벨 개수만큼 반복된다.
+        - 레벨이 추가되면 `Level` Enum도 수정해야 한다.
+        - `upgradeLevels()`에서 if 조건식과 블록을 추가해야 한다.
+        - 업그레이드 조건이 복잡해지면 `upgradeLevels()` 메서드는 점점 길어지고 복잡해지며, 갈수록 이해하고 관리하기 힘들어진다.
+        - 버그가 숨어있을 가능성이 높아진다.
+    - 현재 레벨과 업그레이드 조건을 동시에 비교하기 때문에, 성격이 다른 두 가지 경우 모두 else 블록에서 처리하고 있다.
+    - 변화에 취약하고, 다루기 힘든 코드다.
+- `upgradeLevels()` 리팩토링(소스 참고)
+    - 비즈니스 로직 추상화를 통해 어떤 작업을 하는지 쉽게 이해할 수 있다.
+        - 전체 사용자를 조회한다.
+        - 한 명씩 레벨 업그레이드 가능 여부를 확인한다.
+        - 가능하면 업그레이드한다.
+    - 각 객체의 책임을 분리한다.
+        - `Level` Enum에서 레벨의 업그레이드 순서를 관리한다.
+        - `User` 객체에서 내부 정보 변경 로직을 관리한다.
+- 객체에게 데이터를 요구하기보다 작업을 요청하는 것이 객체지향 프로그램의 기본 원리이다.
+- `User` 테스트(소스 참고)
+- `UserServiceTest` 개선(소스 참고)
+    - 테스트 로직이 분명하게 드러난다.
+
+## 5.2 트랜잭션 서비스 추상화
+
+- 레벨 관리 작업 수행 도중에 문제가 발생해서 작업이 중단된다면 그때까지 변경된 사용자의 레벨 모두 취소시켜야 한다면?
+
+### 5.2.1 모 아니면 도
+
+- 테스트용 `UserService` 대역
+    - 작업 중간에 예외가 발생하는 상황을 테스트 하기위해 `UserService`의 대역을 사용한다.
+        - 테스트를 위해 애플리케이션 코드를 수정하는 것은 좋은 생각이 아니다.
+    - `UserService`를 상속해서 테스트에 필요한 기능을 추가하도록 일부 메서드를 재정의하는 방법을 사용한다.
+- 강제 예외 발생을 통한 테스트(소스 참고)
+    - 현재 작업 중간에 예외가 발생해도 그대로 유지되고 있기 때문에 테스트가 실패한다.
+- 테스트 실패의 원인
+    - `upgradeLevels()` 메서드가 하나의 트랜잭션 안에서 동작히지 않기 때문이다.
+    - 트랜잭션이란 더 이상 나눌 수 없는 단위 작업을 말한다.
+    - 전체가 성공하거나 전체가 실패하기 위해선 트랜잭션이 적용되야 한다.

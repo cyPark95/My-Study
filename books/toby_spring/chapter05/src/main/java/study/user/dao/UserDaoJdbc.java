@@ -38,7 +38,7 @@ public class UserDaoJdbc implements UserDao {
                 user.getId(),
                 user.getName(),
                 user.getPassword(),
-                user.getLevel().getValue(),
+                user.getLevel().intValue(),
                 user.getLogin(),
                 user.getRecommend()
         );
@@ -61,13 +61,11 @@ public class UserDaoJdbc implements UserDao {
     }
 
     public void deleteAll() {
-        jdbcTemplate.update(connection -> {
-            String sql = """
-                    delete from users
-                    """;
+        String sql = """
+                delete from users
+                """;
 
-            return connection.prepareStatement(sql);
-        });
+        jdbcTemplate.update(connection -> connection.prepareStatement(sql));
     }
 
     public int getCount() {
@@ -89,7 +87,7 @@ public class UserDaoJdbc implements UserDao {
                 sql,
                 user.getName(),
                 user.getPassword(),
-                user.getLevel().getValue(),
+                user.getLevel().intValue(),
                 user.getLogin(),
                 user.getRecommend(),
                 user.getId()

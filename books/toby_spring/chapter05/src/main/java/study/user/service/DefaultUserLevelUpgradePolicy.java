@@ -4,9 +4,7 @@ import study.user.dao.UserDao;
 import study.user.domain.Level;
 import study.user.domain.User;
 
-import java.util.List;
-
-public class UserService {
+public class DefaultUserLevelUpgradePolicy implements UserLevelUpgradePolicy {
 
     private UserDao userDao;
 
@@ -14,25 +12,8 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public void upgradeLevels() {
-        List<User> users = userDao.getAll();
-
-        for (User user : users) {
-            if (canUpgradeLevel(user)) {
-                upgradeLevel(user);
-            }
-        }
-    }
-
-    public void add(User user) {
-        if (user.getLevel() == null) {
-            user.setLevel(Level.BASIC);
-        }
-
-        userDao.add(user);
-    }
-
-    private boolean canUpgradeLevel(User user) {
+    @Override
+    public boolean canUpgradeLevel(User user) {
         Level currentLevel = user.getLevel();
 
         return switch (currentLevel) {
@@ -43,7 +24,8 @@ public class UserService {
         };
     }
 
-    protected void upgradeLevel(User user) {
+    @Override
+    public void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
     }

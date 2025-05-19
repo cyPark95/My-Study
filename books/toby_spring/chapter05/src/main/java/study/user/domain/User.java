@@ -2,12 +2,18 @@ package study.user.domain;
 
 public class User {
 
+    public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
+    public static final int MIN_RECCOMEND_FOR_GOLD = 30;
+
     private String id;
     private String name;
     private String password;
     private Level level;
     private int login;
     private int recommend;
+
+    public User() {
+    }
 
     public User(String id, String name, String password, Level level, int login, int recommend) {
         this.id = id;
@@ -16,6 +22,15 @@ public class User {
         this.level = level;
         this.login = login;
         this.recommend = recommend;
+    }
+
+    public void upgradeLevel() {
+        Level nextLevel = this.level.nextLevel();
+        if(nextLevel == null) {
+            throw new IllegalStateException(String.format("%s은 업그레이드가 불가능합니다.", this.level));
+        }
+
+        this.level = nextLevel;
     }
 
     public String getId() {
