@@ -1,5 +1,8 @@
 package study.user.service;
 
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import study.user.dao.UserDao;
 import study.user.domain.Level;
 import study.user.domain.User;
@@ -9,18 +12,32 @@ import java.util.List;
 public class UserService {
 
     private UserDao userDao;
+    private PlatformTransactionManager transactionManager;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public void upgradeLevels() {
-        List<User> users = userDao.getAll();
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
 
-        for (User user : users) {
-            if (canUpgradeLevel(user)) {
-                upgradeLevel(user);
+    public void upgradeLevels() throws Exception {
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            List<User> users = userDao.getAll();
+
+            for (User user : users) {
+                if (canUpgradeLevel(user)) {
+                    upgradeLevel(user);
+                }
             }
+
+            transactionManager.commit(status);
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            throw e;
         }
     }
 

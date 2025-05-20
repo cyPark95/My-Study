@@ -39,7 +39,7 @@
             ```java
             user.setLevel(1000);
             ```
-    - Java의 Enum을 이용하면 안전하고 편리하다.
+    - Java의 Enum을 활용하면 위 문제들을 해결할 수 있다.
     - `Level` Enum 내부에는 DB에 저장할 정수 타입의 값을 가지고 있지만, 객체이기 때문에 타입이 일치하지 않으면 컴파일러가 체크해서 걸러준다.
 - `User` 필드 추가(소스 참고)
 - `UserDaoTest` 테스트 수정(소스 참고)
@@ -159,3 +159,103 @@
     - `upgradeLevels()` 메서드가 하나의 트랜잭션 안에서 동작히지 않기 때문이다.
     - 트랜잭션이란 더 이상 나눌 수 없는 단위 작업을 말한다.
     - 전체가 성공하거나 전체가 실패하기 위해선 트랜잭션이 적용되야 한다.
+
+### 5.2.2 트랜잭션 경계설정
+
+- DB는 하나의 SQL 명령을 처리하는 경우 트랜잭션을 보장해준다.
+- 여러 개의 SQL이 하나의 트랜잭션으로 취급해야 하는 경우는?
+    - 여러 SQL 작업 수행 도중에 문제가 발생해 작업이 중단된다면 앞에서 처리한 SQL 작업도 취소시켜야 한다.
+        - 이런 취소 작업을 트랜잭션 롤백(Transaction Rollback)이라고 한다.
+    - 모든 SQL 수행 작업이 모두 성공적으로 마무리 됐다고 DB에 알려줘서 작업을 확정시켜야 한다.
+        - 이것을 트랜잭션 커밋(Transaction Commit)이라고 한다.
+- JDBC 트랜잭션의 트랜잭션 경계설정
+    - 트랜잭션은 시작하는 지점과 끝나는 지점이 있고, 트랜잭션의 경계라고 한다.
+    - 트랜잭션 시작 방법은 한 가지지만 끝나는 방법은 롤백과 커밋 두 가지다.
+    - 비즈니스 로직의 흐름 사이에서 트랜잭션 경계를 설정하는 일은 중요한 작업이다.
+    ```java
+    Connection connection = dataSource.getConnection();
+        
+    connection.setAutoCommit(false);
+    try {
+        // SQL 작업
+        connection.commit();
+    } catch (Exception e) {
+        connection.rollback();
+    } finally {
+        connection.close();
+    }
+    ```
+    - `setAutoCommit(false)`로 시작하고, `commit()` 또는 `rollback()`으로 종료되는 작업을 트랜잭션의 경계설정(Transaction Demarcation)이라고 한다.
+- `UserService`와 `UserDao`의 트랜잭션 문제
+    - `UserService.upgradeLevels()`에는 트랜잭션 경계설정 코드가 없기 때문에 트랜잭션이 적용되지 않았다.
+    - `JdbcTemple`은 템플릿 메서드 안에서 `Connection` 객체를 관리하기 때문에 메서드마다 독립적인 트랜잭션으로 실행된다.
+- 비즈니스 로직 내의 트랜잭션 경계설정
+    - 여러 번 DB에 업데이트하는 작업을 하나의 트랜잭션으로 만들려면 어떻게 해야하는가?
+        - DAO 메서드 안으로 `upgradeLevels()` 메서드를 옮기는건 비즈니스 로직과 데이터 로직이 혼재되어 확장성을 떨어트린다.
+        - 트랜잭션 경계설정의 작업을 `UserService`로 가져와야 한다.
+            - `UserDao`가 가진 데이터 엑세스 코드는 최대한 남겨둔 채로, `UserService`에는 트랜잭션의 시작과 종료만 담당하는 최소한의 코드만 가져온다.
+            - 이렇게 하면 책임이 다른 코드를 분리해둔 채로 트랜잭션 문제를 해결할 수 있다.
+            - `UserDao.update()` 메서드는 `upgradeLevels()` 메서드에서 만든 `Connection`을 사용해야 한다.
+- `UserService` 트랜잭션 경계설정의 문제점
+    - `JdbcTemplate`을 더 이상 활용할 수 없다.
+    - DAO와 `UserService`의 메서드에 `Connection` 파라미터가 추가돼야 한다.
+    - `Connection` 파라미터로 인해 `UserDao` 인터페이스는 더 이상 데이터 엑세스 기술에 독립적일 수 없다.
+    - 테스트 코드에도 `Connectionn` 객체를 일일이 만들어서 DAO 메서드를 호출하도록 변경해야 한다.
+
+### 5.2.3 트랜잭션 동기화
+
+- 스프링에서는 트랜잭션 경계를 설정해 관리하기 위한 방법을 제공해준다.
+- `Connection` 파라미터 제거
+    - 스프링에서는 독립적인 트랜잭션 동기화(Transaction Synchronization) 방식을 통해 `Connection`을 파라미터로 전달하는 문제를 해결한다.
+        - 트랜잭션 동기화는 `Connection` 객체를 특별한 저장소에 보관해두고, 이 후 호출되는 DAO 메서드에서 저장된 `JdbcTemplate`이 가져다 사용하는 방식이다.
+            - `UserService`는 `Connection`을 생성한다.
+            - 생성한 `Connection`을 트랜잭션 동기화 저장소에 저장하고, `Connection.setAutoCommit(false)`를 호출해 트랜잭션을 실행시킨다.
+            - `update()` 메서드가 호출되는 과정에서 `JdbcTemplate`는 트랜잭션 동기화 저장소에 저장된 `Connection` 객체가 존재하는지 확인한다.
+            - 저장된 `Connection`을 가져와서 `PreparedStatement`를 만들어 수정 SQL을 실행한다.
+            - 트랜잭션 동기화 저장소에서 DB 커넥션을 가져왔을 때, `JdbcTemplate`은 `Connection`을 닫지 않을 채로 작업을 마친다.
+            - 트랜잭션 내의 모든 작업이 정상적으로 끝나면 `UserService`는 `Connection`의 `commit()`을 호출해서 트랜잭션을 완료 시킨다.
+            - 트랜잭션 저장소가 더 이상 `Connection` 객체를 저장해두지 않도록 제거한다.
+            - 어느 작업 중에라도 예외상황이 발생하면 `UserService`는 즉시 `Connection.rollback()`을 호출하고 트랜잭션을 종료할 수 있다.
+- 트랜잭션 동기화 적용(소스 참고)
+    - 스프링은 `TransactionSynchronizationManager` 클래스를 통해 트랜잭션 동기화 관리를 제공한다.
+- 트랜잭션 테스트 보완(소스 참고)
+- `JdbcTemplate`과 트랜잭션 동기화
+    - `JdbcTemplate`이 제공해주는 세 가지 유용한 기능
+        - `try/catch/finally` 작업 흐름 지원
+        - `SQLException` 예외 변환
+        - 트랜잭션 동기화를 시작해 둔 경우 직접 DB 커넥션을 만드는 대신 트랜잭션 동기화 저장소에 들어있는 DB 커넥션을 가져와 사용한다.
+
+### 5.2.4 트랜잭션 서비스 추상화
+
+- 지금까지의 `UserService`와 `UserDao`, `UserDaoJdbc`는 JDBC API를 사용하고 트랜잭션을 적용했으며, 책임과 성격에 따라 데이터 액세스 부분과 비즈니스 로직을 분, 유지할 수 있게
+  만든 코드다.
+- 기술과 환경의 종속되는 트랜잭션 경계설정 코드
+    - 하나의 트랜잭션 안에서 여러 개의 DB에 데이터를 저장하는 작업이 필요하다면?
+        - JDBC의 `Connection`을 이용한 트랜잭션 방식은 DB Connection에 종속된 로컬 트랜잭션이다.
+        - 글로벌 트랜잭션(Global Transaction) 방식을 사용해야 한다.
+    - Java는 글로벌 트랜잭션을 지원하기 위한 API인 JTA(Java Transaction API)를 제공한다.(JTA는 11장에서 자세히 알아볼 예정)
+- 트랜잭션 API의 의존관계 문제와 해결책
+    - `UserService`에서 `Connection`을 이용해 트랜잭션 경계설정 코드로 인해 JDBC에 종속적인 코드가 돼버렸다.
+    - 해결 방법
+        - 트랜잭션 경계설정 코드는 일정한 패턴을 가지고 있기 때문에 추상화를 생각해볼 수 있다.
+        - 추상화란 하위 시스템의 공통점을 뽑아내서 분리시는 것을 말한다.
+        - 추상화를 통해 하위 시스템에 대한 의존성을 분리할 수 있다.
+- 스프링의 트랜잭션 서비스 추상화(소스 참고)
+    - 스프링은 `PlatformTeasactionManage` 인터페이스를 통해 트랜잭션 추상화 기술을 제공한다.
+    - 시작된 트랜잭션은 `TrasactionStatus` 타입의 변수에 저장된다.
+- 트랜잭션 기술 설정의 분리(소스 참고)
+    - `JtaTrasactionManager`는 서버의 트랜잭션 서비스를 이용하기 때문에 `DataSource`도 서버가 제공해주는 것을 사용해야 한다.
+
+## 5.3 서비스 추상화와 단일 책임 원칙
+
+- 이제 설정을 수정하는 것만으로 DB 연결 기술, 데이터 액세스 기술, 트랜잭션 기술을 자유롭게 바꿔서 사용할 수 있는 구조가 됐다.
+- 수직, 수평 계층구조와 의존관계
+    - 추상화 기법을 통해 특정 기술환경에 종속되지 않는 포터블한 코드를 만들 수 있다.
+    - 수평적 분리
+        - `UserDao`와 `UserService`는 같은 계층에서 담당하는 코드와 기능적인 관심사에 따라 분리된다.
+    - 수직적 분리
+        - `UserDao`와 DB 연결 기술, `UserService`와 트랜잭션 기술과 같이 로우 레벨의 기술을 추상화를 통해 분리된다.
+    - 인터페이스와 DI를 통해 연결됨으로써 결합도가 낮다.
+    - 결합도가 낮은 코드는 로우 레벨의 기술 서비스와 환경에서 독립시켜준다.
+    - DI의 가치는 관심, 책임, 성격이 다른 코드를 분리하는 데 있다.
+- 단일 책임 원칙
