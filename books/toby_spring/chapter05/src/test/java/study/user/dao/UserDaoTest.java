@@ -12,7 +12,7 @@ import study.user.domain.User;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:application-context.xml")
+@ContextConfiguration(locations = "classpath:test-application-context.xml")
 class UserDaoTest {
 
     @Autowired
@@ -23,8 +23,8 @@ class UserDaoTest {
 
     @BeforeEach
     void setUp() {
-        user1 = new User("gyumee", "박성철", "springnol", Level.BASIC, 1, 0);
-        user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 55, 10);
+        user1 = new User("gyumee", "박성철", "springnol", Level.BASIC, 1, 0, "");
+        user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 55, 10, "");
     }
 
     @Test

@@ -23,14 +23,15 @@ public class UserDaoJdbc implements UserDao {
             rs.getString("password"),
             Level.valueOf(rs.getInt("level")),
             rs.getInt("login"),
-            rs.getInt("recommend")
+            rs.getInt("recommend"),
+            rs.getString("email")
     );
 
     public void add(final User user) {
         String sql = """
                 insert into 
-                users(id, name, password, level, login, recommend)
-                values(?, ?, ?, ?, ?, ?)
+                users(id, name, password, level, login, recommend, email)
+                values(?, ?, ?, ?, ?, ?, ?)
                 """;
 
         jdbcTemplate.update(
@@ -40,7 +41,8 @@ public class UserDaoJdbc implements UserDao {
                 user.getPassword(),
                 user.getLevel().intValue(),
                 user.getLogin(),
-                user.getRecommend()
+                user.getRecommend(),
+                user.getEmail()
         );
     }
 
@@ -80,7 +82,7 @@ public class UserDaoJdbc implements UserDao {
     public void update(User user) {
         String sql = """
                 update users 
-                set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ?
+                set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?
                 """;
 
         jdbcTemplate.update(
@@ -90,6 +92,7 @@ public class UserDaoJdbc implements UserDao {
                 user.getLevel().intValue(),
                 user.getLogin(),
                 user.getRecommend(),
+                user.getEmail(),
                 user.getId()
         );
     }
