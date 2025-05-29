@@ -59,4 +59,276 @@
 
 ### 센티널 프로세스 실행
 
-- 
+- 센티널 프로세스를 실행하기 위해서는 `sentinel.conf` 구성 파일이 필요하다.
+  ```text
+  port 26379
+  sentinel monitor master-test 192.168.0.11 6379 2
+  ```
+    - `port`: 센티널 프로세스가 실행될 설정
+    - `sentinel monitor`: 모니터링 할 마스터 노드의 이름, 정보와 쿼럼 값 설정
+    - 센티널 프로스세가 시작하면 마스터 노드에 연결된 복제본을 자동으로 탐색하는 과정을 거치기 때문에 복제본 정보를 직접 입력하지 않아도 된다.
+        - 3개의 센티널 구성 파일은 모두 마스터 노드의 정보 설정
+- 2가지 방법을 통해 센티널 인스턴스를 시작시킬 수 있다.
+  ```redis
+  # redis-sentinel 이용 방법
+  redis-sentinel /path/to/sentinel.conf
+  
+  # redis-server 이용 방법
+  redis-server /path/to/sentinel.conf --sentinel
+  ```
+- 다음 커맨드를 통해 센티널 인스턴스에 접근할 수 있다.
+  ```redis
+  redis-cli -p 26379
+  ```
+- 센티널 인스턴스에서는 모니터링하고 있는 마스터 노드와 복제본, 함께 모니터링하고 있는 다른 센티널 인스턴스에 대한 정보를 확인할 수 있다.
+    - 레디스 인스턴스의 데이터는 확인할 수 없다.
+- `SENTINEL master <master-name>` 커맨드
+    - 마스터 노드의 IP, 포트, 복제본의 개수 등 다양한 정보를 확인할 수 있다.
+    ```redis
+    > SENTINEL master master-test
+     1) "name"  
+     2) "master-test"
+     3) "ip"
+     4) "192.168.0.11"
+     5) "port"
+     6) "6379"
+     7) "runid"
+     8) "a7931fea143ddfcb8df1c28a151aa6cd4cc517e0"
+     9) "flags"
+     10) "master"
+     11) "link-pending-commands"
+     12) "0"
+     13) "link-refcount"
+     14) "1"
+     15) "last-ping-sent"
+     16) "0"
+     17) "last-ok-ping-reply"
+     18) "735"
+     19) "last-ping-reply"
+     20) "735"
+     21) "down-after-milliseconds"
+     22) "5000"
+     23) "info-refresh"
+     24) "126"
+     25) "role-reported"
+     26) "master"
+     27) "role-reported-time"
+     28) "532439"
+     29) "config-epoch"
+     30) "1"
+     31) "num-slaves"
+     32) "1"
+     33) "num-other-sentinels"
+     34) "2"
+     35) "quorum"
+     36) "2"
+     37) "failover-timeout"
+     38) "60000"
+     39) "parallel-syncs"
+     40) "1"
+    ```
+    - 확인하면 좋은 플래그
+        - `num-other-sentinels`: 마스터 노드를 모니터링 중인 다른 센티널 노드의 수
+        - `flags`: 마스터의 상태
+            - `s_down`: 하나의 센티널 인스턴스가 마스터 노드가 비정상으로 판단한 상태
+            - `o_down`: 여러 센티널 인스턴스가 동시에 마스터 노드가 비정상이라고 동의 한 상태
+        - `num-slaves`: 현재 마스터 노드에 연결된 복제본의 개수
+- `SENTINEL replicas` 커맨드
+    - 마스터 노드에 연결된 복제본의 자세한 정보를 확인할 수 있다.
+- `SENTINEL sentienls` 커맨드
+    - 마스터 노드에 연결된 다른 센티널 인스턴스의 자세한 정보를 확인할 수 있다.
+- `SENTINEL ckquorum` 커맨드
+    - 마스터 노드를 바라보고 있는 센티널 인스턴스가 설정한 쿼럼 값보다 큰지 확인할 수 있다.
+        ```redis
+        > SENTINEL ckquorum master-test  
+        OK 3 usable Sentinels. Quorum and failover authorization can be reached
+        ```
+    - 정상적인 센티널의 수가 설정한 쿼럼 값보다 작은 경우
+        ```redis
+        > SENTINEL ckquorum master-test  
+        (error) NOQUORUM 1 usable Sentinels. Not enough available Sentinels to reach the specified quorum for this master. Not enough available Sentinels to reach the majority and authorize a failover
+        ```
+        - 마스터 노드에 장애가 발생해도투표를 진행할 수 없어 페일오버를 자동으로 실행할 수 없다.
+
+### 페일오버 테스트
+
+- 두 가지 방법으로 페일오버를 발생시킬 수 있다.
+- 커맨드를 이용한 페일오버 발생(수동 페일오버)
+    - `SENTINEL FAILOVER <master name>` 커맨드를 사용해서 센티널의 동의 없이 페일오버를 발생시킬 수 있다.
+    - 마스터 노드가 정상이었을 때도 이 커맨드를 사용하면 마스터 노드와 복제본 간 역할이 변경된다.
+- 마스터 동작을 중지시켜 페일오버 발생(자동 페일오버)
+    - 다음 커맨드를 통해 레디스 프로세스를 직접 셧다운(Shutdown) 시킬 수 있다.
+        ```redis
+        redis-cli -h <master-host> -p <master-port> shutdown
+        ```
+    - 센티널은 PING을 보내 마스터 노드 인스턴스의 상태를 파악한다.
+    - `sentinel.conf`에 지정한 `down-after-milliseconds` 시간 동안 응답이 오지 않으면 페일오버를 진행시킨다.
+
+## 센티널 운영하기
+
+### 패스워드 인증
+
+- 마스터와 복제본 노드에 패스워드를 설정한 경우 `sentinel.conf`에 다음과 같은 설정을 지정해야 한다.
+    ```redis
+    sentinel auth-pass <master-name> <password>
+    ```
+- 센티널이 자동 페일오버 시키는 경우 복제 구성 내의 모든 레디스 노드는 마스터 노드가 될 가능성이 있다.
+- 하나의 복제 그룹에서 `requirepass`와 `masterauth` 값은 모든 노드에서 동일해야 한다.
+
+### 복제본 우선순위
+
+- 모든 레디스 인스턴스는 `replica-priority` 파라미터를 가지고 있다.
+- 센티널은 페일오버를 진행할 때, `replica-priority` 값이 가장 작은 노드를 마스터 노드로 선출한다.
+
+### 운영 중 센티널 구성 정보 변경
+
+- 센티널은 실행 도중 모니터링할 마스터 노드를 추가, 제거, 변경할 수 있다.
+- 마스터 노드를 모니터링하는 센티널이 여러 대인 경우 모든 센티널에 설정을 적용해야 한다.
+    - 설정을 변경한 경우 다른 센티널로 전파되지 않는다.
+- `SENTINEL MONITOR` 커맨드
+    - 센티널이 새로운 마스터를 모니터링 할 수 있도록 한다.
+    ```redis
+    SENTINEL MONITOR  <master name> <ip> <port> <quorum>
+    ```
+- `SENTINEL REMOVE` 커맨드
+    - 지정하는 마스터 노드를 더 이상 센티널이 모니터링 하지 않도록 한다.
+    ```redis
+    SENTINEL REMOVE <master name>
+    ```
+- `SENTINEL SET` 커맨드
+    - 특정 마스터 노드의 지정한 파라미터를 변경할 수 있다.
+    ```redis
+    SENTINEL SET <name> [<option> <value> ...]
+    ```
+    - 레디스 6.2 버전 이상 부터는 각 마스터에 종속되지 않는 센티널의 고유한 설정값도 런타임 중에 변경할 수 있다.
+        - `SENTINEL CONFIG GET/SET` 커맨드를 통해 변경
+        ```redis
+        SENTINEL CONFIG GET <configuration name>
+        SENTINEL CONFIG SET <configuration name> <value>
+        ```
+
+### 센티널 초기화
+
+- 센티널은 비정상 노드에 대해서도 모니터링을 멈추지 않고, 주기적으로 PING을 요청하여 상태를 확인한다.
+- 센티널 인스턴스의 상태 정보를 초기화해서 모니터링을 중단할 수 있다.
+- `SENTINEL RESET` 커맨드
+    ```redis
+    SENTINEL RESET <master name>
+    ```
+    - 센티널이 모니터링 하고 있는 마스터 노드, 복제본, 다른 센티널 인스턴스의 정보를 재설정 한다.
+    - `<mstart name>`에 `*`을 입력하면 센티널이 모니터링하는 모든 마스터 노드 정보를 초기화할 수 있다.
+
+### 센티널 노드의 추가/제거
+
+- 센티널 노드 추가
+    - 마스터 노드를 모니터링 하도록 설정한 센티널 인스턴스를 실행시킨다.
+    - 자동 검색 메커니즘에 의해 자동으로 실행 중인 다른 센티널의 known-list에 추가된다.
+    - 한 번에 여러 대의 센티널을 추가해야 하는 경우
+        - 10초 이상 간격을 두면서 1개씩 목록에 들어가도록 추가하는 것이 오류 발생 가능성을 줄일 수 있다.
+- 센티널 제거
+    - 센티널 노드끼리는 오랜 시간 응답이 없어도 known-lst에서 제거 하지 않다.
+    - 제거할 센티널의 프로세스를 종료한 뒤, `SENTINEL RESET *` 커맨드를 이용해 센티널이 모니터링하고 있는 정보를 초기화 해야한다.
+        - 센티널 인스턴스 사이에는 최소 30초 대기 시간을 갖고 차례대로 실행하는 것을 권장한다.
+- `SENTINEL MASTER <master-name>` 커맨드의 `num-other-sentinels` 반환 값을 이용해 정상 동작 여부를 확인할 수 있다.
+
+### 센티널의 자동 페일오버 과정
+
+- 센티널은 최소 3개 이상의 노드가 함께 동작하는 분산 시스템이다.
+- 여러 개의 센티널 노드가 레디스 인스턴스를 감시하기 때문에 레디스 상태에 대한 오탐을 줄일 수 있다.
+- 마스터의 장애 상황 감지
+    - 센티널은 `down-after-milliseconds` 파라미터에 지정된 값 이상 동안 마스터 노드에 보낸 PING에 대해 유효한 응답을 받지 못하면 마스터 노드가 다운됐다고 판단한다.
+    - PING에 대한 유효한 응답
+        - +PING
+        - -LOADING
+        - -MASTERDOWN
+    - 다른 응답이나 응답을 받지 못할 경우 모두 유효하지 않다고 판단한다.
+- sdown, odown 실패 상태로 전환
+    - 마스터 인스턴스에 대한 응답이 유효하지 않은 경우
+        - 해당 센티널은 마스터 노드의 상태를 우선 `sdown`으로 플래깅한다.
+            - sdown(Subjectively Down): 주관적인 다운 상태
+        - `SENTINEL is-master -down-by-addr <master-ip> <master-port> <current-epoch> <*>` 커맨드를 사용해 다른 센티널 노드들에게 장애 사실을
+          전파한다.
+        - 커맨드를 받은 센티널들은 해당 마스터 서버의 장애 인지 여부를 응답한다.
+        - 자신을 포함해서 쿼럼 값 이상의 센티널 노드에서 마스터 노드의 장애를 인지한다면, 마스터 노드의 상태를 `odown`으로 변경한다.
+            - odown(Objectively Down): 객관적인 다운 상태
+    - 센티널은 마스터 노드에 대해서만 `odown` 상태를 갖는다.
+        - 복제본 노드에 장애가 발생하는 경우 `sdown`으로 플래깅한다.
+        - 장애 전파는 오직 마스터 노드에 대해서만 이뤄진다.
+        - 페일오버 진행 시 `sdown` 상태의 복제본은 마스터로 승격되지 않는다.
+    ```text
+    sentinel.log 
+    +sdown
+    +odown 
+    ```
+- 에포크 증가
+    - 처음으로 마스터 노드를 `odown`으로 인지한 센티널을 페일오버 과정을 시작한다.
+    - 페일오버를 시작하기 전 에포크(Epoch) 값을 하나 증가시킨다.
+    - 에포크라는 개념을 이용해 각 마스터 노드에서 발생한 페일오버의 버전을 관리한다.
+    - 동일한 에포크 값을 이용해 페일오버 과정이 진행되는 동안 모든 센티널 노드가 같은 작업을 시도하고 있다는 것을 보장한다.
+    ```text
+    sentinel.log 
+    +new-epoch
+    +try-failover
+    ```
+- 센티널 리더 선출
+    - 에포크를 증가시킨 센티널은 다른 센 센티널 노드에게 센티널 리더를 선출하기 위해 투표하라는 메시지를 보낸다.
+    - 증가시킨 에포크를 함께 전달한다.
+        - 전달 받은 에포크 값이 자신의 에포크 값 보다 클 경우 자신의 에포크를 증가시킨 뒤 센티널 리더에게 투표하겠다는 응답을 보낸다.
+        - 전달 받은 에포크 값이 자신의 에포크 값과 동일하다면 이미 리더로 선출한 센티널의 ID를 응답한다.
+    - 하나의 에포크에서 센티널을 하나의 센티널에 투표할 수 있으며, 투표 결과는 변경할 수 없다.
+    ```text
+    sentinel.log
+    +vote-for-leader
+    +elected-leader
+    ```
+
+> 과반수와 쿼럼
+> - 센티널이 마스터 노드를 `odown` 상태로 변경하기 위해선 쿼럼 값 이상의 센티널 동의가 필요하다.
+> - 하지만 실제 페일오버를 시도하기 위해 센티널 리더를 선출할 때는 실제 센티널 개수 중 과반수 이상의 센티널 동의를 얻어야 한다.
+> - 따라서 쿼럼 값 보다 많은 센티널이 동의를 했을 경우에도 그 수가 과반수보다 작다면 페일오버는 발생하지 않는다.
+
+- 복제본 선정 후 마스터로 승격
+    - 과반수 이상의 센티널이 동의했다면, 센티널은 페일오버를 시도하기 위해 마스터 노드가 될 수 있는 복제본을 선정한다.
+    - 승격 자격이 있는 복제본
+        - `redis.conf` 파일에 명시된 replica-priority가 낮은 복제본
+        - 마스터 노드로부터 더 많은 데이터를 수신한 복제본(master_repl_오프셋)
+        - 2번 조건까지 동일하다면, runID가 사전 순으로 작은 복제본
+    - 선정한 복제본에는 `slaveof no one` 커맨드를 수행해, 기존 마스터 노드로부터의 복제를 끊는다.
+    ```text
+    sentinel.log
+    +failover-state-select-slave
+    +selected-slave
+    +failover-state-send-slaveof-noone
+    +failover-state-wait-promotion
+    +promoted-slave
+    ```
+- 복제 연결 변경
+    - 기존 마스터 노드에 연결돼 있던 다른 복제본들이 `replicaof new-id new-port` 커맨드를 수행해 새로 승격된 마스터 노드로 복제 연결을 변경한다.
+    - 복제 그룹의 모든 센티널 노드에서도 레디스의 구성 정보를 변경한다.
+    ```text
+    +failover-state-reconf-slaves
+    +slave-reconf-sent
+    +slave-reconf-inprog
+    +slave-reconf-done
+    +config-update-from sentinel
+    ```
+- 장애 조치 완료
+    - 모든 과정이 완료된 뒤 센티널은 새로운 마스터 노드를 모니터링 한다.
+    ```text
+    sentinel.log
+    +failover-end
+    +switch-master
+    ```
+
+### 스플릿 브레인 현상(Split Brain)
+
+- 네트워크네트워크 파티션 이슈로 인해 분산 환경의 데이터 저장소가 끊어지고, 끊긴 두 부분이 각각을 정상적인 서비스로 인식하는 현상
+
+![Image](https://github.com/user-attachments/assets/c09fc544-8275-4881-a9ad-65e65d893b1a)
+
+- 그림과 같은 상황에서 네트워크 단절이 길어질 경우
+  - 센티널 B와 C는 마스터 노드로 접근이 정상적이지 않다는 것을 감지
+  - 복제본 노드를 마스터 노드로 승격
+  - 과반수 이상의 센티널이 같은 네트워크 파티션에 존재하여 복제본 노드는 마스터 노드로 승격될 수 있다.
+- 마스터 인스턴스가 정상적인 상태에서 노드 간 네트워크 단절이 일어난 경우
+  - 하나의 복제본에 2개의 마스터가 생기는 스플릿 브레인 현상 발생
