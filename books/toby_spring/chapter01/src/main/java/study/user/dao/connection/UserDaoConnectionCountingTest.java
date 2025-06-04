@@ -1,8 +1,8 @@
-package study.user.dao;
+package study.user.dao.connection;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import study.user.dao.connection.CountingConnectionMaker;
+import study.user.dao.UserDao;
 import study.user.dao.factory.DaoFactory;
 import study.user.domain.User;
 
@@ -14,10 +14,7 @@ public class UserDaoConnectionCountingTest {
         ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         UserDao userDao = context.getBean("userDaoWithCounting", UserDao.class);
 
-        User user = new User();
-        user.setId("leon0517");
-        user.setName("김필환");
-        user.setPassword("secret1!");
+        User user = new User("whiteship", "백기선", "married");
         userDao.add(user);
 
         System.out.println(user.getId() + "등록 성공");
@@ -27,7 +24,7 @@ public class UserDaoConnectionCountingTest {
         System.out.println(user2.getPassword());
         System.out.println(user2.getId() + "조회 성공");
 
-        CountingConnectionMaker ccm = context.getBean("countingConnectionMaker", CountingConnectionMaker.class);
-        System.out.println("Connection counter : " + ccm.getCounter());
+        CountingConnectionMaker countingConnectionMaker = context.getBean("countingConnectionMaker", CountingConnectionMaker.class);
+        System.out.printf("Connection Counter: %d%n", countingConnectionMaker.getCounter());
     }
 }

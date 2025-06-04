@@ -1,4 +1,4 @@
-package study.user.dao;
+package study.user.dao.connection;
 
 import java.sql.Connection;
 import java.sql.SQLException;

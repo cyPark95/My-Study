@@ -1,18 +1,18 @@
-package study.user.dao;
+package study.user.dao.connection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class CountingConnectionMaker implements ConnectionMaker {
 
-    int counter = 0;
-    private ConnectionMaker realConnectionMaker;
+    private int counter = 0;
+    private final ConnectionMaker realConnectionMaker;
 
     public CountingConnectionMaker(ConnectionMaker realConnectionMaker) {
         this.realConnectionMaker = realConnectionMaker;
     }
 
-    public Connection makeConnection() throws SQLException {
+    public Connection makeConnection() throws ClassNotFoundException, SQLException {
         counter++;
         return realConnectionMaker.makeConnection();
     }
