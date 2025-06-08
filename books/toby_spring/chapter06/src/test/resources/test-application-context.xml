@@ -19,9 +19,11 @@
         <jdbc:script location="classpath:ddl.sql"/>
     </jdbc:initialize-database>
 
-    <bean id="userService" class="study.user.service.UserServiceTx">
-        <property name="userService" ref="userServiceImpl"/>
+    <bean id="userService" class="study.user.service.TxProxyFactoryBean">
+        <property name="target" ref="userServiceImpl"/>
         <property name="transactionManager" ref="transactionManager"/>
+        <property name="pattern" value="upgradeLevels"/>
+        <property name="serviceInterface" value="study.user.service.UserService"/>
     </bean>
 
     <bean id="userServiceImpl" class="study.user.service.UserServiceImpl">
