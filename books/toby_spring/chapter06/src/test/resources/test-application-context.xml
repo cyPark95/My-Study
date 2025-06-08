@@ -19,9 +19,13 @@
         <jdbc:script location="classpath:ddl.sql"/>
     </jdbc:initialize-database>
 
-    <bean id="userService" class="study.user.service.UserService">
-        <property name="userDao" ref="userDao"/>
+    <bean id="userService" class="study.user.service.UserServiceTx">
+        <property name="userService" ref="userServiceImpl"/>
         <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="userServiceImpl" class="study.user.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
     </bean>
 
@@ -34,4 +38,5 @@
     </bean>
 
     <bean id="mailSender" class="study.user.service.DummyMailSender"/>
+
 </beans>

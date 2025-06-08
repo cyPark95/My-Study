@@ -32,16 +32,19 @@ class UserServiceTest {
     @Autowired
     private MailSender mailSender;
 
+    @Autowired
+    private UserServiceImpl userServiceImpl;
+
     private List<User> users;
 
     @BeforeEach
     void setUp() {
         this.users = List.of(
-                new User("bumjin", "박범진", "p1", Level.BASIC, User.MIN_LOGCOUNT_FOR_SILVER - 1, 0, ""),
-                new User("joytouch", "강명성", "p2", Level.BASIC, User.MIN_LOGCOUNT_FOR_SILVER, 0, ""),
-                new User("erwins", "신승한", "p3", Level.SILVER, 60, User.MIN_RECCOMEND_FOR_GOLD - 1, ""),
-                new User("madnite1", "이상호", "p4", Level.SILVER, 60, User.MIN_RECCOMEND_FOR_GOLD, ""),
-                new User("green", "오민규", "p5", Level.GOLD, 100, Integer.MAX_VALUE, "")
+                new User("bumjin", "박범진", "p1", Level.BASIC, User.MIN_LOGCOUNT_FOR_SILVER - 1, 0, "bumjin@email.com"),
+                new User("joytouch", "강명성", "p2", Level.BASIC, User.MIN_LOGCOUNT_FOR_SILVER, 0, "joytouch@email.com"),
+                new User("erwins", "신승한", "p3", Level.SILVER, 60, User.MIN_RECCOMEND_FOR_GOLD - 1, "erwins@email.com"),
+                new User("madnite1", "이상호", "p4", Level.SILVER, 60, User.MIN_RECCOMEND_FOR_GOLD, "madnite1@email.com"),
+                new User("green", "오민규", "p5", Level.GOLD, 100, Integer.MAX_VALUE, "green@email.com")
         );
     }
 
@@ -53,7 +56,7 @@ class UserServiceTest {
         }
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
 
         userService.upgradeLevels();
 
@@ -89,10 +92,13 @@ class UserServiceTest {
 
     @Test
     void upgradeAllOrNothing() throws Exception {
-        UserService testUserService = new TestUserService(users.get(3).getId());
+        TestUserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(userDao);
-        testUserService.setTransactionManager(transactionManager);
         testUserService.setMailSender(mailSender);
+
+        UserServiceTx txUserService = new UserServiceTx();
+        txUserService.setTransactionManager(transactionManager);
+        txUserService.setUserService(testUserService);
 
         userDao.deleteAll();
         for (User user : users) {
@@ -100,7 +106,7 @@ class UserServiceTest {
         }
 
         try {
-            testUserService.upgradeLevels();
+            txUserService.upgradeLevels();
         } catch (TestUserServiceException ignored) {
         }
 
@@ -116,7 +122,7 @@ class UserServiceTest {
         }
     }
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
 
         private final String id;
 
