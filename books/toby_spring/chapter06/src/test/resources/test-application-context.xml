@@ -8,27 +8,15 @@
            http://www.springframework.org/schema/jdbc
            http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
+    <jdbc:initialize-database>
+        <jdbc:script location="classpath:ddl.sql"/>
+    </jdbc:initialize-database>
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
-    </bean>
-
-    <jdbc:initialize-database>
-        <jdbc:script location="classpath:ddl.sql"/>
-    </jdbc:initialize-database>
-
-    <bean id="userService" class="study.user.service.TxProxyFactoryBean">
-        <property name="target" ref="userServiceImpl"/>
-        <property name="transactionManager" ref="transactionManager"/>
-        <property name="pattern" value="upgradeLevels"/>
-        <property name="serviceInterface" value="study.user.service.UserService"/>
-    </bean>
-
-    <bean id="userServiceImpl" class="study.user.service.UserServiceImpl">
-        <property name="userDao" ref="userDao"/>
-        <property name="mailSender" ref="mailSender"/>
     </bean>
 
     <bean id="userDao" class="study.user.dao.UserDaoJdbc">
@@ -40,5 +28,28 @@
     </bean>
 
     <bean id="mailSender" class="study.user.service.DummyMailSender"/>
+
+    <bean id="userService" class="study.user.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="mailSender" ref="mailSender"/>
+    </bean>
+
+    <bean id="transactionAdvice" class="study.user.service.TransactionAdvice">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="transactionPointcut" class="study.user.service.NameMatchClassMethodPointcut">
+        <property name="mappedClassName" value="*ServiceImpl"/>
+        <property name="mappedName" value="upgrade*"/>
+    </bean>
+
+    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="transactionAdvice"/>
+        <property name="pointcut" ref="transactionPointcut"/>
+    </bean>
+
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+    <bean id="testUserService" class="study.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>
 
 </beans>

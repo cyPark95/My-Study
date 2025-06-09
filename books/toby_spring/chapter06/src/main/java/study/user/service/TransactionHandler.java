@@ -35,17 +35,15 @@ public class TransactionHandler implements InvocationHandler {
     }
 
     private Object invokeInTransaction(Method method, Object[] args) throws Throwable {
-        TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {
             Object result = method.invoke(target, args);
-            this.transactionManager.commit(status);
+            transactionManager.commit(status);
             return result;
         } catch (InvocationTargetException e) {
-            this.transactionManager.rollback(status);
+            transactionManager.rollback(status);
             throw e.getTargetException();
         }
     }
-
-
 }
