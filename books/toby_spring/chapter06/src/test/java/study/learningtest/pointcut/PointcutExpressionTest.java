@@ -21,7 +21,7 @@ public class PointcutExpressionTest {
 
     @Test
     void pointcut() throws Exception {
-        targetClassPointcutMatches("execution(* *(..))", true, true, true, true, false);
+        targetClassPointcutMatches("execution(* *(..))", true, true, true, true, true, true);
     }
 
     private void targetClassPointcutMatches(String expression, boolean... expected) throws Exception {

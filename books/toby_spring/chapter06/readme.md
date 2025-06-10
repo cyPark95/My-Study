@@ -243,7 +243,7 @@
     - 프록시로부터 어드바이스와 포인트컷을 독립시키고 DI를 사용하도록 한 것은 전형적인 전략 패턴의 구조다.
         - 부가기능 방식이나 메서드 선정 알고리즘이 변경 시, 설정만 수정하면 된다.
         - 기존 코드의 변경 없이 확장이 가능한 OCP를 지키는 구조다.
-    - 포인트 컷을 적용한 테스트 작성(소스 참고)
+    - 포인트 컷을 적용한 테스트 작성
         - 포인트컷을 별개의 객체로 묶어서 등록하는 이유
             - `ProxyFactoryBean`은 여러 개의 어드바이스와 포인트컷이 추가될 수 있다.
             - 어떤 어드바이스(부가기능)에 어떤 포인트컷(메서드 선정)을 적용해야할지 애매하기 때문에 `Advisor` 타입의 객체에 담아서 등록해야 한다.
@@ -259,11 +259,21 @@
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
+    <bean id="transactionPointcut" class="study.user.service.NameMatchClassMethodPointcut">
+        <property name="mappedClassName" value="*ServiceImpl"/>
+        <property name="mappedName" value="upgrade*"/>
+    </bean>
+
+    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="transactionAdvice"/>
+        <property name="pointcut" ref="transactionPointcut"/>
+    </bean>
+
     <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="target" ref="userServiceImpl"/>
         <property name="interceptorNames">
             <list>
-                <value>transactionAdvice</value>
+                <value>transactionAdvisor</value>
             </list>
         </property>
     </bean>
@@ -358,4 +368,33 @@
                 - 파라미터가 없는 메서드를 지정하려면 `()`로, 파라미터의 타입과 개수 상관없이 모두 허용한다면 `..`을 사용하면 된다.
             - `throws java.lang.RuntimeException`
                 - 예외 이름에 대한 타입 패턴
-- 포인트컷 표현식 테스트
+- 포인트컷 표현식 테스트(소스 참고)
+- 포인트컷 표현식을 이용하는 포인트컷 적용(소스 참고)
+    - 포인트컷 표현식을 사용하면 로직이 문자열에 담기기 때문에 코드와 설정이 단순해진다.
+    - 하지만 문자열이기 때문에 런타임 시점까지 문법의 검증이나 기능을 확인할 수 없다.
+- 타입 패턴과 클래스 이름 패턴
+    - 포인트컷 표현식 적용 전에는 클래스 이름의 패턴을 이용해 타깃 빈을 선정하는 포인트컷을 사용했다.
+        - `TestUserService`는 이름 패턴에 맞추기위해 `TestUserServiceImpl`로 클래스명을 변경했다.
+    - 포인트컷 표현식의 클래스 이름에 적용되는 패턴은 타입 패턴이다.
+        - `TestUserService`로 다시 클래스 이름을 변경해도 타입은 슈퍼 클래스인 `UserServiceImpl`, 구현 인터페이스인 `UserService` 모두 적용된다.
+
+### 6.5.4 AOP란 무엇인가?
+
+- `UserService`에 트랜잭션을 적용해온 과정
+- 트랜잭션 서비스 추상화
+    - 특정 트랜잭션 기술에 종속되는 코드로 인해 트랜잭션 방식을 바꾸려면 모든 트랜잭션 적용 코드 수정이 필요했다.
+    - 트랜잭션 작업을 추상화하고, 구체적인 구현은 자유롭게 변경할 수 있도록 서비스 추상화 기법을 적용했다.
+- 프록시와 데코레이터 패턴
+    - 여전히 비즈니스 로직 코드에 트랜잭션을 적용하는 방법이 여전히 코드에 드러나 있다.
+    - DI를 이용한 데코레이터 패턴을 통해 비즈니스 로직 클래스에는 영향을 주지 않으면서, 트랜잭션이라는 부가기능을 비즈니스 로직에 적용할 수 있는 구조를 만들었다.
+- 다이나믹 프록시와 프록시 팩토리 빈
+    - 비즈니스 로직 인터페이스의 모든 메서드에 트랜잭션 기능을 부여하는 코드를 추가해야 했고, 부가기능이 필요하지 않은 메서드조차 프록시로서 위임 기능이 필요했다.
+    - JDK 다이나믹 프록시 기술을 적용하여 부가기능 부여 코드가 중복되는 문제를 해결했고, 메서드 선정 패턴을 통해 트랜잭션 적용이 필요한 메서드를 선정할 수 있었다.
+- 자동 프록시 생성 방법과 포인트컷
+    - 트랜잭션 적용 대상이 되는 빈 모두 프록시 팩토리 빈을 설정이 필요했다.
+    - 스프링 컨테이너의 빈 생성 후처리 기법을 통해 프록시를 적용할 대상 패턴을 이용해 자동으로 선정할 수 있도록, 클래스를 선정하는 기능을 담은 확장된 포인트컷을 사용했다.
+    - 결국 트랜잭션 부가기능을 어디에 적용하는지에 대한 정보를 포인트컷이라는 독립적인 정보로 완전히 분리할 수 있었다.
+- 부가기능의 모듈화
+    - 부가기능은 기능을 부가할 대상 없이 스스로 독립적인 방식으로 존재해서는 적용이 어렵다.
+    - 애플리케이션 전반에 여기저기 흩어져 있는 트랜잭션 코드를 어드바이스와 포인트컷을 결합한 어드자이저를 사용해 독립적으로 모듈화시켰다.
+- AOP: 애스펙트 지향 프로그래밍

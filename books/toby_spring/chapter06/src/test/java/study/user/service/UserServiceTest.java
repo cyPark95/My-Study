@@ -7,7 +7,6 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import study.user.dao.MockUserDao;
@@ -91,7 +90,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DirtiesContext
     void upgradeAllOrNothing() throws Exception {
         userDao.deleteAll();
         for (User user : users) {
@@ -153,7 +151,7 @@ class UserServiceTest {
         assertEquals(expectedLevel, user.getLevel());
     }
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    static class TestUserService extends UserServiceImpl {
 
         private final String id = "madnite1";
 
