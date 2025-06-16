@@ -287,6 +287,7 @@
 ## 6.5 스프링 AOP
 
 - 지금까지 트랜잭션 코드를 효과적으로 분리했고, 분리해낸 트랜잭션 코드는 기존 설계와 코드에는 영향을 주지 않는다.
+- 부가기능 적용 후 기존 설계와 코드에 영향을 주지 않는것을 투명하다고 한다.
 
 ### 6.5.1 자동 프록시 생성
 
@@ -369,9 +370,23 @@
             - `throws java.lang.RuntimeException`
                 - 예외 이름에 대한 타입 패턴
 - 포인트컷 표현식 테스트(소스 참고)
-- 포인트컷 표현식을 이용하는 포인트컷 적용(소스 참고)
+- 포인트컷 표현식을 이용하는 포인트컷 적용
     - 포인트컷 표현식을 사용하면 로직이 문자열에 담기기 때문에 코드와 설정이 단순해진다.
     - 하지만 문자열이기 때문에 런타임 시점까지 문법의 검증이나 기능을 확인할 수 없다.
+    ```xml
+    <bean id="transactionAdvice" class="study.user.service.TransactionAdvice">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="transactionPointcut" class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+        <property name="expression" value="execution(* *..*ServiceImpl.upgrade*(..))"/>
+    </bean>
+
+    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="transactionAdvice"/>
+        <property name="pointcut" ref="transactionPointcut"/>
+    </bean>
+    ```
 - 타입 패턴과 클래스 이름 패턴
     - 포인트컷 표현식 적용 전에는 클래스 이름의 패턴을 이용해 타깃 빈을 선정하는 포인트컷을 사용했다.
         - `TestUserService`는 이름 패턴에 맞추기위해 `TestUserServiceImpl`로 클래스명을 변경했다.
@@ -398,3 +413,106 @@
     - 부가기능은 기능을 부가할 대상 없이 스스로 독립적인 방식으로 존재해서는 적용이 어렵다.
     - 애플리케이션 전반에 여기저기 흩어져 있는 트랜잭션 코드를 어드바이스와 포인트컷을 결합한 어드자이저를 사용해 독립적으로 모듈화시켰다.
 - AOP: 애스펙트 지향 프로그래밍
+    - 객체지향 기술에서는 부가기능 모듈을 애스펙트(Aspect)라고 부른다.
+    - 부가기능을 독립적인 애스팩트로 분리하여 핵심기능은 순수하게 그 기능을 담은 코드로 존재할 수 있게 됐다.
+    - 애플리케이션에서 핵심기능에서 부가적인 기능을 분리해서 애스펙트로 설계하고 개발하는 방법을 애스펙트 지향 프로그래밍(AOP: Aspect Oriented Programming)이라고 한다.
+    - AOP는 새로운 패러다임이 아닌, OOP를 보조하는 기술이다.
+        - 핵심기능과 부가기능이 섞이면 객체지향 설계의 장점을 살리기 어렵다.
+        - 애스펙트 분리를 통해 핵심기능 설계 시 객체지향적인 가치를 지킬 수 있도록 도와주는 기술이다.
+        - 애플리케이션을 다양한 관점에서 독립적으로 모델링하고, 설계하고, 개발할 수 있도록 도와준다.
+    - AOP는 특정한 관점을 기준으로 바라볼 수 있게 해주기 때문에 관점 지향 프로그램이라고도 한다.
+
+### 6.5.5 AOP 적용기술
+
+- 프록시를 이용한 AOP
+    - 스프링은 다양한 기술을 조합해서 AOP를 지원하고 있고, 그중 핵심은 프록시를 이용했다는 것이다.
+    - 프록시로서 DI로 연결된 빈 사이에서 메서드 호출 과정에 참여해 부가기능을 제공해준다.
+    - 애스펙트를 다양한 타깃 메서드에 다이나믹하게 적용하기 위해 프록시는 중요한 역할을 한다.
+    - 스프링 AOP는 프록시 방식의 AOP다.
+- 바이트코드 생성과 조작을 통한 AOP
+    - 프록시 방식이 아닌 AOP 기술도 있다.
+        - 대표적으로 AspectJ는 타깃에 직접 부가기능을 넣어주는 방법을 사용한다.
+            - 컴파일된 타깃의 클래스 파일 자체를 수정한다.
+            - 클래스가 JVM에 로딩되는 시점에 바이트코드를 조작한다.
+            - 복잡한 방법을 사용하는 이유
+                - 스프링 DI 컨테이너의 도움 없이 AOP를 적용할 수 있다.
+                - 바이트코드를 직접 조작하면 메서드뿐만 아니라 프록시 적용이 불가능한 작업에도 부가기능을 부여할 수 있다.
+    - 일반적으로 프록시 방식의 스프링 AOP로도 충분하다.
+    - 스프링 AOP 수준을 넘어서는 기능이 필요하다면 AspectJ를 함께 사용하면 된다.
+
+### 6.5.6 AOP의 용어
+
+- 타깃
+    - 부가기능을 부여할 대상
+- 어드바이스
+    - 부가기능을 담은 모듈
+- 조인 포인트(Join Point)
+    - 어드바이스가 적용될 수 있는 위치
+    - 스프링의 프록시 AOP에서 조인 포인트는 메서드의 실행 단계뿐이다.
+    - 구현한 인터페이스의 모든 메서드는 조인 포인트가 된다.
+- 포인트컷
+    - 어드바이스를 적용할 조인 포인트를 선별하는 기능을 정의한 모듈
+- 프록시
+    - 클라이언트와 타깃 사이에 투명하게 부가기능을 제공하는 객체
+- 어드바이저
+    - 포인트컷과 어드바이스를 하나 씩 갖고 있는 객체
+- 애스펙트
+    - AOP의 기본 모듈
+    - 여러개의 포인트컷과 어드바이스의 조합으로 만들어진다.
+    - 일반적으로 싱글톤 형태의 객체로 존재한다.
+
+### 6.5.7 AOP 네임스페이스
+
+- 스프링 AOP를 적용하기 위해 추가했던 빈들은 스프링 컨테이너에 의해 자동으로 인식돼서 특별한 작업을 위해 사용된다.
+- 스프링의 프록시 방식 AOP를 적용하려면 최소 4가지 빈이 필요하다.
+    - 자동 프록시 생성기
+        - 스프링의 `DefaultAdvisorAutoProxyCreator` 클래스를 빈으로 등록한다.
+        - DI 하지도, 되지도 않고 독립적으로 존재하기 때문에 ID도 필요하지 않다.
+        - 빈 후처리기로 참여해서 빈으로 등록된 어드바이저를 이용해 프록시를 자동으로 생성하는 기능을 담당한다.
+    - 어드바이스
+        - 부가기능을 구현한 클래스를 빈으로 등록한다.
+    - 포인트컷
+        - 스프링의 `AspectJExpressionPointcut`을 빈으로 등록하고, `expression` 프로퍼티에 포인트컷 표현식을 넣어주면 된다.
+    - 어드바이저
+        - 스프링의 `DefaultPointcutAdvisor` 클래스를 빈으로 등록한다.
+        - 어드바이스와 포인트컷을 참조하는 것 외에 기능은 없다.
+        - 자동 프록시 생성기에 의해 자동 검색되어 사용한다.
+    - AOP 네입스페이스
+        - 스프링은 AOP와 관련된 태그를 정의해둔 aop 스키마를 제공한다.
+            - `<aop:config>`
+                - AOP 설정을 담는 부모 태그
+                - 필요에 따라 `AbstractAdvisorAutoProxyCreator`를 빈으로 등록한다.
+            - `<aop:pointcut>`
+                - `expression`의 표현식을 프로퍼티로 가진 `AspectJExpressionPointcut`을 빈으로 등록한다.
+            - `<aop:advisor>`
+                - 어드바이스와 포인트컷의 참조를 프로퍼티로 갖는 `DefaultBeanFactoryPointcutAdvisor`를 빈으로 등록한다.
+        ```xml
+        <aop:config>
+            <aop:pointcut id="transactionPointcut" expression="execution(* *..*ServiceImpl.upgrade*(..))"/>
+            <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut"/>
+        </aop:config>
+        ```
+    - 어드바이저 내장 포인트컷(소스 참고)
+        - 포인트컷을 공유하는 경우 포인트컷을 독립적인 `<aop:pointcut>` 태그로 등록해야 한다.
+
+## 6.6 트랜잭션 속성
+
+- 트랜잭션 추상화에서 트랜잭션을 시작할 때 사용했던 `DefaultTransactionDefinition` 객체에 대해 알아본다.
+
+### 6.6.1 트랜잭션 정의
+
+- 트랜잭션은 다양한 방식으로 동작한다.
+    - 더 이상 쪼갤 수 없는 최소 단위의 작업이라는 개념은 항상 유효하기 때문에 `commit()`, `rollback()`을 통해 모두 성공 또는 취소돼야 한다.
+- 트랜잭션 전파(Transaction Propagation)
+    - 트랜잭션의 경계에서 이미 진행 중인 트랜잭션이 있을 때 또는 없을 때 어떻게 동작할 것인가를 결정하는 방식이다.
+    - 트랜잭션 전바 속성
+        - PROPAGATION_REQUIRED
+            - 진행 중인 트랜잭션이 있으면 참여하고, 없으면 새로 시작한다.
+            - `DefaultTransactionDefinition`의 트랜잭션 전파 속성이다.
+        - PROPAGATION_REQUIRES_NEW
+            - 항상 새로운 트랜잭션을 시작한다.
+            - 독립적인 트랜잭션이 보장돼야 할 때 적용할 수 있다.
+        - PROPAGATION_NOT_SUPPORTED
+            - 트랜잭션 없이 동작한다.
+            - AOP를 이용해 한 번에 많은 메서드를 동시에 적용할 때, 특정 메서드만 트랜잭션 적용에서 제외해야할 때 사용한다.
+                - 특정 메서드를 선정에서 제외하는 포인트컷을 만드는 것은 상당히 복잡해질 수 있다. 
