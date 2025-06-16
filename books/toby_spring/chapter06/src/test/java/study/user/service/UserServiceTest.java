@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,8 +18,7 @@ import study.user.domain.User;
 import java.lang.reflect.Proxy;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -137,6 +137,11 @@ class UserServiceTest {
         assertTrue(Proxy.isProxyClass(testUserService.getClass()));
     }
 
+    @Test
+    void readOnlyTransactionAttribute() {
+        assertThrows(TransientDataAccessResourceException.class, () -> testUserService.getAll());
+    }
+
     private void checkLevelUpgraded(boolean expectedUpgraded, User user) {
         User userUpdate = userDao.get(user.getId());
         if (expectedUpgraded) {
@@ -162,6 +167,15 @@ class UserServiceTest {
             }
 
             super.upgradeLevel(user);
+        }
+
+        @Override
+        public List<User> getAll() {
+            List<User> users = super.getAll();
+            for (User user : users) {
+                super.update(user);
+            }
+            return null;
         }
     }
 
