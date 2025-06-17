@@ -1,6 +1,7 @@
 package study.user.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -137,6 +138,7 @@ class UserServiceTest {
         assertTrue(Proxy.isProxyClass(testUserService.getClass()));
     }
 
+    @Disabled("H2 DB는 ReadOnly 속성을 무시한다.")
     @Test
     void readOnlyTransactionAttribute() {
         assertThrows(TransientDataAccessResourceException.class, () -> testUserService.getAll());

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -44,17 +44,6 @@
 
     <bean id="testUserService" class="study.user.service.UserServiceTest$TestUserService" parent="userService"/>
 
-    <aop:config>
-        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
-    </aop:config>
-
-    <tx:advice id="transactionAdvice">
-        <tx:attributes>
-            <tx:method name="*"/>
-            <tx:method name="get*" read-only="true"/>
-        </tx:attributes>
-    </tx:advice>
-
-<!--    <tx:annotation-driven/>-->
+    <tx:annotation-driven/>
 
 </beans>

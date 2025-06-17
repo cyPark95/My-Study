@@ -575,8 +575,8 @@
             <property name="transactionManager" ref="transactionManager"/>
             <property name="transactionAttributes">
                 <props>
-                    <prop key="get*">PR0PAGINATION_REQUIRED, readOnly,timeout_30</prop>
-                    <prop key="upgrade*">PR0PAGINATION_REQUIRED_NEW, ISOLATION_SERIALIZABLE</prop>
+                    <prop key="get*">PROPAGATION_REQUIRED, readOnly,timeout_30</prop>
+                    <prop key="upgrade*">PROPAGATION_REQUIRED_NEW, ISOLATION_SERIALIZABLE</prop>
                     <prop key="*">PROPAGATION_REQUIRED</prop>
                 </props>
             </property>
@@ -667,8 +667,20 @@
         - 서비스 계층의 위임 메서드를 통해 접근해야 한다.
             - 부가 로직을 적용할 수 있다.
             - 트랜잭션 속성을 제어할 수 있다.
-- 서비스 빈에 적용되는 포인트컷 표현식 등록(소스 참고)
-- 트랜잭션 속성을 가진 트랜잭션 어드바이스 등록(소스 참고)
+- 서비스 빈에 적용되는 포인트컷 표현식 등록
+    ```xml
+    <aop:config>
+        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
+    </aop:config>
+    ```
+- 트랜잭션 속성을 가진 트랜잭션 어드바이스 등록
+    <tx:advice id="transactionAdvice">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+    ```
 - 트랜잭션 속성 테스트(소스 참고)
     - `TransientDataAccessResourceException`
         - 스프링의 `DataAccessException`의 한 종류로, 일시적인 예외상황에서 발생하는 예외다.
@@ -704,10 +716,7 @@
         - 인터페이스에 `@Transactional`을 적용하는 경우
             - 구현 클래스와 상관없이 트랜잭션 속성을 유지할 수 있다.
             - 하지만 프록시 방식의 AOP에서만 유효하기 때문에 안전하게 타깃 클래스에 적용하는 것을 권장한다.
-- 트랜잭션 애노테이션 사용을 위한 설정
-    ```xml
-    <tx:annotation-driven/>
-    ```
+- 트랜잭션 애노테이션 사용을 위한 설정(소스 참고)
 
 ### 6.7.2 트랜잭션 애노테이션 적용
 
