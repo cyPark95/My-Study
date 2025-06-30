@@ -11,6 +11,9 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import study.user.dao.MockUserDao;
 import study.user.dao.UserDao;
 import study.user.domain.Level;
@@ -35,6 +38,9 @@ class UserServiceTest {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
     private List<User> users;
 
@@ -151,6 +157,19 @@ class UserServiceTest {
         } else {
             assertEquals(user.getLevel(), userUpdate.getLevel());
         }
+    }
+
+    @Test
+    void transactionSync() {
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+
+        userService.deleteAll();
+
+        userService.add(users.get(0));
+        userService.add(users.get(1));
+
+        transactionManager.commit(transactionStatus);
     }
 
     private void checkUserAndLevel(User user, String expectedId, Level expectedLevel) {
