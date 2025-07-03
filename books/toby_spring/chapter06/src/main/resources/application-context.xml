@@ -37,16 +37,6 @@
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
-    <aop:config>
-        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
-    </aop:config>
-
-    <tx:advice id="transactionAdvice">
-        <tx:attributes>
-            <tx:method name="*"/>
-            <tx:method name="get*" read-only="true"/>
-        </tx:attributes>
-    </tx:advice>
-
+    <tx:annotation-driven/>
 
 </beans>
