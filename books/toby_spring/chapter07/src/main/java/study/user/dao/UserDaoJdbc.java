@@ -56,7 +56,7 @@ public class UserDaoJdbc implements UserDao {
     }
 
     public void deleteAll() {
-        jdbcTemplate.update(connection -> connection.prepareStatement(sqlService.getSql("deleteAll")));
+        jdbcTemplate.update(connection -> connection.prepareStatement(sqlService.getSql("userDeleteAll")));
     }
 
     public int getCount() {
