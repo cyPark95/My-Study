@@ -15,6 +15,8 @@
         <jdbc:script location="classpath:ddl.sql"/>
     </jdbc:initialize-database>
 
+    <tx:annotation-driven/>
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1"/>
@@ -38,12 +40,18 @@
         <property name="mailSender" ref="mailSender"/>
     </bean>
 
-    <bean id="sqlService" class="study.user.sqlservice.XmlSqlService"/>
+    <bean id="sqlService" class="study.user.sqlservice.OxmSqlService">
+        <property name="unmarshaller" ref="unmarshaller"/>
+    </bean>
+
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="study.user.sqlservice.jaxb"/>
+    </bean>
+
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
     <bean id="testUserService" class="study.user.service.UserServiceTest$TestUserService" parent="userService"/>
-
-    <tx:annotation-driven/>
 
 </beans>
