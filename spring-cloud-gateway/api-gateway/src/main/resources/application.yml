@@ -1,0 +1,25 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: first-api-public
+              uri: http://localhost:8080
+              predicates:
+                - Path=/gateway/first/public/**
+              filters:
+                - RewritePath=/gateway(?<segment>.*), ${segment}
+                - FirstApiPublicFilter
+            - id: first-api-private
+              uri: http://localhost:8080
+              predicates:
+                - Path=/gateway/first/private/**
+              filters:
+                - RewritePath=/gateway(?<segment>.*), ${segment}
+                - FirstApiPrivateFilter
