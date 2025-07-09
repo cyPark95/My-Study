@@ -229,6 +229,22 @@ sqlProvider.loadSql();
         - `OxmSqlReader`는 외부로 노출되지 않기 때문에 스스로 빈으로 등록될 수 없다.
             - `OxmSqlService`의 공개된 프로퍼티를 통해 간접적으로 DI 받아야 한다.
             - `OxmSqlReader`의 경우 필요한 두 개의 프로퍼티는 `OxmSqlService`에서 DI 받아서 넘겨주어야 한다.
+            ```java
+            public class OxmSqlService implements SqlService {
+
+                private final OxmSqlReader oxmSqlReader = new OxmSqlReader();
+                
+                public void setUnmarshaller(Unmarshaller unmarshaller) {
+                    oxmSqlReader.setUnmarshaller(unmarshaller);
+                }
+                
+                public void setSqlmapFile(String sqlmapFile) {
+                    oxmSqlReader.setSqlmapFile(sqlmapFile);
+                }
+          
+                // ...
+            }
+            ````
         - `OxmSqlService`와 JAXB 언마샬러 두 개의 빈으로 `SqlService`를 빈으로 등록할 수 있다.
 - 위임을 이용한 `BaseSqlService`의 재사용
     - `OxmSqlService`는 `SqlReader` 구현을 static 멤버 클래스로 고정해 설정을 단순화하고 의도되지 않은 방식으로 확장될 위험이 없다.
@@ -254,3 +270,54 @@ sqlProvider.loadSql();
             - 없음: `ResourceLoader` 구현에 따라 리소스 결정
             - `http:`: HTTP 프로토콜을 사용해 접근할 수 있는 웹 상의 리소스(`ftp:`도 사용 가능)
         - 스프링의 `ApplicationContext`는 `ResourceLoader`를 구현하며, `<property>`의 `value`로 전달된 문자열을 `Resource` 객체로 자동 변환해준다.
+- `Resource`를 이용해 XML 파일 가져오기(소스 참고)
+    - `OxmSqlService`에 `Resource` 타입을 적용하면 SQL 매핑 정보를 담은 XML 파일을 다양한 위치에서 불러올 수 있다.
+    - `Resource`는 추상화된 리소스 접근 핸들러로, 객체가 생성되었다고 해서 실제 리소스가 반드시 존재하는 것은 아니다.
+
+## 7.4 인터페이스 상속을 통한 안전한 기능확장 
+
+- 기존 기능을 확장하거나 개선할 때, 스프링 답게 접근 방식을 살펴본다.
+
+### 7.4.1 DI와 기능의 확장
+
+- 지금까지 DI를 디자인 패턴이나 프로그래밍 모델의 관점에서 이해해왔다.
+- DI의 진정한 가치를 얻기 위해서는 DI에 적합한 객체 설계가 필요하다.
+- DI를 의식하는 설계
+    - 인터페이스를 활용한 DI는 객체 간의 의존성을 유연하게 만들어, 각각의 객체가 독립적으로 발전할 수 있는 구조를 제공한다.
+    - 효과적인 DI 설계를 위해서는 하나의 거대한 객체보다는, 명확한 책임을 가진 여러 객체로 분리된 구조가 필요하다.
+    - DI는 런타임에 의존 객체를 다이나믹하게 주입함으로써 유연한 확장을 가능하게 하는 것이 목적이므로, 의존 객체는 자유롭게 확장될 수 있다는 전제를 두도 객체 사이의 관계를 설계해야 한다.
+    - 이렇게 설계한다면, 객체지향이 지향하는 유연한 확장성과 재사용성이 가능한 객체지향 설계를 구현하는 데 도움이 된다.
+    - 지금 당장에는 문제가 없더라도, 미래에 발생할 변화와 예상해야 올바른 설계가 가능하다.
+- DI와 인터페이스 프로그래밍
+    - DI를 제대로 활용하려면, 두 객체가 인터페이스를 통해 느슨하게 연결되어야 한다.
+    - 인터페이스를 사용하는 이유
+        - 다형성을 활용할 수 있다.
+            - 하나의 인터페이스를 기반으로 다양한 구현체를 바꿔가며 사용할 수 있다.
+        - 인터페이스 분리 원칙을 통해 클라이언트와 의존 객체 사이의 관계를 명확하게 해줄 수 있다.
+            - 하나의 객체가 여러 인터페이스를 구현하고 있을 때, 클라이언트는 자신이 필요로 하는 기능에 맞는 인터페이스만을 의존하게 된다.
+            - 하나의 객체를 사용하는 여러 클라이언트가 서로 다른 관심사와 목적을 가지고 해당 객체에 의존하고 있다는 의미다.
+            - 객체가 응집도 작은 높은 단위로 설계되어 있더라도, 클라이언트의 목적에 따라 인터페이스를 분리해 줄 필요가 있다.
+            - 이를 인터페이스 분리 원칙(ISP: Interface Segregation Principle)이라고 한다.
+    - DI는 특별한 이유가 없다면 항상 인터페이스를 사용하는 것을 권장한다.
+
+### 7.4.2 인터페이스 상속
+
+- 모든 클라이언트는 자신의 관심사에 맞는 방식으로 객체에 접근할 수 있으며, 불필요한 간섭 없이 유지할 수 있다.
+    - 기존 클라이언트에 영향을 주지 않고 객체의 기능을 확장하거나 수정할 수 있다.
+        - 새로운 인터페이스를 추가로 정의하고 객체가 이를 추가로 구현하도록 하면 된다.
+        - 기존 인터페이스를 상속하여 기능을 확장한 후, 그 인터페이스를 구현함으로써 기능을 확장할 수 있다.
+        <img width="566" height="223" alt="Image" src="https://github.com/user-attachments/assets/4f8ed1a8-5a53-43ce-8f76-0bc18bd75917" />
+    - 제3의 클라이언트를 위한 인터페이스를 제공할 수 있다.
+        - 기존 인터페이스를 확장한 인터페이스를 구현하도록 하면 기존 클라이언트에 영향을 주지 않고, 제3의 클라이언트를 위한 기능을 추가적으로 제공할 수 있다.
+        - 기존 인터페이스를 확장한 새로운 인터페이스를 구현하게 하면, 기존 클라이언트에 영향 없이 제3의 클라이언트를 위한 기능을 제공할 수 있다.
+        ```xml
+        <bean id="sqlService" class="study.user.sqlservice.BaseSqlService">
+            <property name="sqlRegistry" ref="sqlRegistry"/>
+        </bean>
+        
+        <bean id="sqlRegistry" class="study.user.sqlservice.sqlregistry.UpdatableSqlRegistry"/>
+        
+        <bean id="sqlAdminService" class="study.user.sqlservice.SqlAdminService">
+            <property name="updatableSqlRegistry" ref="sqlRegistry"/>
+        </bean>
+        ```

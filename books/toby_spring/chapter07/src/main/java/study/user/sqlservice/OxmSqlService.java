@@ -1,6 +1,8 @@
 package study.user.sqlservice;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 import study.user.dao.UserDao;
 import study.user.sqlservice.exception.SqlRetrievalFailureException;
@@ -30,8 +32,8 @@ public class OxmSqlService implements SqlService {
         oxmSqlReader.setUnmarshaller(unmarshaller);
     }
 
-    public void setSqlmapFile(String sqlmapFile) {
-        oxmSqlReader.setSqlmapFile(sqlmapFile);
+    public void setSqlmap(Resource sqlmap) {
+        oxmSqlReader.setSqlmap(sqlmap);
     }
 
     @PostConstruct
@@ -49,31 +51,31 @@ public class OxmSqlService implements SqlService {
 
     private class OxmSqlReader implements SqlReader {
 
-        private static final String DEFAULT_SQLMAP_FILE = "/sql/sqlmap.xml";
+        private static final String DEFAULT_SQLMAP_FILE = "sql/sqlmap.xml";
 
         private Unmarshaller unmarshaller;
 
-        private String sqlmapFile = DEFAULT_SQLMAP_FILE;
+        private Resource sqlmap = new ClassPathResource(DEFAULT_SQLMAP_FILE, UserDao.class);
 
         public void setUnmarshaller(Unmarshaller unmarshaller) {
             this.unmarshaller = unmarshaller;
         }
 
-        public void setSqlmapFile(String sqlmapFile) {
-            this.sqlmapFile = sqlmapFile;
+        public void setSqlmap(Resource sqlmap) {
+            this.sqlmap = sqlmap;
         }
 
         @Override
         public void read(SqlRegistry sqlRegistry) {
             try {
-                Source xmlSource = new StreamSource(UserDao.class.getResourceAsStream(sqlmapFile));
-                Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(xmlSource);
+                Source source = new StreamSource(sqlmap.getInputStream());
+                Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(source);
 
                 for (SqlType sql : sqlmap.getSql()) {
                     sqlRegistry.registerSql(sql.getKey(), sql.getValue());
                 }
             } catch (IOException e) {
-                throw new IllegalArgumentException(String.format("%s을 가져올 수 없습니다.", sqlmapFile));
+                throw new IllegalArgumentException(String.format("%s을 가져올 수 없습니다.", sqlmap.getFilename()));
             }
         }
     }
