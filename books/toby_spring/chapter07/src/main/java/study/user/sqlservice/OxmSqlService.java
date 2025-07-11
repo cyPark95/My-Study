@@ -51,7 +51,7 @@ public class OxmSqlService implements SqlService {
 
     private class OxmSqlReader implements SqlReader {
 
-        private static final String DEFAULT_SQLMAP_FILE = "sql/sqlmap.xml";
+        private static final String DEFAULT_SQLMAP_FILE = "/sql/sqlmap.xml";
 
         private Unmarshaller unmarshaller;
 

@@ -11,9 +11,9 @@
            http://www.springframework.org/schema/jdbc
            http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
-    <jdbc:initialize-database>
-        <jdbc:script location="classpath:ddl.sql"/>
-    </jdbc:initialize-database>
+    <jdbc:embedded-database id="embeddedDatabase" type="H2">
+        <jdbc:script location="schema.sql"/>
+    </jdbc:embedded-database>
 
     <tx:annotation-driven/>
 
@@ -42,14 +42,14 @@
 
     <bean id="sqlService" class="study.user.sqlservice.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlmap" value="classpath:sql/sqlmap.xml"/>
+        <property name="sqlRegistry" ref="sqlRegistry"/>
     </bean>
 
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="study.user.sqlservice.jaxb"/>
     </bean>
 
-    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+    <bean id="sqlRegistry" class="study.user.sqlservice.sqlregistry.ConcurrentHashMapSqlRegistry"/>
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
