@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import study.TestApplicationContext;
 import study.user.dao.MockUserDao;
 import study.user.dao.UserDao;
 import study.user.domain.Level;
@@ -26,8 +27,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:test-application-context.xml")
-class UserServiceTest {
+@ContextConfiguration(classes = TestApplicationContext.class)
+public class UserServiceTest {
 
     @Autowired
     private UserService userService;
@@ -37,9 +38,6 @@ class UserServiceTest {
 
     @Autowired
     private UserDao userDao;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
 
     private List<User> users;
 
@@ -172,7 +170,7 @@ class UserServiceTest {
         assertEquals(expectedLevel, user.getLevel());
     }
 
-    static class TestUserService extends UserServiceImpl {
+    public static class TestUserService extends UserServiceImpl {
 
         private final String id = "madnite1";
 

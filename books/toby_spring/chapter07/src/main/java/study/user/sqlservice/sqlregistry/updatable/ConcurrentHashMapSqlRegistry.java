@@ -1,4 +1,4 @@
-package study.user.sqlservice.sqlregistry;
+package study.user.sqlservice.sqlregistry.updatable;
 
 import study.user.sqlservice.exception.SqlNotFoundException;
 import study.user.sqlservice.exception.SqlUpdateFailureException;

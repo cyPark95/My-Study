@@ -35,8 +35,9 @@ public class UserDaoJdbc implements UserDao {
     );
 
     public void add(final User user) {
+        String sql = sqlService.getSql("userAdd");
         jdbcTemplate.update(
-                sqlService.getSql("userAdd"),
+                sql,
                 user.getId(),
                 user.getName(),
                 user.getPassword(),
@@ -48,25 +49,30 @@ public class UserDaoJdbc implements UserDao {
     }
 
     public User get(String id) {
-        return jdbcTemplate.queryForObject(sqlService.getSql("userGet"), new Object[]{id}, userMapper);
+        String sql = sqlService.getSql("userGet");
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, userMapper);
     }
 
     public List<User> getAll() {
-        return jdbcTemplate.query(sqlService.getSql("userGetAll"), userMapper);
+        String sql = sqlService.getSql("userGetAll");
+        return jdbcTemplate.query(sql, userMapper);
     }
 
     public void deleteAll() {
-        jdbcTemplate.update(connection -> connection.prepareStatement(sqlService.getSql("userDeleteAll")));
+        String sql = sqlService.getSql("userDeleteAll");
+        jdbcTemplate.update(connection -> connection.prepareStatement(sql));
     }
 
     public int getCount() {
-        return jdbcTemplate.queryForObject(sqlService.getSql("userGetCount"), Integer.class);
+        String sql = sqlService.getSql("userGetCount");
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
     @Override
     public void update(User user) {
+        String sql = sqlService.getSql("userUpdate");
         jdbcTemplate.update(
-                sqlService.getSql("userUpdate"),
+                sql,
                 user.getName(),
                 user.getPassword(),
                 user.getLevel().intValue(),

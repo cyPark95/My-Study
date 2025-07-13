@@ -52,7 +52,9 @@
         <property name="contextPath" value="study.user.sqlservice.jaxb"/>
     </bean>
 
-    <bean id="sqlRegistry" class="study.user.sqlservice.sqlregistry.ConcurrentHashMapSqlRegistry"/>
+    <bean id="sqlRegistry" class="study.user.sqlservice.sqlregistry.updatable.EmbeddedDbSqlRegistry">
+        <property name="dataSource" ref="embeddedDatabase"/>
+    </bean>
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 

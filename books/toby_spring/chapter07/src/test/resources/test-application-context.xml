@@ -11,48 +11,12 @@
            http://www.springframework.org/schema/jdbc
            http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
-    <jdbc:embedded-database id="embeddedDatabase" type="H2">
-        <jdbc:script location="schema.sql"/>
-    </jdbc:embedded-database>
-
     <tx:annotation-driven/>
-
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <property name="driverClass" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-    </bean>
-
-    <bean id="userDao" class="study.user.dao.UserDaoJdbc">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="sqlService" ref="sqlService"/>
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-
-    <bean id="mailSender" class="study.user.service.DummyMailSender"/>
-
-    <bean id="userService" class="study.user.service.UserServiceImpl">
-        <property name="userDao" ref="userDao"/>
-        <property name="mailSender" ref="mailSender"/>
-    </bean>
-
-    <bean id="sqlService" class="study.user.sqlservice.OxmSqlService">
-        <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlRegistry" ref="sqlRegistry"/>
-    </bean>
-
-    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="study.user.sqlservice.jaxb"/>
-    </bean>
-
-    <bean id="sqlRegistry" class="study.user.sqlservice.sqlregistry.ConcurrentHashMapSqlRegistry"/>
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
-    <bean id="testUserService" class="study.user.service.UserServiceTest$TestUserService" parent="userService"/>
+    <jdbc:embedded-database id="embeddedDatabase" type="H2">
+        <jdbc:script location="classpath:schema.sql"/>
+    </jdbc:embedded-database>
 
 </beans>
