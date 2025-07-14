@@ -12,7 +12,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import study.TestApplicationContext;
+import study.AppContext;
+import study.TestAppContext;
 import study.user.dao.MockUserDao;
 import study.user.dao.UserDao;
 import study.user.domain.Level;
@@ -26,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestApplicationContext.class)
+@ContextConfiguration(classes = {AppContext.class, TestAppContext.class})
 public class UserServiceTest {
 
     @Autowired

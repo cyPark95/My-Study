@@ -1,22 +1,23 @@
 package study;
 
+import com.mysql.cj.jdbc.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import study.user.dao.UserDao;
-import study.user.service.DummyMailSender;
 import study.user.service.UserService;
 import study.user.service.UserServiceImpl;
-import study.user.service.UserServiceTest;
 import study.user.sqlservice.OxmSqlService;
 import study.user.sqlservice.SqlService;
 import study.user.sqlservice.sqlregistry.SqlRegistry;
@@ -27,15 +28,18 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "study.user")
-public class TestApplicationContext {
+public class AppContext {
 
     @Bean
     public DataSource dataSource() {
-        return new EmbeddedDatabaseBuilder()
-                .setName("embeddedDatabase")
-                .setType(EmbeddedDatabaseType.H2)
-                .addScript("sql/schema.sql")
-                .build();
+        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+
+        dataSource.setDriverClass(Driver.class);
+        dataSource.setUrl("jdbc:mysql://localhost:3306/study");
+        dataSource.setUsername("root");
+        dataSource.setPassword("1q2w3e4r!");
+
+        return dataSource;
     }
 
     @Bean
@@ -56,16 +60,8 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public UserService testUserService() {
-        UserServiceTest.TestUserService testService = new UserServiceTest.TestUserService();
-        testService.setUserDao(userDao);
-        testService.setMailSender(mailSender());
-        return testService;
-    }
-
-    @Bean
     public MailSender mailSender() {
-        return new DummyMailSender();
+        return new JavaMailSenderImpl();
     }
 
     @Bean

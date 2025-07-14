@@ -6,14 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import study.TestApplicationContext;
+import study.AppContext;
 import study.user.domain.Level;
 import study.user.domain.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestApplicationContext.class)
+@ContextConfiguration(classes = AppContext.class)
 class UserDaoTest {
 
     @Autowired
