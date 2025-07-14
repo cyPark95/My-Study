@@ -426,14 +426,128 @@ sqlProvider.loadSql();
 ### 7.6.1 자바 코드를 이용한 빈 설정
 
 - 애노테이션과 자바 코드로 XML을 대체해 본다.
-- 테스트 컨텍스트의 변경(소스 참고)
-  - 스프링 3.1부터는 자바 기반 설정 클래스와 XML 설정을 함께 사용할 수 있는 방법을 제공한다.
-  - `@ImportResource` 어노테이션을 사용하면 클래스 내에서 XML 설정을 불러올 수 있다.
-- `<context:annotation-config/>` 제거(소스 참고)
-  - `@Configuration`이 붙은 자바 설정 클래스를 사용하는 경우, 스프링이 직접 필요한 빈 후처리기들을 등록하기 때문에 `<context:annotation-config/>`는 더 이상 필요하지 않다.
-  - 즉, 자바 설정 방식으로 DI를 구성할 때는 별도의 XML 태그 없이도 표준 어노테이션 기반 기능이 동작한다.
+- 테스트 컨텍스트의 변경
+    - 스프링 3.1부터는 자바 기반 설정 클래스와 XML 설정을 함께 사용할 수 있는 방법을 제공한다.
+    - `@ImportResource` 어노테이션을 사용하면 클래스 내에서 XML 설정을 불러올 수 있다.
+- `<context:annotation-config/>` 제거
+    - `@Configuration`이 붙은 자바 설정 클래스를 사용하는 경우, 스프링이 직접 필요한 빈 후처리기들을 등록한다.
+    - 따라서 `<context:annotation-config/>`는 더 이상 필요하지 않다.
 - `<bean>`의 전환
-  - `<bean>`은 `@Bean`이 붙은 public 메서드로 만들어주면 된다.
-  - 메서드의 이름은 `<bean>`의 `id` 값으로 한다.
-  - 반환 타입은 인터페이스로 하여 인터페이스를 통해 빈의 의존관계가 맺어지도록 하는것을 권장한다.
-  - 자바 코드에서 XML에서 정의한 빈을 참조하려면 `@Autowired` 붙은 필드를 선언하면 XML에 정의된 빈을 컨테이너가 주입해준다.
+    - XML의 `<bean>`은 `@Bean` 어노테이션이 붙은 `public` 메서드로 전환할 수 있다.
+    - 메서드의 이름은 `<bean>`의 `id`와 동일하게 사용된다.
+    - 메서드의 반환 타입은 구현 클래스보다는 인터페이스 타입으로 지정하는 것을 권장한다.
+    - XML에서 정의된 빈을 자바 설정 코드에서 사용하려면 `@Autowired` 어노테이션을 붙인 필드를 통해 주입받을 수 있다.
+- 전용 태그 전환
+    - `EmbeddedDatabaseBuilder`를 사용하면 `<jdbc:embedded-database>` 태그에 해당하는 빈 객체를 생성할 수 있다.
+    - 스프링 3.1부터 XML 설정에서 자주 사용되던 전용 태그들을 자바 기반 설정에서 대체할 수 있도록, `@Enable..`로 시작하는 다양한 어노테이션을 제공한다.
+- 자바 코드를 이용한 빈 설정 전체 코드
+```java
+@Configuration
+@EnableTransactionManagement
+public class TestApplicationContext {
+
+    @Bean
+    public DataSource dataSource() {
+        return new EmbeddedDatabaseBuilder()
+                .setName("embeddedDatabase")
+                .setType(EmbeddedDatabaseType.H2)
+                .addScript("sql/schema.sql")
+                .build();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource());
+        return transactionManager;
+    }
+
+    @Bean
+    public UserDao userDao() {
+        UserDaoJdbc userDao = new UserDaoJdbc();
+        userDao.setDataSource(dataSource());
+        userDao.setSqlService(sqlService());
+        return userDao;
+    }
+
+    @Bean
+    public UserService userService() {
+        UserServiceImpl userService = new UserServiceImpl();
+        userService.setUserDao(userDao());
+        userService.setMailSender(mailSender());
+        return userService;
+    }
+
+    @Bean
+    public UserService testUserService() {
+        UserServiceTest.TestUserService testService = new UserServiceTest.TestUserService();
+        testService.setUserDao(userDao());
+        testService.setMailSender(mailSender());
+        return testService;
+    }
+
+    @Bean
+    public MailSender mailSender() {
+        return new DummyMailSender();
+    }
+
+    @Bean
+    public SqlService sqlService() {
+        OxmSqlService sqlService = new OxmSqlService();
+        sqlService.setUnmarshaller(unmarshaller());
+        sqlService.setSqlRegistry(sqlRegistry());
+        return sqlService;
+    }
+
+    @Bean
+    public Unmarshaller unmarshaller() {
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setContextPath("study.user.sqlservice.jaxb");
+        return marshaller;
+    }
+
+    @Bean
+    public SqlRegistry sqlRegistry() {
+        EmbeddedDbSqlRegistry sqlRegistry = new EmbeddedDbSqlRegistry();
+        sqlRegistry.setDataSource(embeddedDataSource());
+        return sqlRegistry;
+    }
+}
+```
+
+### 7.6.2 빈 스캐닝과 자동와이어링
+
+- `@Autowired`를 이용한 자동와이어링
+    - `@Autowired`는 스프링 컨테이너가 생성한 빈을 자동으로 주입받기 위해 사용된다.
+    - 자동 와이어링 기법을 사용하면, 스프링이 빈의 타입이나 이름을 기준으로 의존 객체를 찾아 주입하므로, 의존 객체를 설정하는 작업을 줄일 수 있다.
+    - `@Autowired`가 붙은 수정자 메서드가 존재하면 스프링은 다음 순서로 주입 가능한 빈을 찾는다.
+        - 주입 가능한 타입의 빈이 하나일 경우, 해당 빈을 주입한다.
+        - 둘 이상일 경우, 메서드 이름과 일치하는 이름의 빈을 찾아 주입한다.
+        - 주입 가능한 빈이 없으면 예외가 발생한다.
+    - `@Autowired`를 필드에 직접 사용할 수도 있으며, 이 경우 스프링은 리플렉션을 사용해 `private` 필드에도 값을 주입할 수 있다.
+    ```java
+    public class UserDaoJdbc implements UserDao {
+    
+        private JdbcTemplate jdbcTemplate;
+    
+        @Autowired
+        private SqlService sqlService;
+    
+        @Autowired
+        public void setDataSource(DataSource dataSource) {
+            this.jdbcTemplate = new JdbcTemplate();
+            this.jdbcTemplate.setDataSource(dataSource);
+        }
+    
+        // ...
+    }
+    ```
+    - `UserDaoJdbc.setDataSource`와 같이 추가적인 작업이 필요한 경우는 수정자 메서드에 `@Autowired`를 사용하는 것이 적합하다.
+    - `@Autowired`를 활용하면 DI 설정이 간결해지지만, 빈 간의 의존 관계를 설정 코드에서 명시적으로 파악하기 어려워지는 단점이 있다.
+- `@Component`를 이용한 자동 빈 등록(소스 참고)
+    - `@Component` 또는 이를 메타 어노테이션으로 갖는 어노테이션이 붙은 클래스는 빈 스캐너를 통해 자동으로 빈으로 등록된다.
+    - `@ComponentScan` 어노테이션은 `@Component`가 붙은 클래스들을 스캔해 자동으로 빈으로 등록하는 역할을 한다.
+        - `basePackages` 속성을 통해 스캔할 기준 패키지를 지정할 수 있다.
+        - 지정된 패키지의 모든 하위 패키지까지 포함해 클래스를 검색한다.
+        - 별도로 이름을 지정하지 않으면, 클래스 이름의 첫 글자를 소문자로 바꾼 값이 빈의 ID로 사용한다.
+            - `@Component("userDao")`과 같이 직접 빈 이름을 지정할 수 있다.

@@ -59,7 +59,7 @@
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
     <jdbc:embedded-database id="embeddedDatabase" type="H2">
-        <jdbc:script location="classpath:schema.sql"/>
+        <jdbc:script location="classpath:sql/schema.sql"/>
     </jdbc:embedded-database>
 
 </beans>

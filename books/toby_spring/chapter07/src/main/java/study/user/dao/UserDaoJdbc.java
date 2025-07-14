@@ -1,7 +1,9 @@
 package study.user.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import study.user.domain.Level;
 import study.user.domain.User;
 import study.user.sqlservice.SqlService;
@@ -9,12 +11,15 @@ import study.user.sqlservice.SqlService;
 import javax.sql.DataSource;
 import java.util.List;
 
+@Component
 public class UserDaoJdbc implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     private SqlService sqlService;
 
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate();
         this.jdbcTemplate.setDataSource(dataSource);
@@ -60,7 +65,7 @@ public class UserDaoJdbc implements UserDao {
 
     public void deleteAll() {
         String sql = sqlService.getSql("userDeleteAll");
-        jdbcTemplate.update(connection -> connection.prepareStatement(sql));
+        jdbcTemplate.update(sql);
     }
 
     public int getCount() {

@@ -22,8 +22,8 @@ public class EmbeddedDbTest {
     void setUp() {
         db = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
-                .addScript("schema.sql")
-                .addScript("data.sql")
+                .addScript("sql/schema.sql")
+                .addScript("sql/data.sql")
                 .build();
 
         template = new JdbcTemplate(db);
