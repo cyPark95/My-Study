@@ -1,43 +1,49 @@
 package study;
 
-import com.mysql.cj.jdbc.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import study.user.dao.UserDao;
 import study.user.service.UserService;
 import study.user.service.UserServiceImpl;
-import study.user.sqlservice.OxmSqlService;
-import study.user.sqlservice.SqlService;
-import study.user.sqlservice.sqlregistry.SqlRegistry;
-import study.user.sqlservice.sqlregistry.updatable.EmbeddedDbSqlRegistry;
 
 import javax.sql.DataSource;
+import java.sql.Driver;
 
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "study.user")
+@Import(SqlServiceContext.class)
+@PropertySource("/database.properties")
 public class AppContext {
+
+    @Value("${db.driverClass}")
+    private Class<? extends Driver> driverClass;
+
+    @Value("${db.url}")
+    private String url;
+
+    @Value("${db.username}")
+    private String username;
+
+    @Value("${db.password}")
+    private String password;
 
     @Bean
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 
-        dataSource.setDriverClass(Driver.class);
-        dataSource.setUrl("jdbc:mysql://localhost:3306/study");
-        dataSource.setUsername("root");
-        dataSource.setPassword("1q2w3e4r!");
+        dataSource.setDriverClass(driverClass);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
 
         return dataSource;
     }
@@ -49,40 +55,34 @@ public class AppContext {
         return transactionManager;
     }
 
-    @Autowired UserDao userDao;
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private MailSender mailSender;
 
     @Bean
     public UserService userService() {
         UserServiceImpl userService = new UserServiceImpl();
         userService.setUserDao(userDao);
-        userService.setMailSender(mailSender());
+        userService.setMailSender(mailSender);
         return userService;
     }
 
     @Bean
-    public MailSender mailSender() {
-        return new JavaMailSenderImpl();
+    public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 
-    @Bean
-    public SqlService sqlService() {
-        OxmSqlService sqlService = new OxmSqlService();
-        sqlService.setUnmarshaller(unmarshaller());
-        sqlService.setSqlRegistry(sqlRegistry());
-        return sqlService;
-    }
+    @Configuration
+    @Profile("production")
+    public static class ProductionAppContext {
 
-    @Bean
-    public Unmarshaller unmarshaller() {
-        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setContextPath("study.user.sqlservice.jaxb");
-        return marshaller;
-    }
-
-    @Bean
-    public SqlRegistry sqlRegistry() {
-        EmbeddedDbSqlRegistry sqlRegistry = new EmbeddedDbSqlRegistry();
-        sqlRegistry.setDataSource(dataSource());
-        return sqlRegistry;
+        @Bean
+        public MailSender mailSender() {
+            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+            mailSender.setHost("mail.mycompany.com");
+            return mailSender;
+        }
     }
 }

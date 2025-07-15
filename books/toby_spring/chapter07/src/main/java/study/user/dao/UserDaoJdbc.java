@@ -1,9 +1,9 @@
 package study.user.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import study.user.domain.Level;
 import study.user.domain.User;
@@ -21,6 +21,7 @@ public class UserDaoJdbc implements UserDao {
     private SqlService sqlService;
 
     @Autowired
+    @Qualifier("dataSource")
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate();
         this.jdbcTemplate.setDataSource(dataSource);

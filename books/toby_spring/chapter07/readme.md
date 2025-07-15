@@ -560,4 +560,75 @@ public class TestApplicationContext {
 ### 7.6.3 컨텍스트 분리와 `@Import`
 
 - 현재 DI 설정 정보에서 테스트 수행을 위한 DI 정보를 분리해 본다.
-- 테스트용 컨텍스트 분리
+- 테스트용 컨텍스트 분리(소스 참고)
+- `@Import`(소스 참고)
+  - SQL 서비스는 다른 애플리케이션에서도 사용되거나, 독립적으로 개발 및 변경될 가능성이 높기 때문에 별도의 모듈처럼 관리하는 것이 좋다.
+  - 보조 설정 정보를 다른 설정 클래스에서 불러와 사용할 때 `@Import` 어노테이션을 활용한다.
+
+### 7.6.4 프로파일
+
+- 테스트 환경과 운영 환경에서는 서로 다른 빈의 정의가 필요할 수 있다.
+- 이런 경우를 위해 빈 설정을 환경별로 나누고, 각 환경에 맞는 빈만 등록되도록 관리할 수 있다.
+- `@Profile`과 `@ActiveProfiles`(소스 참고)
+    - 스프링 3.1은 실행 환경에 따라 빈 구성을 분리할 수 있는 프로파일 기능을 제공한다.
+    - `@Profile` 어노테이션을 사용하면 활성화 될 프로파일을 지저장할 수 있다.
+    - 어떤 프로파일을 활성화할지 지정하려면 `@ActiveProfiles` 어노테이션을 사용한다.
+    - 활성화되지 않은 프로파일의 빈은 무시되며, 스프링 컨테이너에 등록되지 않는다.
+- 컨테이너의 빈 등록 정보 확인
+    - 스프링 컨테이너는 모두 `BeanFactory` 인터페이스를 구현하고 있다.
+    - 대부분의 스프링 컨테이너는 `DefaultListableBeanFactory`를 통해 빈을 등록하고 관리한다.
+        - `DefaultListableBeanFactory` 객체를 주입 받으면, 컨테이너에 등록된 빈 정보를 확인할 수 있다.
+        ```java
+        @Autowired
+        private DefaultListableBeanFactory beanFactory;
+        
+        @Test
+        void beans() {
+            for (String name : beanFactory.getBeanDefinitionNames()) {
+                System.out.printf("%s [%s]%n", name, beanFactory.getBean(name).getClass().getName());
+            }
+        }
+        ```
+- 중첩 클래스를 이용한 프로파일 적용
+    - 빈 설정 클래스를 빈의 종류와 적용 환경에 따라 여러 개로 분리하다 보면 전체 구성을 한눈에 파악하기 어려워질 수 있다.
+    - 이런 경우 static 중첩 클래스를 활용해 설정 클래스를 하나의 파일로 통합할 수 있다.
+
+### 7.6.5 프로퍼티 소스
+
+- DB 정보와 같이 환경에 따라 다른 설정이 필요하고, 같은 환경 내에서도 쉽게 변경할 수 있어야 한다.
+- 이런 설정 값은 빌드 작업이 필요 없는 텍스트 파일에 저장하고 사용하는 것이 효율적이다.
+- `@PropertySource`
+    - 프로퍼티 정보는 `키=값` 형식으로 구성된 프로퍼티 파일로 관리한다.
+    - 스프링 3.1은 컨테이너가 설정에 필요한 프로퍼티 정보를 관리하며, 빈 생성이나 설정 과정에서 이를 사용할 수 있다.
+        - 컨테이너가 프로퍼티 값을 가져오는 대상을 프로퍼티 소스(Property Source) 라고 한다.
+    - `@PropertySource` 어노테이션을 통해 외부 프로퍼티 파일을 설정 클래스에 등록할 수 있다.
+    - 등록된 프로퍼티 값은 `Environment` 객체를 통해 코드에서 조회 할 수 있다.
+    ```java
+    @Autowired
+    private Environment environment;
+
+    @Bean
+    public DataSource dataSource() {
+        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+
+        try {
+            Class<? extends Driver> driverClass = (Class<? extends Driver>) Class.forName(environment.getProperty("db.driverClass"));
+            dataSource.setDriverClass(driverClass);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        dataSource.setUrl(environment.getProperty("db.url"));
+        dataSource.setUsername(environment.getProperty("db.username"));
+        dataSource.setPassword(environment.getProperty("db.password"));
+
+        return dataSource;
+    } 
+    ```
+- `PropertySourcesPlaceholderConfigurer`
+    - `@Value` 어노테이션을 사용하면 프로퍼티 값을 직접 DI 받을 수 있다.
+    - `${db.driverClass}`와 같은 치환자(placeholder) 를 이용한다.
+    - 치환자를 이용해 프로퍼티 값을 주입하려면 `PropertySourcesPlaceholderConfigurer` 빈으로 정의해야 한다.
+    - 치환자를 통해 프로퍼티 값을 주입하려면 `PropertySourcesPlaceholderConfigurer` 빈을 정의해야 한다.
+        - 빈 팩토리 후처리기로 사용되는 빈으로 static 메서드를 통해 등록해야 한다.
+    - `@Value`를 사용하면 타입 변환이 필요한 경우, 스프링은 자동으로 타입 변환도 수행해준다.
