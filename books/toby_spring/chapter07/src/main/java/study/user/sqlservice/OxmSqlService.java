@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
-import study.user.dao.UserDao;
 import study.user.sqlservice.exception.SqlRetrievalFailureException;
 import study.user.sqlservice.jaxb.SqlType;
 import study.user.sqlservice.jaxb.Sqlmap;
@@ -55,7 +54,7 @@ public class OxmSqlService implements SqlService {
 
         private Unmarshaller unmarshaller;
 
-        private Resource sqlmap = new ClassPathResource(DEFAULT_SQLMAP_FILE, UserDao.class);
+        private Resource sqlmap = new ClassPathResource(DEFAULT_SQLMAP_FILE);
 
         public void setUnmarshaller(Unmarshaller unmarshaller) {
             this.unmarshaller = unmarshaller;
