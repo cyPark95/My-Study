@@ -1,4 +1,6 @@
 rootProject.name = 'spring-cloud-gateway'
-include('api-gateway')
+include('gateway')
 include('first-api')
 include('second-api')
+include('api')
+include('account')
