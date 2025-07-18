@@ -5,33 +5,44 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pcy.study.gateway.filter.SecondApiPrivateFilter;
-import pcy.study.gateway.filter.SecondApiPublicFilter;
+import org.springframework.http.HttpMethod;
+import pcy.study.gateway.filter.AccountApiFilter;
+import pcy.study.gateway.filter.JavaRouteFilter;
 
 @Configuration
 @RequiredArgsConstructor
 public class RouteConfig {
 
-    private final SecondApiPublicFilter secondApiPublicFilter;
-    private final SecondApiPrivateFilter secondApiPrivateFilter;
+    private final JavaRouteFilter javaRouteFilter;
+    private final AccountApiFilter accountApiFilter;
 
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route(predicateSpec -> predicateSpec.path("/gateway/second/public/**")
-                        .filters(gatewayFilterSpec -> {
-                            gatewayFilterSpec.rewritePath("/gateway(?<segment>.*)", "${segment}");
-                            gatewayFilterSpec.filter(secondApiPublicFilter.apply(new SecondApiPublicFilter.Config()));
-                            return gatewayFilterSpec;
+                .route("java-config", predicate -> predicate.path("/gateway/api/java/**")
+                        .and()
+                        .method(HttpMethod.GET)
+                        .filters(filter -> {
+                            filter.rewritePath("/gateway(?<segment>.*)", "${segment}");
+
+                            JavaRouteFilter.Config config = new JavaRouteFilter.Config();
+                            config.setParam("Java Config");
+                            filter.filter(javaRouteFilter.apply(config));
+
+                            return filter;
                         })
-                        .uri("http://localhost:8090"))
-                .route(predicateSpec -> predicateSpec.path("/gateway/second/private/**")
-                        .filters(gatewayFilterSpec -> {
-                            gatewayFilterSpec.rewritePath("/gateway(?<segment>.*)", "${segment}");
-                            gatewayFilterSpec.filter(secondApiPrivateFilter.apply(new SecondApiPrivateFilter.Config()));
-                            return gatewayFilterSpec;
+                        .uri("http://localhost:8080")
+                )
+                .route("account-api", predicate -> predicate.path("/gateway/api/account/**")
+                        .and()
+                        .method(HttpMethod.POST)
+                        .filters(filter -> {
+                            filter.rewritePath("/gateway(?<segment>.*)", "${segment}");
+                            filter.filter(accountApiFilter.apply(new AccountApiFilter.Config()));
+                            return filter;
                         })
-                        .uri("http://localhost:8090"))
+                        .uri("http://localhost:8080")
+                )
                 .build();
     }
 }

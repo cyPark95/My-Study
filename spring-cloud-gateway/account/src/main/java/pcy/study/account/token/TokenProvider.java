@@ -1,4 +1,4 @@
-package pcy.study.authentication.token;
+package pcy.study.account.token;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -13,8 +13,8 @@ import java.util.Date;
 @Component
 public class TokenProvider {
 
-    private static final String secret = "SpringCloudGatewayJWTSecret";
-    private static final long expiredTime = 5;
+    private static final String secret = "SpringCloudGatewayJWTSecret~~~~~~~~~~~~~~~~~~~~~~";
+    private static final long expiredTime = 24;
 
     private final SecretKey key;
     
@@ -33,14 +33,16 @@ public class TokenProvider {
     }
 
     public String extractUsername(String token) {
-        return Jwts.parser().build()
+        return Jwts.parser()
+                .verifyWith(this.key)
+                .build()
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
     }
 
     private Date getExpiredAt() {
-        LocalDateTime expiredDateTime = LocalDateTime.now().plusMinutes(expiredTime);
+        LocalDateTime expiredDateTime = LocalDateTime.now().plusHours(expiredTime);
         Instant instant = expiredDateTime
                 .atZone(ZoneId.systemDefault())
                 .toInstant();

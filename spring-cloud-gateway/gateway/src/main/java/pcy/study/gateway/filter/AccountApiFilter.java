@@ -17,37 +17,37 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class SecondApiPrivateFilter extends AbstractGatewayFilterFactory<SecondApiPrivateFilter.Config> {
+public class AccountApiFilter extends AbstractGatewayFilterFactory<AccountApiFilter.Config> {
 
-    public SecondApiPrivateFilter() {
+    private final WebClient webClient;
+
+    public AccountApiFilter() {
         super(Config.class);
+        this.webClient = WebClient.builder()
+                .baseUrl("http://localhost:8090")
+                .build();
     }
 
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            log.info("SecondApiPrivateFilter URI: {}", exchange.getRequest().getURI());
+            log.info("Account API Filter URI: {}", exchange.getRequest().getURI());
 
             String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            if (token == null) {
-                return Mono.error(new IllegalStateException("Authorization header is missing"));
-            }
-
             log.info("Authorization Token: {}", token);
 
-            WebClient webClient = WebClient.create("http://localhost:9010");
+            Map<String, String> body = Map.of("token", token);
 
             return webClient.post()
                     .uri("/username")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(Map.of("token", token))
+                    .bodyValue(body)
                     .retrieve()
-                    .onStatus(HttpStatusCode::isError, response ->
-                            response.bodyToMono(String.class)
-                                    .flatMap(error -> {
-                                        log.error("Token extraction failed: {}", error);
-                                        return Mono.error(new AuthenticationFailedException(error));
-                                    })
+                    .onStatus(HttpStatusCode::isError, response -> response.bodyToMono(String.class)
+                            .flatMap(error -> {
+                                log.error("Token extraction failed: {}", error);
+                                return Mono.error(new AuthenticationFailedException(error));
+                            })
                     )
                     .bodyToMono(String.class)
                     .doOnNext(username -> log.info("Extracted username: {}", username))
@@ -56,10 +56,12 @@ public class SecondApiPrivateFilter extends AbstractGatewayFilterFactory<SecondA
                                 .mutate()
                                 .header("x-username", username)
                                 .build();
+
                         ServerWebExchange mutatedExchange = exchange
                                 .mutate()
                                 .request(mutatedRequest)
                                 .build();
+
                         return chain.filter(mutatedExchange);
                     })
                     .doOnError(error -> log.error("Error during token extraction: {}", error.getMessage()));

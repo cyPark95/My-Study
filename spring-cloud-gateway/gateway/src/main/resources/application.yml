@@ -9,17 +9,13 @@ spring:
       server:
         webflux:
           routes:
-            - id: first-api-public
+            - id: yml-config
               uri: http://localhost:8080
               predicates:
-                - Path=/gateway/first/public/**
+                - Path=/gateway/api/yml/**
+                - Method=GET
               filters:
+                - name: YmlRouteFilter
+                  args:
+                    param: YML Config
                 - RewritePath=/gateway(?<segment>.*), ${segment}
-                - FirstApiPublicFilter
-            - id: first-api-private
-              uri: http://localhost:8080
-              predicates:
-                - Path=/gateway/first/private/**
-              filters:
-                - RewritePath=/gateway(?<segment>.*), ${segment}
-                - FirstApiPrivateFilter
