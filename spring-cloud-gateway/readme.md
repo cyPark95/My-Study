@@ -1,8 +1,6 @@
 # Spring Cloud Gateway
 
-Spring Cloud Gateway 학습 프로젝트
-
-## 학습 내용
+Spring Cloud Gateway 프로젝트
 
 1. YML 기반 API 라우팅 설정
 2. Java 코드 기반 API 라우팅 설정
