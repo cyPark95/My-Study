@@ -1,0 +1,30 @@
+<configuration>
+    <springProperty scope="context" name="server-name" source="spring.application.name"/>
+
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashAccessTcpSocketAppender">
+        <destination>localhost:5000</destination>
+
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "thread" : "%thread",
+                        "level": "%level",
+                        "logger" : "%logger",
+                        "class" : "%class",
+                        "method" : "%method",
+                        "line" : "%line",
+                        "message" : "%message",
+                        "server-name" : "${server-name}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="LOGSTASH" />
+    </root>
+</configuration>
