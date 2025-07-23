@@ -32,7 +32,7 @@
     ```
 - SQL 맵 프로퍼티 방식
     ```xml
-        <bean id="userDao" class="study.user.dao.UserDaoJdbc">
+    <bean id="userDao" class="study.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlMap">
             <map>
