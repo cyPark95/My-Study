@@ -1,20 +1,19 @@
-package pcy.study.springbatch.application.step2;
+package pcy.study.springbatch.leaningtest.step2;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import pcy.study.springbatch.batch.JobExecution;
 import pcy.study.springbatch.batch.JobExecutionListener;
 import pcy.study.springbatch.email.EmailProvider;
 
-@Component
-@RequiredArgsConstructor
-public class DormantBatchJobExecutionListener implements JobExecutionListener {
+public class DormantSpringBatchJobExecutionListener implements JobExecutionListener {
 
     private final EmailProvider emailProvider;
 
+    public DormantSpringBatchJobExecutionListener(EmailProvider emailProvider) {
+        this.emailProvider = emailProvider;
+    }
+
     @Override
     public void beforeJob(JobExecution jobExecution) {
-
     }
 
     @Override

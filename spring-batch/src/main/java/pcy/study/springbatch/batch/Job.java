@@ -13,19 +13,9 @@ public class Job {
     }
 
     @Builder
-    public Job(ItemReader<?> itemReader, ItemProcessor<?, ?> itemProcessor, ItemWriter<?> itemWriter) {
+    public Job(JobExecutionListener jobExecutionListener, ItemReader<?> itemReader, ItemProcessor<?, ?> itemProcessor, ItemWriter<?> itemWriter) {
         this.taskLet = new SimpleTaskLet(itemReader, itemProcessor, itemWriter);
-        this.jobExecutionListener = new JobExecutionListener() {
-            @Override
-            public void beforeJob(JobExecution jobExecution) {
-
-            }
-
-            @Override
-            public void afterJob(JobExecution jobExecution) {
-
-            }
-        };
+        this.jobExecutionListener = jobExecutionListener;
     }
 
     public JobExecution execute() {

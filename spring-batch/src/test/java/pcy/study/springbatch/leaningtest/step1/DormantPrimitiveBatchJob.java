@@ -1,10 +1,8 @@
-package pcy.study.springbatch.application.step1;
+package pcy.study.springbatch.leaningtest.step1;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 import pcy.study.springbatch.batch.JobExecution;
 import pcy.study.springbatch.email.EmailProvider;
 import pcy.study.springbatch.user.User;
@@ -12,12 +10,15 @@ import pcy.study.springbatch.user.UserRepository;
 
 import java.time.LocalDate;
 
-@Component
-@RequiredArgsConstructor
-public class DormantBatchJob {
+public class DormantPrimitiveBatchJob {
 
     private final UserRepository userRepository;
     private final EmailProvider emailProvider;
+
+    public DormantPrimitiveBatchJob(UserRepository userRepository, EmailProvider emailProvider) {
+        this.userRepository = userRepository;
+        this.emailProvider = emailProvider;
+    }
 
     public JobExecution execute() {
         JobExecution jobExecution = new JobExecution();
@@ -39,7 +40,7 @@ public class DormantBatchJob {
 
                 // 2. 휴면 사용자 추출/변환
                 boolean isDormant = dormantDate.isAfter(user.getLoginAt().toLocalDate());
-                if(!isDormant) {
+                if (!isDormant) {
                     continue;
                 }
 

@@ -1,14 +1,13 @@
-package pcy.study.springbatch;
+package pcy.study.springbatch.leaningtest.step1;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
-import pcy.study.springbatch.application.step1.DormantBatchJob;
 import pcy.study.springbatch.batch.BatchStatus;
-import pcy.study.springbatch.batch.Job;
 import pcy.study.springbatch.batch.JobExecution;
 import pcy.study.springbatch.email.EmailProvider;
 import pcy.study.springbatch.user.Status;
@@ -21,11 +20,13 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("원시적인 배치 프로그램 구현하기")
 @SpringBootTest
-class DormantBatchJobTest {
+@Import(DormantPrimitiveBatchJob.class)
+class DormantPrimitiveBatchJobTest {
 
     @Autowired
-    private Job dormantBatchJob;
+    private DormantPrimitiveBatchJob dormantBatchJob;
 
     @Autowired
     private UserRepository userRepository;
@@ -89,7 +90,7 @@ class DormantBatchJobTest {
     @Test
     void batchFailsAndReturnsFailedStatus() {
         // given
-        DormantBatchJob failedDormantBatchJob = new DormantBatchJob(null, new FakeEmailSender());
+        DormantPrimitiveBatchJob failedDormantBatchJob = new DormantPrimitiveBatchJob(null, new FakeEmailSender());
 
         // when
         JobExecution result = failedDormantBatchJob.execute();

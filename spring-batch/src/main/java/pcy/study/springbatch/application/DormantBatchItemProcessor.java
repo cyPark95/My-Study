@@ -1,4 +1,4 @@
-package pcy.study.springbatch.application.step3;
+package pcy.study.springbatch.application;
 
 import org.springframework.stereotype.Component;
 import pcy.study.springbatch.batch.ItemProcessor;

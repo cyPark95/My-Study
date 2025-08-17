@@ -1,10 +1,8 @@
-package pcy.study.springbatch.application.step2;
+package pcy.study.springbatch.leaningtest.step2;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 import pcy.study.springbatch.batch.TaskLet;
 import pcy.study.springbatch.email.EmailProvider;
 import pcy.study.springbatch.user.User;
@@ -12,19 +10,16 @@ import pcy.study.springbatch.user.UserRepository;
 
 import java.time.LocalDate;
 
-@Component
-@RequiredArgsConstructor
-public class DormantBatchTaskLet implements TaskLet {
+public class DormantSpringBatchTaskLet implements TaskLet {
 
     private final UserRepository userRepository;
     private final EmailProvider emailProvider;
 
-    /**
-     * 관심사 분리 필요
-     *   - 데이터 수집(Reads)
-     *   - 데이터 처리(Processes)
-     *   - 데이터 저장(Writes)
-     */
+    public DormantSpringBatchTaskLet(UserRepository userRepository, EmailProvider emailProvider) {
+        this.userRepository = userRepository;
+        this.emailProvider = emailProvider;
+    }
+
     @Override
     public void execute() {
         int pageNo = 0;

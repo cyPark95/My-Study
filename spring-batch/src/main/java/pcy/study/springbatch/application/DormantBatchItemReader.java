@@ -1,4 +1,4 @@
-package pcy.study.springbatch.application.step3;
+package pcy.study.springbatch.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
