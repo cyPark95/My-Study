@@ -1,4 +1,4 @@
-package pcy.study.springbatch.application;
+package pcy.study.springbatch.application.dormant;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

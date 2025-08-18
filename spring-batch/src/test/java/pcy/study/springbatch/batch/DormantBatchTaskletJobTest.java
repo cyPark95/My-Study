@@ -1,14 +1,15 @@
-package pcy.study.springbatch.leaningtest.step1;
+package pcy.study.springbatch.batch;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
-import pcy.study.springbatch.batch.BatchStatus;
-import pcy.study.springbatch.batch.JobExecution;
+import pcy.study.springbatch.application.dormant.DormantBatchItemProcessor;
+import pcy.study.springbatch.application.dormant.DormantBatchItemReader;
+import pcy.study.springbatch.application.dormant.DormantBatchItemWriter;
+import pcy.study.springbatch.application.dormant.DormantBatchJobExecutionListener;
 import pcy.study.springbatch.email.EmailProvider;
 import pcy.study.springbatch.user.Status;
 import pcy.study.springbatch.user.User;
@@ -20,19 +21,35 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("원시적인 배치 프로그램 구현하기")
 @SpringBootTest
-@Import(DormantPrimitiveBatchJob.class)
-class DormantPrimitiveBatchJobTest {
+class DormantBatchTaskletJobTest {
+
+    private TaskletJob job;
 
     @Autowired
-    private DormantPrimitiveBatchJob dormantBatchJob;
+    private JobExecutionListener jobExecutionListener;
+
+    @Autowired
+    private DormantBatchItemReader itemReader;
+
+    @Autowired
+    private DormantBatchItemProcessor itemProcessor;
+
+    @Autowired
+    private DormantBatchItemWriter itemWriter;
 
     @Autowired
     private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
+        job = TaskletJob.builder()
+                .jobExecutionListener(jobExecutionListener)
+                .itemReader(itemReader)
+                .itemProcessor(itemProcessor)
+                .itemWriter(itemWriter)
+                .build();
+
         userRepository.deleteAll();
     }
 
@@ -44,7 +61,7 @@ class DormantPrimitiveBatchJobTest {
                 .forEach(this::saveUser);
 
         // when
-        JobExecution result = dormantBatchJob.execute();
+        JobExecution result = job.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -64,7 +81,7 @@ class DormantPrimitiveBatchJobTest {
                 .forEach(this::saveUser);
 
         // when
-        JobExecution result = dormantBatchJob.execute();
+        JobExecution result = job.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -80,7 +97,7 @@ class DormantPrimitiveBatchJobTest {
     @Test
     void batchRunsWithNoUsers() {
         // when
-        JobExecution result = dormantBatchJob.execute();
+        JobExecution result = job.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -90,13 +107,24 @@ class DormantPrimitiveBatchJobTest {
     @Test
     void batchFailsAndReturnsFailedStatus() {
         // given
-        DormantPrimitiveBatchJob failedDormantBatchJob = new DormantPrimitiveBatchJob(null, new FakeEmailSender());
+        Job failedJob = new TaskletJob(new DormantBatchJobExecutionListener(new FakeEmailSender()), null);
 
         // when
-        JobExecution result = failedDormantBatchJob.execute();
+        JobExecution result = failedJob.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.FAILED);
+    }
+
+    @DisplayName("358일 전에 로그인한 사용자에게 휴먼 계정 예정 공지 메일을 발송해야 한다.")
+    @Test
+    void sendDormantBatchEmail() {
+        // given
+        saveUser(358);
+
+        // when
+        // then
+        job.execute();
     }
 
     private void saveUser(int loginMinusDays) {

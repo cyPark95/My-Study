@@ -1,4 +1,4 @@
-package pcy.study.springbatch.leaningtest.step2;
+package pcy.study.springbatch.leaningtest.primitivebatch;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 import pcy.study.springbatch.batch.BatchStatus;
-import pcy.study.springbatch.batch.Job;
 import pcy.study.springbatch.batch.JobExecution;
 import pcy.study.springbatch.email.EmailProvider;
 import pcy.study.springbatch.user.Status;
@@ -21,26 +20,19 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("스프링 배치처럼 개선하기")
+@DisplayName("원시적인 배치 프로그램")
 @SpringBootTest
-@Import({DormantSpringBatchTaskLet.class, DormantSpringBatchJobExecutionListener.class})
-class DormantSpringBatchJobTest {
-
-    private Job dormantSpringBatchJob;
+@Import(PrimitiveDormantBatchJob.class)
+class PrimitiveDormantBatchJobTest {
 
     @Autowired
-    private DormantSpringBatchTaskLet dormantSpringBatchTaskLet;
-
-    @Autowired
-    private DormantSpringBatchJobExecutionListener dormantSpringBatchJobExecutionListener;
+    private PrimitiveDormantBatchJob job;
 
     @Autowired
     private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
-        this.dormantSpringBatchJob = new Job(dormantSpringBatchTaskLet, dormantSpringBatchJobExecutionListener);
-
         userRepository.deleteAll();
     }
 
@@ -52,7 +44,7 @@ class DormantSpringBatchJobTest {
                 .forEach(this::saveUser);
 
         // when
-        JobExecution result = dormantSpringBatchJob.execute();
+        JobExecution result = job.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -72,7 +64,7 @@ class DormantSpringBatchJobTest {
                 .forEach(this::saveUser);
 
         // when
-        JobExecution result = dormantSpringBatchJob.execute();
+        JobExecution result = job.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -88,7 +80,7 @@ class DormantSpringBatchJobTest {
     @Test
     void batchRunsWithNoUsers() {
         // when
-        JobExecution result = dormantSpringBatchJob.execute();
+        JobExecution result = job.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -98,10 +90,7 @@ class DormantSpringBatchJobTest {
     @Test
     void batchFailsAndReturnsFailedStatus() {
         // given
-        FakeEmailSender emailSender = new FakeEmailSender();
-        DormantSpringBatchTaskLet taskLet = new DormantSpringBatchTaskLet(null, emailSender);
-        DormantSpringBatchJobExecutionListener jobExecutionListener = new DormantSpringBatchJobExecutionListener(emailSender);
-        Job failedJob = new Job(taskLet, jobExecutionListener);
+        PrimitiveDormantBatchJob failedJob = new PrimitiveDormantBatchJob(null, new EmailProvider.Fake());
 
         // when
         JobExecution result = failedJob.execute();
@@ -115,12 +104,5 @@ class DormantSpringBatchJobTest {
         User user = new User(uuid, uuid + "@co.kr");
         ReflectionTestUtils.setField(user, "loginAt", LocalDateTime.now().minusDays(loginMinusDays));
         userRepository.save(user);
-    }
-
-    private static class FakeEmailSender implements EmailProvider {
-
-        @Override
-        public void send(String email, String title, String content) {
-        }
     }
 }

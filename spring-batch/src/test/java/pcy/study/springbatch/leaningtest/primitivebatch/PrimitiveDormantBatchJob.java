@@ -1,4 +1,4 @@
-package pcy.study.springbatch.leaningtest.step1;
+package pcy.study.springbatch.leaningtest.primitivebatch;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,12 +10,12 @@ import pcy.study.springbatch.user.UserRepository;
 
 import java.time.LocalDate;
 
-public class DormantPrimitiveBatchJob {
+public class PrimitiveDormantBatchJob {
 
     private final UserRepository userRepository;
     private final EmailProvider emailProvider;
 
-    public DormantPrimitiveBatchJob(UserRepository userRepository, EmailProvider emailProvider) {
+    public PrimitiveDormantBatchJob(UserRepository userRepository, EmailProvider emailProvider) {
         this.userRepository = userRepository;
         this.emailProvider = emailProvider;
     }

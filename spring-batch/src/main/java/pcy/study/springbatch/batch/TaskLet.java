@@ -1,6 +1,6 @@
 package pcy.study.springbatch.batch;
 
-public interface TaskLet {
+public interface Tasklet {
 
     void execute();
 }

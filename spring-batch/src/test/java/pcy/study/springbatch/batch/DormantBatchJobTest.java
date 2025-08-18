@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
-import pcy.study.springbatch.application.DormantBatchJobExecutionListener;
-import pcy.study.springbatch.email.EmailProvider;
 import pcy.study.springbatch.user.Status;
 import pcy.study.springbatch.user.User;
 import pcy.study.springbatch.user.UserRepository;
@@ -22,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DormantBatchJobTest {
 
     @Autowired
-    private Job job;
+    private Job dormantBatchJob;
 
     @Autowired
     private UserRepository userRepository;
@@ -40,7 +38,7 @@ class DormantBatchJobTest {
                 .forEach(this::saveUser);
 
         // when
-        JobExecution result = job.execute();
+        JobExecution result = dormantBatchJob.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -60,7 +58,7 @@ class DormantBatchJobTest {
                 .forEach(this::saveUser);
 
         // when
-        JobExecution result = job.execute();
+        JobExecution result = dormantBatchJob.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -76,7 +74,7 @@ class DormantBatchJobTest {
     @Test
     void batchRunsWithNoUsers() {
         // when
-        JobExecution result = job.execute();
+        JobExecution result = dormantBatchJob.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED);
@@ -86,13 +84,24 @@ class DormantBatchJobTest {
     @Test
     void batchFailsAndReturnsFailedStatus() {
         // given
-        Job failedJob = new Job(null, new DormantBatchJobExecutionListener(new FakeEmailSender()));
+        Job failedJob = new StepJob(new FakeJobExecutionListener(), null);
 
         // when
         JobExecution result = failedJob.execute();
 
         // then
         assertThat(result.getStatus()).isEqualTo(BatchStatus.FAILED);
+    }
+
+    @DisplayName("358일 전에 로그인한 사용자에게 휴먼 계정 예정 공지 메일을 발송해야 한다.")
+    @Test
+    void sendDormantBatchEmail() {
+        // given
+        saveUser(358);
+
+        // when
+        // then
+        dormantBatchJob.execute();
     }
 
     private void saveUser(int loginMinusDays) {
@@ -102,10 +111,14 @@ class DormantBatchJobTest {
         userRepository.save(user);
     }
 
-    private static class FakeEmailSender implements EmailProvider {
+    private static class FakeJobExecutionListener implements JobExecutionListener {
 
         @Override
-        public void send(String email, String title, String content) {
+        public void beforeJob(JobExecution jobExecution) {
+        }
+
+        @Override
+        public void afterJob(JobExecution jobExecution) {
         }
     }
 }

@@ -3,7 +3,7 @@ package pcy.study.springbatch.batch;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class SimpleTaskLet<I, O> implements TaskLet {
+public class SimpleTasklet<I, O> implements Tasklet {
 
     private final ItemReader<I> itemReader;
     private final ItemProcessor<I, O> itemProcessor;

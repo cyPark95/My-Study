@@ -1,4 +1,4 @@
-package pcy.study.springbatch.application;
+package pcy.study.springbatch.application.dormant;
 
 import org.springframework.stereotype.Component;
 import pcy.study.springbatch.batch.ItemProcessor;
