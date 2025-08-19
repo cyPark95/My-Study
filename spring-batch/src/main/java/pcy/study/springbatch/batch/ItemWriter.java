@@ -1,6 +1,6 @@
 package pcy.study.springbatch.batch;
 
-public interface ItemWriter<T> {
+public interface ItemWriter<O> {
 
-    void write(T item);
+    void write(O item);
 }

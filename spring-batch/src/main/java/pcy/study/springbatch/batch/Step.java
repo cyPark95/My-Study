@@ -1,14 +1,12 @@
 package pcy.study.springbatch.batch;
 
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class Step {
 
     private final Tasklet taskLet;
-
-    public Step(Tasklet taskLet) {
-        this.taskLet = taskLet;
-    }
 
     @Builder
     public Step(

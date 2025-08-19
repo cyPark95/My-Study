@@ -8,7 +8,7 @@ public class StepJobBuilder {
     private List<Step> steps;
     private JobExecutionListener jobExecutionListener;
 
-    public  StepJobBuilder start(Step step) {
+    public StepJobBuilder start(Step step) {
         steps = new ArrayList<>();
         steps.add(step);
         return this;

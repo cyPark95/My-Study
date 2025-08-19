@@ -21,10 +21,10 @@ public class DormantBatchConfiguration {
     }
 
     @Bean
-    public Step dormantBatchStep(
+    public Step preDormantBatchStep(
             DormantBatchItemReader itemReader,
-            DormantBatchItemProcessor itemProcessor,
-            DormantBatchItemWriter itemWriter
+            PreDormantBatchItemProcessor itemProcessor,
+            PreDormantBatchItemWriter itemWriter
     ) {
         return Step.builder()
                 .itemReader(itemReader)
@@ -34,10 +34,10 @@ public class DormantBatchConfiguration {
     }
 
     @Bean
-    public Step preDormantBatchStep(
+    public Step dormantBatchStep(
             DormantBatchItemReader itemReader,
-            PreDormantBatchItemProcessor itemProcessor,
-            PreDormantBatchItemWriter itemWriter
+            DormantBatchItemProcessor itemProcessor,
+            DormantBatchItemWriter itemWriter
     ) {
         return Step.builder()
                 .itemReader(itemReader)
