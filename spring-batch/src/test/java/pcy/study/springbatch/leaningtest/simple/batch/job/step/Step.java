@@ -1,7 +1,8 @@
-package pcy.study.springbatch.batch;
+package pcy.study.springbatch.leaningtest.simple.batch.job.step;
 
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import pcy.study.springbatch.leaningtest.simple.batch.*;
 
 @RequiredArgsConstructor
 public class Step {

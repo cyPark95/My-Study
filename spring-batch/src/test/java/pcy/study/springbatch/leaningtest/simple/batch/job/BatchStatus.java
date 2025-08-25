@@ -1,4 +1,4 @@
-package pcy.study.springbatch.batch;
+package pcy.study.springbatch.leaningtest.simple.batch.job;
 
 import lombok.Getter;
 

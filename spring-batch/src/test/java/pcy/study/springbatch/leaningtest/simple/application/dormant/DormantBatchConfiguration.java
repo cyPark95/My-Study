@@ -1,8 +1,11 @@
-package pcy.study.springbatch.application.dormant;
+package pcy.study.springbatch.leaningtest.simple.application.dormant;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pcy.study.springbatch.batch.*;
+import pcy.study.springbatch.leaningtest.simple.batch.job.Job;
+import pcy.study.springbatch.leaningtest.simple.batch.job.JobExecutionListener;
+import pcy.study.springbatch.leaningtest.simple.batch.job.step.Step;
+import pcy.study.springbatch.leaningtest.simple.batch.job.step.StepJobBuilder;
 
 @Configuration
 public class DormantBatchConfiguration {

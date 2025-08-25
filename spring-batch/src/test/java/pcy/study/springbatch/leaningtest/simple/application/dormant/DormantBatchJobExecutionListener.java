@@ -1,9 +1,9 @@
-package pcy.study.springbatch.application.dormant;
+package pcy.study.springbatch.leaningtest.simple.application.dormant;
 
 import org.springframework.stereotype.Component;
-import pcy.study.springbatch.batch.JobExecution;
-import pcy.study.springbatch.batch.JobExecutionListener;
 import pcy.study.springbatch.email.EmailProvider;
+import pcy.study.springbatch.leaningtest.simple.batch.job.JobExecution;
+import pcy.study.springbatch.leaningtest.simple.batch.job.JobExecutionListener;
 
 @Component
 public class DormantBatchJobExecutionListener implements JobExecutionListener {

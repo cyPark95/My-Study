@@ -1,11 +1,11 @@
-package pcy.study.springbatch.application.dormant;
+package pcy.study.springbatch.leaningtest.simple.application.dormant;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import pcy.study.springbatch.batch.ItemReader;
+import pcy.study.springbatch.leaningtest.simple.batch.ItemReader;
 import pcy.study.springbatch.user.User;
 import pcy.study.springbatch.user.UserRepository;
 

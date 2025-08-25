@@ -1,7 +1,7 @@
-package pcy.study.springbatch.application.dormant;
+package pcy.study.springbatch.leaningtest.simple.application.dormant;
 
 import org.springframework.stereotype.Component;
-import pcy.study.springbatch.batch.ItemProcessor;
+import pcy.study.springbatch.leaningtest.simple.batch.ItemProcessor;
 import pcy.study.springbatch.user.User;
 
 import java.time.LocalDate;

@@ -1,9 +1,9 @@
-package pcy.study.springbatch.application.dormant;
+package pcy.study.springbatch.leaningtest.simple.application.dormant;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pcy.study.springbatch.batch.ItemWriter;
 import pcy.study.springbatch.email.EmailProvider;
+import pcy.study.springbatch.leaningtest.simple.batch.ItemWriter;
 import pcy.study.springbatch.user.User;
 import pcy.study.springbatch.user.UserRepository;
 
