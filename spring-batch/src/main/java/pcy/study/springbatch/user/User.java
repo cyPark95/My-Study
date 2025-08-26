@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,6 +36,10 @@ public class User {
         this.status = Status.NORMAL;
         this.loginAt = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
+    }
+
+    public boolean isDormantSince(LocalDate dormantDate) {
+        return dormantDate.isAfter(loginAt.toLocalDate());
     }
 
     public void changeDormant() {
