@@ -1,4 +1,4 @@
-package study.learningtest.ioc;
+package study.learningtest.ioc.bean;
 
 public interface Printer {
 

@@ -1,15 +1,15 @@
-package study.learningtest.ioc;
+package study.learningtest.ioc.bean;
 
 public class Hello {
 
     private String name;
-    private study.learningtest.ioc.Printer printer;
+    private Printer printer;
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setPrinter(study.learningtest.ioc.Printer printer) {
+    public void setPrinter(Printer printer) {
         this.printer = printer;
     }
 

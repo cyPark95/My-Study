@@ -1,8 +1,8 @@
-package study.learningtest.ioc;
+package study.learningtest.ioc.bean;
 
-public class StringPrinter implements study.learningtest.ioc.Printer {
+public class StringPrinter implements Printer {
 
-    private StringBuffer buffer = new StringBuffer();
+    private final StringBuffer buffer = new StringBuffer();
 
     @Override
     public void print(String message) {

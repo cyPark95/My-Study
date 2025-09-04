@@ -6,10 +6,8 @@
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="hello" class="study.learningtest.ioc.bean.Hello">
-        <property name="name" value="Spring"/>
+        <property name="name" value="Child"/>
         <property name="printer" ref="printer"/>
     </bean>
-
-    <bean id="printer" class="study.learningtest.ioc.bean.StringPrinter"/>
 
 </beans>

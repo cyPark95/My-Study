@@ -6,7 +6,7 @@
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="hello" class="study.learningtest.ioc.bean.Hello">
-        <property name="name" value="Spring"/>
+        <property name="name" value="Parent"/>
         <property name="printer" ref="printer"/>
     </bean>
 
