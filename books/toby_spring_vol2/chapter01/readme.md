@@ -130,7 +130,30 @@
           </listener>
           ```
     - `<context-param>`을 사용해 필요한 설정을 지정할 수 있다.
-        - contextConfigLocation
+        - `contextConfigLocation`
             - XML 설정 파일의 위치를 지정한다.
-        - contextClass
+        - `contextClass`
             - 사용할 애플리케이션 컨텍스트 구현 클래스를 지정한다.
+- 서블릿 애플리케이션 컨텍스트 등록
+    - 스프링의 웹 기능을 지원하는 프론트 컨트롤러 서블릿은 `DispatcherServlet`이다.
+    - `DispatcherServlet`을 등록하려면 `web.xml`에 서블릿을 선언하면 된다.
+        ```xml
+        <servlet>
+            <servlet-name>spring</servlet-name>
+            <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+        ```
+        - `<servlet-name>`
+            - `DispatcherServlet`이 생성하는 애플리케이션 컨텍스트는 모두 독립적인 네임스페이스를 가진다.
+            - 네임스페이스를 통해 여러 개의 `DispatcherServlet`을 구분할 수 있고, 각 네임스페이스별로 디폴트 설정 파일을 가질 수 있다.
+        - `<load-on-startup>`
+            - 서블릿 컨테이너가 해당 서블릿을 언제 생성하고 초기화할지, 그리고 그 순서를 결정하는 정수 값이다.
+            - `DispatcherServlet`은 초기화 과정에서 스프링 컨텍스트를 생성하므로, 웹 애플리케이션 시작 시 최대한 빨리 초기화되도록 설정하는 것을 권장한다.
+                - 컨텍스트 및 빈 초기화 과정에서 발생하는 문제를 애플리케이션 기동 초기에 빠르게 확인할 수 있다.
+            - `<init-param>`을 사용하면 `contextConfigLocation`과 `contextClass`를 지정할 수 있다.
+
+## 1.2 IoC/DI를 위한 빈 설정 메타정보 작성
+
+- IoC 컨테이너는 애플리케이션을 구성하는 POJO로 만들어진 객체를 생성하고 관리하는 역할을 한다.
+- IoC 컨테이너는 빈 설정 메타정보를 통해 `BeanDefinition` 타입의 객체로 변환해서 활용한다.
